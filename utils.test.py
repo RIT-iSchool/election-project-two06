@@ -27,7 +27,7 @@ def test_valid_password():
 
 def test_user_input_password():
     # Simulate user input for password
-    predefined_password = "TestPassword123!"  # Change this to your desired test password
+    predefined_password = "TestPassword123!"
     result = utils.isValidPassword(predefined_password)
 
     # Print the predefined password and the result of validation
@@ -65,7 +65,7 @@ def test_invalid_email_no_domain():
 
 def test_user_input_email():
     # Simulate user input for email
-    predefined_email = "test.user@gmail.com"  # Change this to your desired test email
+    predefined_email = "test.user@gmail.com"
     result = utils.isValidEmail(predefined_email)
 
     # Print the predefined email and the result of validation
@@ -104,14 +104,14 @@ def prompt_for_mandatory_field(field_name):
 
 # #Unit 4
 def test_ballot_initiative():
-    long_text = "a" * 100  # Creating a ballot initiative longer than 500 characters
+    long_text = "a" * 100
     result_long_text = not utils.isBallotInitiativeWithinRange(long_text)
 
     print_result("test_ballot_initiative", result_long_text)
 
 def test_user_input_ballot_initiative():
-    # Simulate user input for ballot initiative
-    predefined_initiative = "This is a very long initiative that exceeds 500 characters."  # Change this to your desired test initiative
+    # user input for ballot initiative
+    predefined_initiative = "This is a very long initiative that exceeds 500 characters." 
     result = not utils.isBallotInitiativeWithinRange(predefined_initiative)
 
     # Print the result of validation
@@ -139,9 +139,6 @@ def test_upload_png_success():
     print("test_upload_png_success: Passed")
 
 def test_upload_jpg_success():
-    """
-    Test that uploading a JPG file is successful.
-    """
     assert utils.is_valid_photo_format("picture.jpg"), "JPG format should be allowed"
     print("test_upload_jpg_success: Passed")
 
