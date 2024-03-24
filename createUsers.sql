@@ -61,7 +61,7 @@ CREATE TABLE Candidate (
     CFName text NOT NULL,
     CLName text NOT NULL,
     C_Credentials text NOT NULL,
-    C_Bio text NOT NULL,
+    C_Bio text NOT NULL
 );
 
 CREATE TABLE Vote (
@@ -90,3 +90,4 @@ CREATE TABLE Write_Ins (
     OfficeID int REFERENCES Office(OfficeID) NOT NULL
 );
 
+COPY Professional_Society FROM '/tmp/societies.psv' DELIMITER '|' CSV HEADER;
