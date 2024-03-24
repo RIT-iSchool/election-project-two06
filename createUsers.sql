@@ -56,14 +56,12 @@ CREATE TABLE Office (
 CREATE TABLE Candidate (
     CandidateID int PRIMARY KEY NOT NULL GENERATED ALWAYS AS IDENTITY,
     OfficeID int REFERENCES Office(OfficeID),
-    ElectionID int,
+    BallotID int REFERENCES Ballot(BallotID),
     AllowedVotes int,
     CFName text NOT NULL,
     CLName text NOT NULL,
-    SocietyID int REFERENCES Professional_Society(SocietyID),
-    PortraitURL text,
-    University text,
-    Bio text
+    C_Credentials text NOT NULL,
+    C_Bio text NOT NULL,
 );
 
 CREATE TABLE Vote (
