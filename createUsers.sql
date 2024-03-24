@@ -91,3 +91,7 @@ CREATE TABLE Write_Ins (
 );
 
 COPY Professional_Society FROM '/tmp/societies.psv' DELIMITER '|' CSV HEADER;
+COPY Users FROM '/tmp/admin_final.psv' DELIMITER '|' CSV HEADER;
+COPY Users FROM '/tmp/members_final.psv' DELIMITER '|' CSV HEADER;
+COPY Users FROM '/tmp/employees_final.psv' DELIMITER '|' CSV HEADER;
+COPY Users FROM '/tmp/officer_final.psv' DELIMITER '|' CSV HEADER;
