@@ -27,8 +27,8 @@ CREATE TABLE Professional_Society (
 
 CREATE TABLE User_Society (
     UniqueSocietyID int PRIMARY KEY NOT NULL GENERATED ALWAYS AS IDENTITY,
-    SocietyID int REFERENCES Professional_Society(SocietyID) NOT NULL,
-    UserID int REFERENCES Users(UserID) NOT NULL
+    UserID int REFERENCES Users(UserID) NOT NULL,
+    SocietyID int REFERENCES Professional_Society(SocietyID) NOT NULL
 );
 
 CREATE TABLE Ballot_Initiative (
