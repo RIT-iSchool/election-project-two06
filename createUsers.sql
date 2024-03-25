@@ -90,12 +90,11 @@ CREATE TABLE Write_Ins (
     OfficeID int REFERENCES Office(OfficeID) NOT NULL
 );
 
+COPY Users FROM '/tmp/users.psv' DELIMITER '|' CSV HEADER;
 COPY Professional_Society FROM '/tmp/societies.psv' DELIMITER '|' CSV HEADER;
-COPY Vote FROM '/tmp/votes_final.psv' DELIMITER '|' CSV HEADER;
-COPY Candidate FROM '/tmp/candidates_final.psv' DELIMITER '|' CSV HEADER;
+COPY User_Society FROM '/tmp/user_soc.psv' DELIMITER '|' CSV HEADER;
 COPY Ballot FROM '/tmp/elections.psv' DELIMITER '|' CSV HEADER;
 COPY Office FROM '/tmp/office.psv' DELIMITER '|' CSV HEADER;
-COPY Users FROM '/tmp/admin_final.psv' DELIMITER '|' CSV HEADER;
-COPY Users FROM '/tmp/members_final.psv' DELIMITER '|' CSV HEADER;
-COPY Users FROM '/tmp/employees_final.psv' DELIMITER '|' CSV HEADER;
-COPY Users FROM '/tmp/officer_final.psv' DELIMITER '|' CSV HEADER;
+COPY Candidate FROM '/tmp/candidates.psv' DELIMITER '|' CSV HEADER;
+COPY Vote FROM '/tmp/votes.psv' DELIMITER '|' CSV HEADER;
+COPY Write_Ins FROM '/tmp/write_ins.psv' DELIMITER '|' CSV HEADER;
