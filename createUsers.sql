@@ -60,8 +60,8 @@ CREATE TABLE Candidate (
     AllowedVotes int,
     CFName text NOT NULL,
     CLName text NOT NULL,
-    C_Credentials text NOT NULL,
-    C_Bio text NOT NULL
+    C_Credentials text,
+    C_Bio text
 );
 
 CREATE TABLE Vote (
