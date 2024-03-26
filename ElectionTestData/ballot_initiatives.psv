@@ -1,0 +1,161 @@
+BallotInitID|SocietyID|Description|CreationDate
+1|1|Ban single-use plastic bags|2022-12-10
+2|1|Implement stricter emission standards|2022-11-15
+3|2|Fund public transportation improvements|2022-10-20
+4|2|Promote renewable energy usage|2022-09-25
+5|3|Expand access to affordable housing|2022-08-30
+6|3|Increase funding for public schools|2022-07-05
+7|4|Enact stricter gun control laws|2022-06-10
+8|4|Support small businesses through tax breaks|2022-05-15
+9|5|Implement universal healthcare coverage|2022-04-20
+10|5|Invest in infrastructure development|2022-03-25
+11|6|Protect endangered species habitats|2022-02-28
+12|6|Support mental health awareness programs|2022-01-05
+13|7|Promote gender equality in the workplace|2021-12-10
+14|7|Improve access to higher education|2021-11-15
+15|8|Enact measures to combat climate change|2021-10-20
+16|8|Expand access to affordable childcare|2021-09-25
+17|9|Improve mental health services for veterans|2021-08-30
+18|9|Invest in renewable energy research|2021-07-05
+19|10|Support affordable healthcare for seniors|2021-06-10
+20|10|Enact measures to reduce income inequality|2021-05-15
+21|11|Increase funding for arts and culture programs|2021-04-20
+22|11|Promote sustainable farming practices|2021-03-25
+23|12|Expand access to clean drinking water|2021-02-28
+24|12|Protect indigenous rights and lands|2021-01-05
+25|13|Improve access to technology in rural areas|2020-12-10
+26|13|Support initiatives to reduce homelessness|2020-11-15
+27|14|Invest in early childhood education programs|2020-10-20
+28|14|Promote fair trade practices|2020-09-25
+29|15|Improve mental health services for youth|2020-08-30
+30|15|Enact measures to combat opioid addiction|2020-07-05
+31|16|Support initiatives to reduce food waste|2020-06-10
+32|16|Invest in renewable energy infrastructure|2020-05-15
+33|17|Promote policies to reduce air pollution|2020-04-20
+34|17|Improve access to public parks and green spaces|2020-03-25
+35|18|Enact measures to protect LGBTQ+ rights|2020-02-28
+36|18|Support initiatives to combat homelessness|2020-01-05
+37|19|Invest in public transportation infrastructure|2019-12-10
+38|19|Promote initiatives to reduce healthcare costs|2019-11-15
+39|20|Improve access to mental health services|2019-10-20
+40|20|Enact measures to promote racial equality|2019-09-25
+41|21|Support initiatives to combat human trafficking|2019-08-30
+42|21|Invest in sustainable transportation options|2019-07-05
+43|22|Promote initiatives to reduce prison overcrowding|2019-06-10
+44|22|Improve access to affordable housing for seniors|2019-05-15
+45|23|Enact measures to protect animal rights|2019-04-20
+46|23|Support initiatives to promote renewable energy|2019-03-25
+47|24|Invest in education for sustainable development|2019-02-28
+48|24|Promote initiatives to reduce substance abuse|2019-01-05
+49|25|Improve access to healthcare in rural areas|2018-12-10
+50|25|Enact measures to support small-scale farmers|2018-11-15
+51|26|Support initiatives to reduce domestic violence|2018-10-20
+52|26|Invest in programs to combat youth unemployment|2018-09-25
+53|27|Promote initiatives to improve public safety|2018-08-30
+54|27|Improve access to quality childcare services|2018-07-05
+55|28|Enact measures to promote sustainable tourism|2018-06-10
+56|28|Support initiatives to combat elder abuse|2018-05-15
+57|29|Invest in renewable energy incentives|2018-04-20
+58|29|Promote initiatives to improve public health|2018-03-25
+59|30|Improve access to affordable mental healthcare|2018-02-28
+60|30|Enact measures to support community policing|2018-01-05
+61|31|Support initiatives to reduce youth homelessness|2017-12-10
+62|31|Invest in renewable energy education programs|2017-11-15
+63|32|Promote initiatives to reduce urban sprawl|2017-10-20
+64|32|Improve access to affordable healthcare for veterans|2017-09-25
+65|33|Enact measures to promote responsible consumption|2017-08-30
+66|33|Support initiatives to combat cyberbullying|2017-07-05
+67|34|Invest in renewable energy infrastructure projects|2017-06-10
+68|34|Promote initiatives to support minority-owned businesses|2017-05-15
+69|35|Improve access to affordable housing for low-income families|2017-04-20
+70|35|Enact measures to promote gender diversity in corporate leadership|2017-03-25
+71|36|Support initiatives to combat climate change denial|2017-02-28
+72|36|Invest in renewable energy storage technology|2017-01-05
+73|37|Promote initiatives to improve access to public transportation for people with disabilities|2016-12-10
+74|37|Improve access to mental health services for LGBTQ+ youth|2016-11-15
+75|38|Enact measures to support sustainable urban development|2016-10-20
+76|38|Support initiatives to reduce healthcare disparities|2016-09-25
+77|39|Invest in renewable energy workforce training programs|2016-08-30
+78|39|Promote initiatives to improve access to healthy food options in underserved communities|2016-07-05
+79|40|Improve access to affordable childcare for single parents|2016-06-10
+80|40|Enact measures to protect indigenous languages and cultures|2016-05-15
+81|41|Promote renewable energy usage in public buildings|2016-05-10
+82|41|Increase funding for mental health clinics|2016-06-15
+83|42|Support local small businesses through tax incentives|2016-07-20
+84|42|Enact measures to reduce traffic congestion|2016-08-25
+85|43|Implement universal basic income pilot program|2016-09-30
+86|43|Expand access to affordable childcare subsidies|2016-10-05
+87|44|Fund initiatives to combat homelessness among veterans|2016-11-10
+88|44|Promote renewable energy education in schools|2016-12-15
+89|45|Enact stricter regulations on carbon emissions|2015-01-20
+90|45|Support initiatives to promote biodiversity conservation|2015-02-25
+91|46|Invest in sustainable transportation infrastructure|2015-03-30
+92|46|Improve access to affordable housing for essential workers|2015-04-05
+93|47|Support initiatives to reduce income inequality|2015-05-10
+94|47|Promote initiatives to support minority-owned businesses|2015-06-15
+95|48|Enact measures to combat food deserts|2015-07-20
+96|48|Invest in green spaces in urban areas|2015-08-25
+97|49|Improve access to mental health services for LGBTQ+ individuals|2015-09-30
+98|49|Promote initiatives to reduce stigma around mental health|2015-10-05
+99|50|Support affordable housing development in high-cost areas|2015-11-10
+100|50|Enact measures to promote fair trade practices|2015-12-15
+101|51|Increase funding for public libraries|2014-01-20
+102|51|Promote initiatives to support immigrant integration|2014-02-25
+103|52|Invest in renewable energy storage technology|2014-03-30
+104|52|Promote initiatives to reduce plastic waste|2014-04-05
+105|53|Enact measures to combat youth unemployment|2014-05-10
+106|53|Support initiatives to promote entrepreneurship|2014-06-15
+107|54|Improve access to affordable healthcare for all|2014-07-20
+108|54|Fund initiatives to combat opioid addiction|2014-08-25
+109|55|Promote renewable energy incentives for businesses|2014-09-30
+110|55|Invest in green infrastructure projects|2014-10-05
+111|56|Support initiatives to combat domestic violence|2014-11-10
+112|56|Increase funding for women's shelters|2014-12-15
+113|57|Enact measures to promote affordable public transit|2013-01-20
+114|57|Improve access to public parks for communities of color|2013-02-25
+115|58|Invest in vocational training programs|2013-03-30
+116|58|Promote initiatives to support reforestation efforts|2013-04-05
+117|59|Enact measures to promote renewable energy adoption in households|2013-05-10
+118|59|Support initiatives to combat elder financial abuse|2013-06-15
+119|60|Fund initiatives to support arts and culture in underserved communities|2013-07-20
+120|60|Promote initiatives to reduce plastic pollution in oceans|2013-08-25
+121|61|Enact measures to protect LGBTQ+ rights in the workplace|2013-09-30
+122|61|Support initiatives to increase access to STEM education|2013-10-05
+123|62|Invest in mental health first aid training programs|2013-11-10
+124|62|Promote initiatives to support refugee resettlement|2013-12-15
+125|63|Enact measures to promote sustainable agriculture practices|2012-01-20
+126|63|Support initiatives to combat human trafficking|2012-02-25
+127|64|Fund initiatives to support affordable childcare for low-income families|2012-03-30
+128|64|Promote initiatives to improve access to affordable healthcare for immigrants|2012-04-05
+129|65|Invest in renewable energy infrastructure in rural areas|2012-05-10
+130|65|Enact measures to combat racial discrimination in housing|2012-06-15
+131|66|Support initiatives to increase access to clean drinking water|2012-07-20
+132|66|Promote initiatives to reduce air pollution in urban areas|2012-08-25
+133|67|Enact measures to support affordable public education|2012-09-30
+134|67|Invest in initiatives to combat cyberbullying|2012-10-05
+135|68|Fund initiatives to support affordable healthcare for single parents|2012-11-10
+136|68|Promote initiatives to support mental health in the workplace|2012-12-15
+137|69|Enact measures to protect indigenous lands and sovereignty|2011-01-20
+138|69|Support initiatives to promote renewable energy investment|2011-02-25
+139|70|Invest in green job creation|2011-03-30
+140|70|Promote initiatives to support sustainable fishing practices|2011-04-05
+141|71|Support initiatives to combat food insecurity|2011-05-10
+142|71|Enact measures to promote gender pay equity|2011-06-15
+143|72|Invest in renewable energy research and development|2011-07-20
+144|72|Promote initiatives to support mental health in schools|2011-08-25
+145|73|Fund initiatives to combat wildlife trafficking|2011-09-30
+146|73|Promote initiatives to support green transportation alternatives|2011-10-05
+147|74|Enact measures to promote affordable housing for artists|2011-11-10
+148|74|Support initiatives to combat climate change misinformation|2011-12-15
+149|75|Invest in renewable energy tax incentives|2010-01-20
+150|75|Promote initiatives to increase access to public transportation|2010-02-25
+151|76|Support initiatives to reduce prison recidivism rates|2010-03-30
+152|76|Enact measures to promote sustainable tourism practices|2010-04-05
+153|77|Fund initiatives to support affordable mental healthcare|2010-05-10
+154|77|Promote initiatives to support renewable energy startups|2010-06-15
+155|78|Invest in renewable energy workforce development programs|2010-07-20
+156|78|Support initiatives to combat substance abuse|2010-08-25
+157|79|Promote Community Gardens Initiative|2010-08-12
+158|79|Invest in Renewable Energy Tax Credits|2010-08-10
+159|80|Support Affordable Housing Construction Program|2010-08-15
+160|80|Enact Universal Pre-Kindergarten Access Act|2010-08-05
