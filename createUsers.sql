@@ -98,4 +98,5 @@ COPY Ballot FROM '/tmp/elections.psv' DELIMITER '|' CSV HEADER;
 COPY Office FROM '/tmp/office.psv' DELIMITER '|' CSV HEADER;
 COPY Candidate FROM '/tmp/candidates.psv' DELIMITER '|' CSV HEADER;
 COPY Vote FROM '/tmp/votes.psv' DELIMITER '|' CSV HEADER;
+COPY Ballot_Initiative_Vote FROM '/tmp/ballot_init_votes.psv' DELIMITER '|' CSV HEADER;
 COPY Write_Ins FROM '/tmp/write_ins.psv' DELIMITER '|' CSV HEADER;
