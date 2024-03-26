@@ -69,16 +69,16 @@ CREATE TABLE Vote (
     UserID int REFERENCES Users(UserID) NOT NULL,
     BallotID int REFERENCES Ballot(BallotID) NOT NULL,
     OfficeID int REFERENCES Office(OfficeID) NOT NULL,
-    CandidateID int REFERENCES Candidate(CandidateID) NOT NULL,
+    CandidateID int REFERENCES Candidate(CandidateID),
     Timestamp timestamp NOT NULL
 );
 
 CREATE TABLE Ballot_Initiative_Vote (
     VoteInitID int PRIMARY KEY NOT NULL GENERATED ALWAYS AS IDENTITY,
+    BallotInitID int REFERENCES Ballot_Initiative(BallotInitID) NOT NULL,
     UserID int REFERENCES Users(UserID) NOT NULL,
     Timestamp timestamp NOT NULL,
-    BallotInitID int REFERENCES Ballot_Initiative(BallotInitID) NOT NULL,
-    Choice boolean NOT NULL,
+    Choice boolean,
     Response text
 );
 
