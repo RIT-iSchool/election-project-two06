@@ -1,5 +1,4 @@
-
-
+const bcrypt = require('bcrypt');
 const express = require('express');
 const { Client } = require('pg');
 
@@ -16,6 +15,7 @@ const client = new Client({
 
 client.connect();
 
+// HTML, CSS, and JavaScript for the login page
 app.get('/', function(request, response, next) {
     response.send(`
         <!DOCTYPE html>
@@ -124,23 +124,38 @@ app.get('/', function(request, response, next) {
     `);
 });
 
-app.post('/', function(request, response, next) {
+// POST endpoint to handle login
+app.post('/', async function(request, response, next) {
     const { email, password } = request.body;
 
-    client.query('SELECT * FROM public."Users" WHERE "Email" = $1 AND "User_Password" = $2', [email, password], (err, res) => {
-        if (!err) {
-            if (res.rows.length > 0) {
+    try {
+        // Retrieve hashed password from the database using the email
+        const result = await client.query('SELECT "User_Password" FROM public."Users" WHERE "Email" = $1', [email]);
+
+        if (result.rows.length === 0) {
+            // User not found
+            response.json({ message: 'Invalid credentials' });
+            return;
+        }
+
+        const hashedPassword = result.rows[0].User_Password;
+
+        // Compare hashed password with plaintextPassword using bcrypt
+        bcrypt.compare(password, hashedPassword, function(err, result) {
+            if (result) {
+                // Passwords match, login successful
                 response.json({ message: 'Valid credentials' });
             } else {
+                // Passwords don't match
                 response.json({ message: 'Invalid credentials' });
             }
-        } else {
-            console.log(err.message);
-            response.status(500).json({ error: 'Internal Server Error' });
-        }
-    });
+        });
+    } catch (err) {
+        // Handle database error
+        console.error("Error retrieving user:", err);
+        response.status(500).json({ error: 'Internal Server Error' });
+    }
 });
-
 
 app.listen(2000, () => {
     console.log('Server is running on http://localhost:2000/');
