@@ -8,38 +8,42 @@ body {
 .container {
     max-width: 800px;
     margin: 20px auto;
-    padding: 0 20px;
+    padding: 20px;
+    box-sizing: border-box;
+    text-align: center; /* Center align the content */
 }
 
 h1 {
-    text-align: center;
-    padding-top: 200px;
+    padding-top: 100px;
 }
 
 .voting-options {
-    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
-.voting-options h2 {
-    padding-left: 10px;
+.voting-text {
+    margin-bottom: 10px; /* Add margin to create space between text and buttons */
+}
+
+.buttons {
+    display: flex;
+    flex-direction: row; /* Arrange buttons horizontally */
+    justify-content: center; /* Center-align buttons horizontally */
 }
 
 .option {
-    display: inline-block;
-    width: calc(30% - 20px);
+    padding: 10px 20px;
     margin: 10px;
-    background-color: #4caf50;
-    padding: 20px;
-    box-sizing: border-box;
+    border: none;
     border-radius: 5px;
-    text-align: center;
+    background-color: #4caf50;
+    color: #fff;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
 }
 
 .option:hover {
     background-color: #45a049;
-}   
-
-.option-label {
-    font-weight: bold;
-    color: white
 }

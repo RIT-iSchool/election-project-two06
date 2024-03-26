@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Voting Options for President</title>
+    <link rel="stylesheet" href="president.css">
+</head>
+<body>
+    <div class="container">
+        <h2>Voting options for Vice President</h2>
+        <div class="order">
+            <span>Select Order:</span>
+            <select id="orderSelect" onchange="sortCandidates()">
+                <option value="ascending">Ascending</option>
+                <option value="descending">Descending</option>
+            </select>
+        </div>
+        <div class="president-options" id="presidentOptions">
+            <div class="option">
+                <div class="option-image"><img src="./CandidatePhotos/Candidate1.jpg" alt="Image"></div>
+                <div class="option-name">Name 1</div>
+            </div>
+            <div class="option">
+                <div class="option-image"><img src="./CandidatePhotos/Candidate2.jpeg" alt="Image"></div>
+                <div class="option-name">Name 2</div>
+            </div>
+            <div class="option">
+                <div class="option-image"><img src="./CandidatePhotos/Candidate3.jpg" alt="Image"></div>
+                <div class="option-name">Name 3</div>
+            </div>
+            <div class="option">
+                <div class="option-image"><img src="./CandidatePhotos/Candidate4.jpeg" alt="Image"></div>
+                <div class="option-name">Name 4</div>
+            </div>
+            <div class="option">
+                <div class="option-image"><img src="./CandidatePhotos/Candidate5.jpeg" alt="Image"></div>
+                <div class="option-name">Name 5</div>
+            </div>
+        </div>
+        <div class="write-in">
+            <button class="write-in-fname">Write-in First Name</button>
+            <button class="write-in-lname">Write-in Last Name</button>
+        </div>
+        <div class="buttons">
+            <button type="button" onclick="goToPresidentPage()">Previous</button>
+            <button type="button" onclick="showVotesPopup()">Submit</button>
+            <button type="button" onclick="goToBallotInitiatives()">Skip to Ballot Initiatives</button>
+        </div>
+    </div>
+
+    <script>
+        function showVotesPopup() {
+            alert("Votes added.");
+        }
+
+        function goToPresidentPage() {
+            window.history.back();
+        }
+    </script>
+
+    <script src="main.js"></script>
+</body>
+</html>
