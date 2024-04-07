@@ -1,4 +1,4 @@
-initVoteID|BallotInitID|UserID|Timestamp|Choice|Response
+initVote ID|BallotInit ID|User ID|Timestamp|Choice|Response
 1|56|6364|2020-06-07 09:38:14|False|Opposes the initiative
 2|35|6232|2023-11-11 23:12:06|False|Opposes the initiative
 3|113|6007|2023-09-26 07:32:02||No decision made
