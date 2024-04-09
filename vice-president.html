@@ -17,30 +17,38 @@
             </select>
         </div>
         <div class="president-options" id="presidentOptions">
-            <div class="option">
-                <div class="option-image"><img src="./CandidatePhotos/Candidate1.jpg" alt="Image"></div>
+            <div class="option" onclick="toggleCandidateSelection(this)">
+                <div class="option-image"><img src="./Candidate1.jpg" alt="Image"></div>
                 <div class="option-name">Name 1</div>
             </div>
-            <div class="option">
-                <div class="option-image"><img src="./CandidatePhotos/Candidate2.jpeg" alt="Image"></div>
+            <div class="option" onclick="toggleCandidateSelection(this)">
+                <div class="option-image"><img src="./Candidate2.jpeg" alt="Image"></div>
                 <div class="option-name">Name 2</div>
             </div>
-            <div class="option">
-                <div class="option-image"><img src="./CandidatePhotos/Candidate3.jpg" alt="Image"></div>
+            <div class="option" onclick="toggleCandidateSelection(this)">
+                <div class="option-image"><img src="./Candidate3.jpg" alt="Image"></div>
                 <div class="option-name">Name 3</div>
             </div>
-            <div class="option">
-                <div class="option-image"><img src="./CandidatePhotos/Candidate4.jpeg" alt="Image"></div>
+            <div class="option" onclick="toggleCandidateSelection(this)">
+                <div class="option-image"><img src="./Candidate4.jpeg" alt="Image"></div>
                 <div class="option-name">Name 4</div>
             </div>
-            <div class="option">
-                <div class="option-image"><img src="./CandidatePhotos/Candidate5.jpeg" alt="Image"></div>
+            <div class="option" onclick="toggleCandidateSelection(this)">
+                <div class="option-image"><img src="./Candidate5.jpeg" alt="Image"></div>
                 <div class="option-name">Name 5</div>
             </div>
         </div>
         <div class="write-in">
-            <button class="write-in-fname">Write-in First Name</button>
-            <button class="write-in-lname">Write-in Last Name</button>
+            <button class="write-in-fname" onclick="showFirstTextBox()">Write-in First Name</button>
+            <div class="description-box" id="firstNameBox" style="display: none;">
+                <label for="writeInText">Enter First Name:</label>
+                <input type="text" id="writeInText">
+            </div>
+            <button class="write-in-lname" onclick="showLastTextBox()">Write-in Last Name</button>
+            <div class="description-box" id="lastNameBox" style="display: none;">
+                <label for="writeInText">Enter Last Name:</label>
+                <input type="text" id="writeInText">
+            </div>
         </div>
         <div class="buttons">
             <button type="button" onclick="goToPresidentPage()">Previous</button>
@@ -52,6 +60,20 @@
     <script>
         function showVotesPopup() {
             alert("Votes added.");
+        }
+
+        function toggleCandidateSelection(candidate) {
+            candidate.classList.toggle('selected');
+        }
+
+        function showFirstTextBox() {
+            var firstNameBox = document.getElementById('firstNameBox');
+            firstNameBox.style.display = 'block';
+        }
+
+        function showLastTextBox() {
+            var lastNameBox = document.getElementById('lastNameBox');
+            lastNameBox.style.display = 'block';
         }
 
         function goToPresidentPage() {

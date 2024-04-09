@@ -37,17 +37,26 @@
         <div class="buttons">
             <button type="button" onclick="goToVicePresidentPage()">Previous</button>
             <button type="button" onclick="showVotesPopup()">Submit</button>
-            <button type="button" onclick="showNoVotesPopup()">Skip</button>
+            <button type="button" onclick="confirmSkip()">Skip</button>
         </div>
     </div>
 
     <script>
         function showVotesPopup() {
             alert("Votes added.");
+            // Redirect to another page after showing the alert
+            window.location.href = "login.html";
+        }
+
+        function confirmSkip() {
+            if (confirm("Are you sure you want to skip?")) {
+                showNoVotesPopup();
+            }
         }
 
         function showNoVotesPopup() {
             alert("No votes added.");
+            window.location.href = "login.html";
         }
 
         function goToVicePresidentPage() {

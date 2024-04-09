@@ -39,13 +39,17 @@ h2 {
     box-sizing: border-box;
     border-radius: 5px;
     text-align: center;
-    color: white
+    color: white;
+    transition: background-color 0.3s ease; /* Adding transition for smooth hover effect */
+}
+
+.option:hover {
+    background-color: #45a049; /* Changing background color on hover */
 }
 
 .option-image img {
     max-width: 100%;
     height: auto;
-    color: white;
 }
 
 .write-in {
@@ -92,4 +96,53 @@ h2 {
 
 .buttons button:hover {
     background-color: #45a049;
+}
+
+.write-in {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+}
+
+.write-in button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    background-color: #4caf50;
+    color: #fff;
+    cursor: pointer;
+}
+
+.write-in button:focus {
+    outline: none;
+}
+
+.write-in button:hover {
+    background-color: #45a049;
+}
+
+.description-box {
+    margin-top: 20px;
+}
+
+.description-box label {
+    display: block;
+    margin-bottom: 5px;
+}
+
+.description-box input[type="text"] {
+    width: 100%;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    box-sizing: border-box;
+}
+
+.option.selected {
+    background-color: #075225; /* Changing background color when selected */
+}
+
+.option:hover {
+    background-color: #45a049; /* Changing background color on hover */
+    cursor: pointer; /* Change cursor to pointer on hover */
 }
