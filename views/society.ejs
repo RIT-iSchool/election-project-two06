@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Voting Page</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            box-sizing: border-box;
+            text-align: center; /* Center align the content */
+        }
+
+        h1 {
+            padding-top: 100px;
+        }
+
+        .voting-options {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .voting-text {
+            margin-bottom: 10px; /* Add margin to create space between text and buttons */
+        }
+
+        .buttons {
+            display: flex;
+            flex-direction: row; /* Arrange buttons horizontally */
+            justify-content: center; /* Center-align buttons horizontally */
+        }
+
+        .option {
+            padding: 10px 20px;
+            margin: 10px;
+            border: none;
+            border-radius: 5px;
+            background-color: #4caf50;
+            color: #fff;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .option:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Welcome to Society Name</h1>
+        <div class="voting-options">
+            <div class="voting-text">Voting Options</div>
+            <div class="buttons">
+                <button class="option president" onclick="goToPresidentPage()">President</button>
+                <button class="option vice-president" onclick="goToVicePresidentPage()">Vice-President</button>
+                <button class="option ballot-initiatives" onclick="goToBallotInitiatives()">Ballot Initiatives</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="main.js"></script>
+
+</body>
+</html>

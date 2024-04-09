@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ballot Initiative Options</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 0 20px;
+        }
+
+        h2 {
+            text-align: center;
+            padding-top: 150px;
+        }
+
+        .ballot-options {
+            margin-top: 20px;
+        }
+
+        .option {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .option input[type="checkbox"] {
+            margin-right: 10px; /* Adjusted margin to separate checkbox from description */
+            width: 30px; /* Increase size of checkboxes */
+            height: 30px; /* Increase size of checkboxes */
+        }
+
+        .option-description {
+            flex: 1;
+            background-color: #fff;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .suggestions {
+            margin-top: 20px;
+        }
+
+        .suggestions label {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .suggestions input[type="text"] {
+            width: 90%;
+            padding: 15px; /* Increased padding for text field */
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .buttons {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .buttons button {
+            padding: 10px 20px;
+            margin: 0 5px;
+            border: none;
+            border-radius: 5px;
+            background-color: #4caf50;
+            color: #fff;
+            cursor: pointer;
+        }
+
+        .buttons button:focus {
+            outline: none;
+        }
+
+        .buttons button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Ballot Initiative Options</h2>
+        <div class="order">
+            <span>Select Order:</span>
+            <select id="orderSelect" onchange="sortCandidates()">
+                <option value="ascending">Newest to Oldest</option>
+                <option value="descending">Oldest to Newest</option>
+            </select>
+        </div>
+        <div class="ballot-options">
+            <div class="option">
+                <div class="option-description">Description 1...</div>
+                <input type="checkbox">
+            </div>
+            <div class="option">
+                <div class="option-description">Description 2...</div>
+                <input type="checkbox">
+            </div>
+            <div class="option">
+                <div class="option-description">Description 3...</div>
+                <input type="checkbox">
+            </div>
+        </div>
+        <div class="suggestions">
+            <label for="suggestion">Suggestions</label>
+            <input type="text" id="suggestion" name="suggestion">
+        </div>
+        <div class="buttons">
+            <button type="button" onclick="goToVicePresidentPage()">Previous</button>
+            <button type="button" onclick="showVotesPopup()">Submit</button>
+            <button type="button" onclick="confirmSkip()">Skip</button>
+        </div>
+    </div>
+
+    <script>
+        function showVotesPopup() {
+            alert("Votes added.");
+            // Redirect to another page after showing the alert
+            window.location.href = "login.html";
+        }
+
+        function confirmSkip() {
+            if (confirm("Are you sure you want to skip?")) {
+                showNoVotesPopup();
+            }
+        }
+
+        function showNoVotesPopup() {
+            alert("No votes added.");
+            window.location.href = "login.html";
+        }
+
+        function goToVicePresidentPage() {
+            window.history.back();
+        }
+
+    </script>
+
+    <script src="main.js"></script>
+
+</body>
+</html>
