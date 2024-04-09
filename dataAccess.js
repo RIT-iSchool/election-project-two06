@@ -10,21 +10,12 @@ const client = new Client({
 client.connect();
 
 async function getUserByEmail(email) {
-    let client;
     try {
-        client = await Pool.connect();
-        await client.query('BEGIN');
-        const res = await client.query('SELECT * FROM public."users" WHERE "email" = $1 FOR UPDATE', [email]);
-        const user = res.rows[0];
-
-        await client.query('COMMIT');
-        return user;
+        const res = await client.query('SELECT * FROM public."users" WHERE "email" = $1', [email]);
+        return res.rows[0];
     } catch (err) {
-        if (client) await client.query('ROLLBACK');
         console.error(err.message);
         throw err;
-    } finally {
-        if (client) client.release();
     }
 }
 
