@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Voting Dashboard</title>
+    <link rel="stylesheet" href="voting_status.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Voting Dashboard</h1>
+        <div class="voting-stats">
+            <h2>Voting Status</h2>
+            <p>Percentage of members who have voted: <span id="votingPercentage">0%</span></p>
+        </div>
+        <div class="search-user">
+            <h2>Search User</h2>
+            <input type="text" id="searchUserInput" placeholder="Enter user name...">
+            <button id="searchUserButton">Search</button>
+        </div>
+        <div class="user-table">
+            <h2>User Table</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>First Name</th>
+                        <th>Last Name</th>
+                        <th>Email</th>
+                        <th>Voting Status</th>
+                    </tr>
+                </thead>
+                <tbody id="userTableBody">
+                    <!-- Table rows will be dynamically added here -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
