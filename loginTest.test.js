@@ -8,7 +8,7 @@ const { verifyUser } = require('./businessLogic');
 jest.mock('pg', () => { 
     const mPool = {
         connect: jest.fn().mockResolvedValue({
-            query: jest.fn().mockResolvedValue({ rows: [{ id: 1, email: 'user@example.com', password: 'hashedpassword' }] }),
+            query: jest.fn().mockResolvedValue({ rows: [{ id: 1, email: 'starbreeze10@gmail.com', password: '$2b$10$wVVGrYdhtuRQf43v.LgoQOEF6xOgXq5Ai5Yl0zjPoOAPo8F7BD3Wm' }] }),
             release: jest.fn(),
         }),
     };
@@ -31,24 +31,24 @@ describe('Data Access Layer', () => {
     });
 
     test('getUserByEmail returns user when found', async () => {
-        const user = { id: 1, email: 'user@example.com', password: 'hashedpassword' };
+        const user = { id: 1, email: 'starbreeze10@gmail.com', password: '$2b$10$wVVGrYdhtuRQf43v.LgoQOEF6xOgXq5Ai5Yl0zjPoOAPo8F7BD3Wm' };
         pool.connect().then(client => client.query.mockResolvedValue({ rows: [user] }));
 
-        const result = await getUserByEmail('user@example.com');
+        const result = await getUserByEmail('starbreeze10@gmail.com');
         expect(result).toEqual(user);
     });
 
     test('getUserByEmail returns undefined when user not found', async () => {
         pool.connect().then(client => client.query.mockResolvedValue({ rows: [] }));
 
-        const result = await getUserByEmail('notfound@example.com');
+        const result = await getUserByEmail('starbreeze11@gmail.com');
         expect(result).toBeUndefined();
     });
 
     test('getUserByEmail throws error on database issue', async () => {
         pool.connect().then(client => client.query.mockRejectedValue(new Error('Database error')));
 
-        await expect(getUserByEmail('error@example.com')).rejects.toThrow('Database error');
+        await expect(getUserByEmail('starbreeze12@gmail.com')).rejects.toThrow('Database error');
     });
 });
 
@@ -60,30 +60,30 @@ describe('Business Logic Layer', () => {
 
     test('verifyUser returns true for valid credentials', async () => {
         getUserByEmail.mockResolvedValue({
-            email: 'user@example.com',
-            password: 'hashedpassword'
+            email: 'starbreeze10@gmail.com',
+            password: '$2b$10$wVVGrYdhtuRQf43v.LgoQOEF6xOgXq5Ai5Yl0zjPoOAPo8F7BD3Wm'
         });
         bcrypt.compare.mockResolvedValue(true);
 
-        const result = await verifyUser('user@example.com', 'password');
+        const result = await verifyUser('starbreeze10@gmail.com', 'Oi9D4Tve');
         expect(result).toEqual({ valid: true, message: 'Valid credentials' });
     });
 
     test('verifyUser returns false for invalid credentials', async () => {
         getUserByEmail.mockResolvedValue({
-            email: 'user@example.com',
-            password: 'hashedpassword'
+            email: 'starbreeze10@gmail.com',
+            password: '$2b$10$wVVGrYdhtuRQf43v.LgoQOEF6xOgXq5Ai5Yl0zjPoOAPo8F7BD3Wm'
         });
         bcrypt.compare.mockResolvedValue(false);
 
-        const result = await verifyUser('user@example.com', 'wrongpassword');
+        const result = await verifyUser('starbreeze10@gmail.com', 'Oi9D4TvE');
         expect(result).toEqual({ valid: false, message: 'Invalid credentials' });
     });
 
     test('verifyUser returns false when user not found', async () => {
         getUserByEmail.mockResolvedValue(undefined);
 
-        const result = await verifyUser('notfound@example.com', 'password');
+        const result = await verifyUser('starbreeze11@gmail.com', 'Oi9D4Tve');
         expect(result).toEqual({ valid: false, message: 'User not found' });
     });
 });
@@ -100,7 +100,7 @@ describe('Presentation Layer', () => {
         verifyUser.mockResolvedValue({ valid: true, message: 'Valid credentials' });
         const response = await request(app)
             .post('/')
-            .send('email=user@example.com&password=password');
+            .send('email=starbreeze10@gmail.com&password=Oi9D4Tve');
         
         expect(response.statusCode).toBe(200);
         expect(response.body).toEqual({ message: 'Valid credentials' });
@@ -110,7 +110,7 @@ describe('Presentation Layer', () => {
         verifyUser.mockResolvedValue({ valid: false, message: 'Invalid credentials' });
         const response = await request(app)
             .post('/')
-            .send('email=user@example.com&password=wrongpassword');
+            .send('email=starbreeze10@gmail.com&password=Oi9D4TvE');
         
         expect(response.statusCode).toBe(200);
         expect(response.body).toEqual({ message: 'Invalid credentials' });
@@ -120,7 +120,7 @@ describe('Presentation Layer', () => {
         verifyUser.mockRejectedValue(new Error('Internal Server Error'));
         const response = await request(app)
             .post('/')
-            .send('email=user@example.com&password=password');
+            .send('email=starbreeze10@gmail.com&password=Oi9D4Tve');
         
         expect(response.statusCode).toBe(500);
         expect(response.body).toEqual({ error: 'Internal Server Error' });

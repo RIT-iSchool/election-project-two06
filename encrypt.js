@@ -6,7 +6,7 @@ async function encryptPasswords() {
         host: "localhost",
         user: "postgres",
         port: 5432,
-        password: "student", 
+        password: "sass", 
         database: "postgres" 
     });
 
