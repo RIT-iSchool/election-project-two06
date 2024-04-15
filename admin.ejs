@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Page</title>
+</head>
+<body>
+    <h1>Welcome to the Admin Page</h1>
+    <h2>User Management</h2>
+    <!-- Add user management functionalities -->
+    <ul>
+        <% users.forEach(user => { %>
+            <li><%= user.name %> - <%= user.email %> - <%= user.role %></li>
+            <!-- Add options to manage users (edit, delete, change role) -->
+        <% }); %>
+    </ul>
+    <h2>Election Management</h2>
+    <!-- Add election management functionalities -->
+    <ul>
+        <% elections.forEach(election => { %>
+            <li><%= election.title %> - <%= election.description %> - <%= election.status %></li>
+            <!-- Add options to manage elections (edit, delete, view results) -->
+        <% }); %>
+    </ul>
+    <!-- Add navigation links -->
+    <a href="/profile">Profile</a> | <a href="/logout">Logout</a>
+</body>
+</html>

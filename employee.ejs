@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Employee Page</title>
+</head>
+<body>
+    <h1>Welcome to the Employee Page</h1>
+    <h2>Create New Election</h2>
+    <form action="/create-election" method="post">
+        <!-- Add input fields for election details -->
+        <label for="electionTitle">Election Title:</label>
+        <input type="text" id="electionTitle" name="electionTitle"><br><br>
+        <label for="description">Description:</label>
+        <textarea id="description" name="description"></textarea><br><br>
+        <!-- Add more input fields as needed -->
+        <button type="submit">Create Election</button>
+    </form>
+    <h2>My Elections</h2>
+    <ul>
+        <% elections.forEach(election => { %>
+            <li><%= election.title %> - <%= election.description %></li>
+            <!-- Add options to manage elections (edit, delete) -->
+        <% }); %>
+    </ul>
+    <!-- Add navigation links -->
+    <a href="/profile">Profile</a> | <a href="/logout">Logout</a>
+</body>
+</html>
