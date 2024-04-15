@@ -17,12 +17,7 @@ app.post('/', async function(request, response, next) {
 
     try {
         const result = await verifyUser(email, password);
-        if (result.valid) {
-            // Redirect based on the result
-            response.redirect(result.redirect);
-        } else {
-            response.json({ message: result.message });
-        }
+        response.json({ message: result.message });
     } catch (err) {
         console.error(err);
         response.status(500).json({ error: 'Internal Server Error' });

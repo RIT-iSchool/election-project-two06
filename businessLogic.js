@@ -1,5 +1,5 @@
 const bcrypt = require('bcrypt');
-const { getUserByEmail, getUserRole } = require('./dataAccess');
+const { getUserByEmail } = require('./dataAccess');
 
 async function verifyUser(email, password) {
     const user = await getUserByEmail(email);
@@ -9,25 +9,7 @@ async function verifyUser(email, password) {
 
     const match = await bcrypt.compare(password, user.password);
     if (match) {
-        // Retrieve user role
-        const role = await getUserRole(email);
-
-        // Determine redirection based on role
-        let redirectUrl = '/';
-        switch (role) {
-            case 'member':
-            case 'officer':
-                redirectUrl = '/voting-page';
-                break;
-            case 'employee':
-                redirectUrl = '/employee-page';
-                break;
-            case 'admin':
-                redirectUrl = '/admin-page';
-                break;
-        }
-
-        return { valid: true, message: 'Valid credentials', redirect: redirectUrl };
+        return { valid: true, message: 'Valid credentials' };
     } else {
         return { valid: false, message: 'Invalid credentials' };
     }
