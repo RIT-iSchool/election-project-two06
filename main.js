@@ -31,3 +31,37 @@ function goToPresidentPage() {
 function goToVicePresidentPage() {
     window.location.href = "vice-president.html";
 }
+
+// soc_assigned page
+
+function goToSoc1() {
+    window.location.href = "";
+}
+
+function goToSoc2() {
+    window.location.href = "";
+}
+
+function goToSoc3() {
+    window.location.href = "";
+}
+
+// employee_create page
+
+function goToBallot() {
+    window.location.href = "create_ballot.html";
+}
+
+function goToBallotInitiative() {
+    window.location.href = "create_ballotinitiative.html";
+}
+
+// create_ballot page
+
+function goToCreateBallot() {
+    window.location.href = "ballot_info.html";
+}
+
+function goToEditBallot() {
+    window.location.href = "";
+}
