@@ -35,15 +35,15 @@ function goToVicePresidentPage() {
 // soc_assigned page
 
 function goToSoc1() {
-    window.location.href = "";
+    window.location.href = "employee_create.html";
 }
 
 function goToSoc2() {
-    window.location.href = "";
+    window.location.href = "employee_create.html";
 }
 
 function goToSoc3() {
-    window.location.href = "";
+    window.location.href = "employee_create.html";
 }
 
 // employee_create page
@@ -53,7 +53,7 @@ function goToBallot() {
 }
 
 function goToBallotInitiative() {
-    window.location.href = "create_ballotinitiative.html";
+    window.location.href = "create_ballotinit.html";
 }
 
 // create_ballot page
@@ -64,4 +64,12 @@ function goToCreateBallot() {
 
 function goToEditBallot() {
     window.location.href = "";
+}
+
+function goToCreateInitBallot() {
+    window.location.href = "ballotinit_info.html";
+}
+
+function goToElectionResults() {
+    window.location.href = "election_results_employee.html";
 }
