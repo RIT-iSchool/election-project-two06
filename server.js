@@ -8,7 +8,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.static(__dirname));
 
 app.get('/society', function(request, response) {
-    response.sendFile(path.join(__dirname, 'society.html'));
+    response.sendFile(path.join(__dirname, 'html_files/society.html'));
 });
 
 app.get('/', function(request, response) {
