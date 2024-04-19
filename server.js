@@ -12,7 +12,7 @@ app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
 app.get('/society', function(request, response) {
-    response.sendFile(path.join(__dirname, 'html_files/society.html'));
+    response.render('society');
 });
 
 app.get('/', function(request, response) {
