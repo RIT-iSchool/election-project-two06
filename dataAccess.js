@@ -19,13 +19,30 @@ async function connectToDatabase() {
 
 async function getUserByEmail(email) {
     try {
-        const result = await client.query('SELECT "password", "usertype" FROM public."users" WHERE "email" = $1', [email]);
+        const result = await client.query('SELECT "userid", "password", "usertype" FROM public."users" WHERE "email" = $1', [email]);
         return result.rows.length > 0 ? result.rows[0] : null;
     } catch (error) {
         console.error("Error retrieving user:", error);
         throw error;
     }
 }
+async function getSocietyNameByUserId(userId) {
+    try {
+        const query = `
+            SELECT ps."societyname"
+            FROM public."user_society" us
+            JOIN public."professional_society" ps ON us."societyid" = ps."societyid"
+            WHERE us."userid" = $1;
+        `;
+        const result = await client.query(query, [userId]);
+        console.log(result);
+        return result.rows.length > 0 ? result.rows[0].societyname : null;
+    } catch (error) {
+        console.error("Error retrieving society name:", error);
+        throw error;
+    }
+}
 
-module.exports = { connectToDatabase, getUserByEmail };
+
+module.exports = { connectToDatabase, getUserByEmail, getSocietyNameByUserId };
 
