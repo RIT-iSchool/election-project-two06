@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit User Accounts</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 60px 20px;
+        }
+
+        h1, h2 {
+            text-align: center;
+        }
+
+        .search-user {
+            margin-bottom: 20px;
+        }
+
+        .search-user input[type="text"] {
+            padding: 8px;
+            width: 70%;
+            margin-right: 10px;
+        }
+
+        .user-table table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .user-table th, .user-table td {
+            padding: 10px;
+            border: 1px solid #ccc;
+        }
+
+        .user-table th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+        }
+
+        .user-table tbody tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        .user-table tbody tr:hover {
+            background-color: #ddd;
+        }
+
+        button {
+            padding: 8px 15px;
+            border: none;
+            background-color: #4caf50;
+            color: #fff;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        /* Style for edit and delete symbols */
+        .action-icons {
+            display: flex;
+            justify-content: center;
+        }
+
+        .edit-symbol,
+        .delete-symbol {
+            cursor: pointer;
+            margin: 0 5px;
+        }
+
+        /* Style for Create User button */
+        .createUserButton {
+            position: absolute;
+            top: 70px;
+            right: 350px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <button class="createUserButton" onclick="goToCreateUser()">Create User Accounts</button>
+        <div class="search-user">
+            <h2>Search User</h2>
+            <input type="text" id="searchUserInput" placeholder="Enter user name...">
+            <button id="searchUserButton">Search</button>
+        </div>
+        <div class="user-table">
+            <h2>User Table</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>First Name</th>
+                        <th>Last Name</th>
+                        <th>Email</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody id="userTableBody">
+                    <!-- Table rows will be dynamically added here -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+
+        function goToCreateUser() {
+            window.location.href = "user_info.html";
+        }
+
+        // Sample user data
+        const userData = [
+            { firstName: 'John', lastName: 'Doe', email: 'john@example.com' },
+            { firstName: 'Jane', lastName: 'Doe', email: 'jane@example.com' },
+            // Add more user data as needed
+        ];
+
+        // Function to populate the user table
+        function populateUserTable(users) {
+            const tableBody = document.getElementById('userTableBody');
+            tableBody.innerHTML = ''; // Clear previous content
+
+            users.forEach(user => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${user.firstName}</td>
+                    <td>${user.lastName}</td>
+                    <td>${user.email}</td>
+                    <td class="action-icons">
+                        <span class="edit-symbol">✎</span>
+                        <span class="delete-symbol">❌</span>
+                    </td>
+                `;
+                tableBody.appendChild(row);
+
+                // Add event listeners for edit and delete symbols
+                const editSymbol = row.querySelector('.edit-symbol');
+                editSymbol.addEventListener('click', function() {
+                    // Handle edit functionality here
+                    console.log('Edit clicked for user:', user);
+                });
+
+                const deleteSymbol = row.querySelector('.delete-symbol');
+                deleteSymbol.addEventListener('click', function() {
+                    // Handle delete functionality here
+                    console.log('Delete clicked for user:', user);
+                });
+            });
+        }
+
+        // Function to filter user data based on search input
+        function filterUserData(searchText) {
+            const filteredUsers = userData.filter(user => {
+                const fullName = `${user.firstName} ${user.lastName}`;
+                return fullName.toLowerCase().includes(searchText.toLowerCase());
+            });
+            populateUserTable(filteredUsers);
+        }
+
+        // Event listener for search button click
+        document.getElementById('searchUserButton').addEventListener('click', function () {
+            const searchText = document.getElementById('searchUserInput').value.trim();
+            filterUserData(searchText);
+        });
+
+        // Initial population of user table with all data
+        populateUserTable(userData);
+    </script>
+</body>
+</html>
