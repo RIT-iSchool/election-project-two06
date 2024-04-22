@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Options Page</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            box-sizing: border-box;
+            text-align: center;
+        }
+
+        /* h1 {
+            padding-top: 100px;
+        } */
+
+        .buttons {
+            display: flex;
+            justify-content: center;
+            padding-top: 250px;
+        }
+
+        .option {
+            padding: 10px 20px;
+            margin: 0 10px;
+            border: none;
+            border-radius: 5px;
+            background-color: #4caf50;
+            color: #fff;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .option:focus {
+            outline: none;
+        }
+
+        .option:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- <h1>Create/Edit Ballots</h1> -->
+            <div class="buttons">
+                <button class="option" onclick="goToCreateBallot()">Create New Ballot</button>
+                <button class="option" onclick="goToEditBallot()">Edit Ballot</button>
+                <button class="option" onclick="goToCreateUser()">Create User Accounts</button>
+                <button class="option" onclick="goToEditUser()">Edit User Accounts</button>
+                <button class="option" onclick="goToGenerateReports()">Generate Reports</button>
+                <button class="option" onclick="goToElectionResults()">Election Results</button>
+            </div>
+        </div>
+    <div>
+
+    <script>
+        function goToCreateBallot() {
+            window.location.href = "ballot_info.html";
+        }
+
+        function goToEditBallot() {
+            window.location.href = "";
+        }
+
+        function goToCreateUser() {
+            window.location.href = "user_info.html";
+        }
+
+        function goToEditUser() {
+            window.location.href = "edit_user.html";
+        }
+
+        function goToElectionResults() {
+            window.location.href = "election_results_employee.html";
+        }
+
+        function goToGenerateReports() {
+            window.location.href = "report_generate.html";
+        }
+
+    </script>
+
+</body>
+</html>

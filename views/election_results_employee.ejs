@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Election Results</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 0 20px;
+        }
+
+        h1, h2 {
+            text-align: center;
+        }
+
+        .voting-stats {
+            margin-bottom: 20px;
+        }
+
+        .voting-stats h2 {
+            margin-bottom: 10px;
+        }
+
+        .voting-stats p {
+            margin: 0;
+        }
+
+        .search-user {
+            margin-bottom: 20px;
+        }
+
+        .search-user input[type="text"] {
+            padding: 8px;
+            width: 70%;
+            margin-right: 10px;
+        }
+
+        .user-table table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .user-table th, .user-table td {
+            padding: 10px;
+            border: 1px solid #ccc;
+        }
+
+        .user-table th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+        }
+
+        .user-table tbody tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        .user-table tbody tr:hover {
+            background-color: #ddd;
+        }
+
+        button {
+            padding: 8px 15px;
+            border: none;
+            background-color: #4caf50;
+            color: #fff;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        #votingPercentage {
+            font-weight: bold;
+            color: #4caf50;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Voting Dashboard</h1>
+        <div class="voting-stats">
+            <h2>Voting Status</h2>
+            <p>Percentage of members who have voted: <span id="votingPercentage">0%</span></p>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
