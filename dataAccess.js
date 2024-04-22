@@ -50,7 +50,8 @@ async function getSocietyOfficesByUserId(userId) {
             JOIN public."ballot" b ON o."ballotid" = b."ballotid"
             JOIN public."professional_society" ps ON b."societyid" = ps."societyid"
             JOIN public."user_society" us ON ps."societyid" = us."societyid"
-            WHERE us."userid" = $1;
+            WHERE us."userid" = $1
+            AND CURRENT_DATE BETWEEN b."startdate" AND b."enddate";
         `;
         const result = await client.query(query, [userId]);
         return result.rows.map(row => row.officename);

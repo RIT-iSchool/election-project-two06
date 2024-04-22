@@ -34,10 +34,16 @@ app.get('/society', isAuthenticated, async function(request, response) {
         const societyname = await getSocietyNameByUserId(userId);
         // Get the office names associated with the user's society
         const offices = await getSocietyOfficesByUserId(userId);
-        // Render the 'society.ejs' template with the society name
-        response.render('society', { name: societyname, offices: offices });
+
+        if (offices.length === 0) {
+            // No valid ballots are found, so render a different page or pass a message
+            response.render('noRunningBallots', { name: societyname }); // You need to create this EJS template
+        } else {
+            // Render the 'society.ejs' template with the society name and offices
+            response.render('society', { name: societyname, offices: offices });
+        }
     } catch (error) {
-        console.error("Error retrieving society name:", error);
+        console.error("Error on society route:", error);
         response.status(500).send('Internal Server Error');
     }
 });
