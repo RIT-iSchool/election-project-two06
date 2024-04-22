@@ -62,9 +62,9 @@
         <div class="voting-options">
             <div class="voting-text">Voting Options</div>
             <div class="buttons">
-                <button class="option president" onclick="goToPresidentPage()">President</button>
-                <button class="option vice-president" onclick="goToVicePresidentPage()">Vice-President</button>
-                <button class="option ballot-initiatives" onclick="goToBallotInitiatives()">Ballot Initiatives</button>
+                <% offices.forEach(function(office) { %>
+                    <button class="option" onclick="goToOffice('<%= office %>')"><%= office %></button>
+                <% }); %>
             </div>
         </div>
         <button onclick="logout()">Logout</button>

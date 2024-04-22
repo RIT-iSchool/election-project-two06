@@ -35,7 +35,6 @@ async function getSocietyNameByUserId(userId) {
             WHERE us."userid" = $1;
         `;
         const result = await client.query(query, [userId]);
-        console.log(result);
         return result.rows.length > 0 ? result.rows[0].societyname : null;
     } catch (error) {
         console.error("Error retrieving society name:", error);
@@ -43,6 +42,24 @@ async function getSocietyNameByUserId(userId) {
     }
 }
 
+async function getSocietyOfficesByUserId(userId) {
+    try {
+        const query = `
+            SELECT o."officename"
+            FROM public."office" o
+            JOIN public."ballot" b ON o."ballotid" = b."ballotid"
+            JOIN public."professional_society" ps ON b."societyid" = ps."societyid"
+            JOIN public."user_society" us ON ps."societyid" = us."societyid"
+            WHERE us."userid" = $1;
+        `;
+        const result = await client.query(query, [userId]);
+        return result.rows.map(row => row.officename);
+    } catch (error) {
+        console.error("Error retrieving society offices:", error);
+        throw error;
+    }
+}
 
-module.exports = { connectToDatabase, getUserByEmail, getSocietyNameByUserId };
+
+module.exports = { connectToDatabase, getUserByEmail, getSocietyNameByUserId, getSocietyOfficesByUserId };
 

@@ -1,7 +1,7 @@
 const express = require('express');
 const session = require('express-session');
 const path = require('path');
-const { connectToDatabase, getUserByEmail, getSocietyNameByUserId } = require('./dataAccess');
+const { connectToDatabase, getUserByEmail, getSocietyNameByUserId, getSocietyOfficesByUserId } = require('./dataAccess');
 const { loginUser } = require('./businessLogic');
 
 const app = express();
@@ -32,9 +32,10 @@ app.get('/society', isAuthenticated, async function(request, response) {
         const userId = request.session.userId;
         // Get the society name based on the user's ID
         const societyname = await getSocietyNameByUserId(userId);
+        // Get the office names associated with the user's society
+        const offices = await getSocietyOfficesByUserId(userId);
         // Render the 'society.ejs' template with the society name
-        console.log(societyname);
-        response.render('society', { name: societyname });
+        response.render('society', { name: societyname, offices: offices });
     } catch (error) {
         console.error("Error retrieving society name:", error);
         response.status(500).send('Internal Server Error');
