@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Voting Options for President and Vice President</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 0 20px;
+        }
+
+        h2 {
+            text-align: center;
+            padding-top: 150px;
+        }
+
+        .order {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .order select {
+            margin-left: 10px;
+        }
+
+        .president-options {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;    
+        }
+
+        .option {
+            width: calc(20% - 20px);
+            margin-bottom: 20px;
+            background-color: #4caf50;
+            padding: 10px;
+            box-sizing: border-box;
+            border-radius: 5px;
+            text-align: center;
+            color: white;
+            transition: background-color 0.3s ease; /* Adding transition for smooth hover effect */
+        }
+
+        .option:hover {
+            background-color: #45a049; /* Changing background color on hover */
+        }
+
+        .option-image img {
+            max-width: 100%;
+            height: auto;
+        }
+
+        .write-in {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+
+        .write-in button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            background-color: #4caf50;
+            color: #fff;
+            cursor: pointer;
+        }
+
+        .write-in button:focus {
+            outline: none;
+        }
+
+        .write-in button:hover {
+            background-color: #45a049;
+        }
+
+        .buttons {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .buttons button {
+            padding: 10px 20px;
+            margin: 0 5px;
+            border: none;
+            border-radius: 5px;
+            background-color: #4caf50;
+            color: #fff;
+            cursor: pointer;
+        }
+
+        .buttons button:focus {
+            outline: none;
+        }
+
+        .buttons button:hover {
+            background-color: #45a049;
+        }
+
+        .write-in {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+
+        .write-in button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            background-color: #4caf50;
+            color: #fff;
+            cursor: pointer;
+        }
+
+        .write-in button:focus {
+            outline: none;
+        }
+
+        .write-in button:hover {
+            background-color: #45a049;
+        }
+
+        .description-box {
+            margin-top: 20px;
+        }
+
+        .description-box label {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .description-box input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            box-sizing: border-box;
+        }
+
+        .option.selected {
+            background-color: #075225; /* Changing background color when selected */
+        }
+
+        .option:hover {
+            background-color: #45a049; /* Changing background color on hover */
+            cursor: pointer; /* Change cursor to pointer on hover */
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Voting options for President</h2>
+        <div class="order">
+            <span>Select Order:</span>
+            <select id="orderSelectPresident" onchange="sortCandidatesPresident()">
+                <option value="ascending">Ascending</option>
+                <option value="descending">Descending</option>
+            </select>
+        </div>
+        <div class="president-options" id="presidentOptions">
+            <!-- President options go here -->
+            <div class="president-options" id="presidentOptions">
+                <div class="option" onclick="toggleCandidateSelection(this)">
+                    <div class="option-image"><img src="./Candidate1.jpg" alt="Image"></div>
+                    <div class="option-name">Name 1</div>
+                </div>
+                <div class="option" onclick="toggleCandidateSelection(this)">
+                    <div class="option-image"><img src="./Candidate2.jpeg" alt="Image"></div>
+                    <div class="option-name">Name 2</div>
+                </div>
+                <div class="option" onclick="toggleCandidateSelection(this)">
+                    <div class="option-image"><img src="./Candidate3.jpg" alt="Image"></div>
+                    <div class="option-name">Name 3</div>
+                </div>
+                <div class="option" onclick="toggleCandidateSelection(this)">
+                    <div class="option-image"><img src="./Candidate4.jpeg" alt="Image"></div>
+                    <div class="option-name">Name 4</div>
+                </div>
+                <div class="option" onclick="toggleCandidateSelection(this)">
+                    <div class="option-image"><img src="./Candidate5.jpeg" alt="Image"></div>
+                    <div class="option-name">Name 5</div>
+                </div>
+        </div>
+        <!-- President write-in and buttons -->
+        <div class="write-in">
+            <button class="write-in-fname" onclick="showFirstTextBoxPresident()">Write-in First Name</button>
+            <div class="description-box" id="firstNameBoxPresident" style="display: none;">
+                <label for="writeInText">Enter First Name:</label>
+                <input type="text" id="writeInTextPresident">
+            </div>
+            <button class="write-in-lname" onclick="showLastTextBoxPresident()">Write-in Last Name</button>
+            <div class="description-box" id="lastNameBoxPresident" style="display: none;">
+                <label for="writeInText">Enter Last Name:</label>
+                <input type="text" id="writeInTextPresident">
+            </div>
+        </div>
+        <div class="buttons">
+            <!-- Button to navigate to Vice President -->
+            <button type="button" onclick="scrollToVicePresident()">Next: Vice President</button>
+        </div>
+    </div>
+
+    <!-- Vice President section -->
+    <div class="container" id="vicePresidentSection" style="display: none;">
+        <h2>Voting options for Vice President</h2>
+        <div class="order">
+            <span>Select Order:</span>
+            <select id="orderSelectVicePresident" onchange="sortCandidatesVicePresident()">
+                <option value="ascending">Ascending</option>
+                <option value="descending">Descending</option>
+            </select>
+        </div>
+        <div class="president-options" id="vicePresidentOptions">
+            <!-- Vice President options go here -->
+            <div class="president-options" id="presidentOptions">
+                <div class="option" onclick="toggleCandidateSelection(this)">
+                    <div class="option-image"><img src="./Candidate1.jpg" alt="Image"></div>
+                    <div class="option-name">Name 1</div>
+                </div>
+                <div class="option" onclick="toggleCandidateSelection(this)">
+                    <div class="option-image"><img src="./Candidate2.jpeg" alt="Image"></div>
+                    <div class="option-name">Name 2</div>
+                </div>
+                <div class="option" onclick="toggleCandidateSelection(this)">
+                    <div class="option-image"><img src="./Candidate3.jpg" alt="Image"></div>
+                    <div class="option-name">Name 3</div>
+                </div>
+                <div class="option" onclick="toggleCandidateSelection(this)">
+                    <div class="option-image"><img src="./Candidate4.jpeg" alt="Image"></div>
+                    <div class="option-name">Name 4</div>
+                </div>
+                <div class="option" onclick="toggleCandidateSelection(this)">
+                    <div class="option-image"><img src="./Candidate5.jpeg" alt="Image"></div>
+                    <div class="option-name">Name 5</div>
+                </div>
+        </div>
+        <!-- Vice President write-in and buttons -->
+        <div class="write-in">
+            <button class="write-in-fname" onclick="showFirstTextBoxVicePresident()">Write-in First Name</button>
+            <div class="description-box" id="firstNameBoxVicePresident" style="display: none;">
+                <label for="writeInText">Enter First Name:</label>
+                <input type="text" id="writeInTextVicePresident">
+            </div>
+            <button class="write-in-lname" onclick="showLastTextBoxVicePresident()">Write-in Last Name</button>
+            <div class="description-box" id="lastNameBoxVicePresident" style="display: none;">
+                <label for="writeInText">Enter Last Name:</label>
+                <input type="text" id="writeInTextVicePresident">
+            </div>
+        </div>
+        <div class="buttons">
+            <!-- Button to navigate back to President -->
+            <button type="button" onclick="scrollToPresident()">Previous: President</button>
+            <!-- Button to submit votes -->
+            <button type="button" onclick="showVotesPopup()">Submit</button>
+            <!-- Button to skip to Ballot Initiatives -->
+            <button type="button" onclick="goToBallotInitiatives()">Skip to Ballot Initiatives</button>
+        </div>
+    </div>
+
+    <script>
+        // Functions for President section
+        function showFirstTextBoxPresident() {
+            var firstNameBox = document.getElementById('firstNameBoxPresident');
+            firstNameBox.style.display = 'block';
+        }
+
+        function showLastTextBoxPresident() {
+            var lastNameBox = document.getElementById('lastNameBoxPresident');
+            lastNameBox.style.display = 'block';
+        }
+
+        function scrollToVicePresident() {
+            document.getElementById("vicePresidentSection").style.display = "block";
+            document.getElementById("vicePresidentSection").scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Functions for Vice President section
+        function showFirstTextBoxVicePresident() {
+            var firstNameBox = document.getElementById('firstNameBoxVicePresident');
+            firstNameBox.style.display = 'block';
+        }
+
+        function showLastTextBoxVicePresident() {
+            var lastNameBox = document.getElementById('lastNameBoxVicePresident');
+            lastNameBox.style.display = 'block';
+        }
+
+        function scrollToPresident() {
+            document.getElementById("container").scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function showVotesPopup() {
+            alert("Votes added.");
+        }
+
+        function goToBallotInitiatives() {
+            window.location.href = "ballot_initiatives.html";
+        }
+    </script>
+</body>
+</html>

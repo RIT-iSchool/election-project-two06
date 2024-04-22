@@ -20,18 +20,6 @@ function sortCandidates() {
     });
 }
 
-function goToBallotInitiatives() {
-    window.location.href = "ballot_initiatives.html";
-}
-
-function goToPresidentPage() {
-    window.location.href = "president.html";
-}
-
-function goToVicePresidentPage() {
-    window.location.href = "vice-president.html";
-}
-
 // soc_assigned page
 
 function goToSoc1() {

@@ -63,16 +63,23 @@
         <div class="voting-options">
             <div class="voting-text">Voting Options</div>
             <div class="buttons">
-                <button class="option president" onclick="goToPresidentPage()">President</button>
-                <button class="option vice-president" onclick="goToVicePresidentPage()">Vice-President</button>
+                <button class="option president" onclick="goToCombinedPage()">President</button>
+                <button class="option vice-president" onclick="scrollToVicePresident()">Vice-President</button>
                 <button class="option ballot-initiatives" onclick="goToBallotInitiatives()">Ballot Initiatives</button>
             </div>
         </div>
     </div>
     <script>
-        function goToPresidentPage() {
-            window.location.href = "html_files/president.html";
+        function goToCombinedPage() {
+            window.location.href = "combined_pres_vp.html";
         }
+        function goToBallotInitiatives() {
+            window.location.href = "ballot_initiatives.html";
+        }
+        function scrollToVicePresident() {
+            window.location.href = "combined_pres_vp.html#vicePresidentSection";
+        }
+
     </script>
 
 </body>
