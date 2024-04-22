@@ -46,6 +46,15 @@ app.get('/', function(request, response) {
     response.render('login'); // Render 'login.ejs' from the views folder
 });
 
+
+app.get('/soc_assigned', function(request, response) {
+    response.render('soc_assigned'); // Render 'login.ejs' from the views folder
+});
+
+app.get('/admin_page', function(request, response) {
+    response.render('admin_page'); // Render 'login.ejs' from the views folder
+});
+
 app.post('/', async function(request, response) {
     const { email, password } = request.body;
 
@@ -69,3 +78,4 @@ connectToDatabase().then(() => {
 }).catch(error => {
     console.error("Database connection error:", error);
 });
+
