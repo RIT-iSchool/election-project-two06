@@ -54,33 +54,49 @@
         .option:hover {
             background-color: #45a049;
         }
-
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>Welcome to Society Name</h1>
+        <h1>Welcome to <%= name %></h1>
         <div class="voting-options">
             <div class="voting-text">Voting Options</div>
             <div class="buttons">
-                <button class="option president" onclick="goToCombinedPage()">President</button>
-                <button class="option vice-president" onclick="scrollToVicePresident()">Vice-President</button>
-                <button class="option ballot-initiatives" onclick="goToBallotInitiatives()">Ballot Initiatives</button>
+                <% offices.forEach(function(office) { %>
+                    <button class="option" onclick="goToOffice('<%= office %>')"><%= office %></button>
+                <% }); %>
             </div>
         </div>
+        <button onclick="logout()">Logout</button>
     </div>
+
+    <script src="main.js"></script>
     <script>
-        function goToCombinedPage() {
-            window.location.href = "combined_pres_vp.html";
+        // Function to check if token in localstorage
+        function checkTokenLocalStorage() {
+            if (!localStorage.getItem('token')) {
+                // Redirect to login page if token doesn't exist in localStorage
+                window.location.href = '/';
+            }
         }
-        function goToBallotInitiatives() {
-            window.location.href = "ballot_initiatives.html";
+        function logout() {
+            localStorage.removeItem('token');
+            // Redirect to login page after logout
+            window.location.href = '/';
         }
-        function scrollToVicePresident() {
-            window.location.href = "combined_pres_vp.html#vicePresidentSection";
+        // Function to handle the pageshow event
+        function handlePageShow(event) {
+            if (event.persisted) {
+                // If the page is shown from the cache (e.g., when navigating back),
+                // check if the token is still in local storage
+                checkTokenLocalStorage();
+            }
         }
+
+        // Add event listener for the pageshow event
+        window.addEventListener('pageshow', handlePageShow);
 
     </script>
-
+    
 </body>
 </html>
