@@ -60,7 +60,32 @@
         </div>
     </div>
 
-    <script src="main.js"></script>
+    <script>
+        // Function to check if token in localstorage
+        function checkTokenLocalStorage() {
+            if (!localStorage.getItem('token')) {
+                // Redirect to login page if token doesn't exist in localStorage
+                window.location.href = '/';
+            }
+        }
+        function logout() {
+            localStorage.removeItem('token');
+            // Redirect to login page after logout
+            window.location.href = '/';
+        }
+        // Function to handle the pageshow event
+        function handlePageShow(event) {
+            if (event.persisted) {
+                // If the page is shown from the cache (e.g., when navigating back),
+                // check if the token is still in local storage
+                checkTokenLocalStorage();
+            }
+        }
+
+        // Add event listener for the pageshow event
+        window.addEventListener('pageshow', handlePageShow);
+
+    </script>
 
 </body>
 </html>
