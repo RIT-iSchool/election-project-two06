@@ -75,7 +75,7 @@ async function getCandidatesForOffice(userId, officeName) {
             AND o."officename" = $2
         `;
         const result = await client.query(query, [userId, officeName]);
-        return result.rows.map(row => row.candidate_name);
+        return result.rows.map(row => row.cname);
     } catch (error) {
         console.error("Error retrieving candidates for office:", error);
         throw error;
