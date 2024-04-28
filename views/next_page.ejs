@@ -1,36 +1,84 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Elections Associated with <%= societyName %></title>
-    <style>
-        /* Your CSS styles here */
-    </style>
+    <!-- Meta tags, title, and styles -->
 </head>
 <body>
     <div class="container">
         <h1>Elections Associated with <%= societyName %></h1>
-        <table>
-            <thead>
-                <tr>
-                    <th>Election ID</th>
-                    <th>Election Title</th>
-                    <th>Start Date</th>
-                    <th>End Date</th>
-                </tr>
-            </thead>
-            <tbody>
-                <% elections.forEach(function(election) { %>
+
+        <% if (pastElections.length > 0) { %>
+            <h2>Past Elections</h2>
+            <table>
+                <thead>
                     <tr>
-                        <td><%= election['Election ID'] %></td>
-                        <td><%= election['Election Title'] %></td>
-                        <td><%= election['Start Date'] %></td>
-                        <td><%= election['End Date'] %></td>
+                        <th>Election ID</th>
+                        <th>Election Title</th>
+                        <th>Start Date</th>
+                        <th>End Date</th>
                     </tr>
-                <% }); %>
-            </tbody>
-        </table>
+                </thead>
+                <tbody>
+                    <% pastElections.forEach(function(election) { %>
+                        <tr>
+                            <td><%= election['Election ID'] %></td>
+                            <td><%= election['Election Title'] %></td>
+                            <td><%= election['Start Date'] %></td>
+                            <td><%= election['End Date'] %></td>
+                        </tr>
+                    <% }); %>
+                </tbody>
+            </table>
+        <% } %>
+
+        <% if (presentElections.length > 0) { %>
+            <h2>Present Elections</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Election ID</th>
+                        <th>Election Title</th>
+                        <th>Start Date</th>
+                        <th>End Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% presentElections.forEach(function(election) { %>
+                        <tr>
+                            <td><%= election['Election ID'] %></td>
+                            <td><%= election['Election Title'] %></td>
+                            <td><%= election['Start Date'] %></td>
+                            <td><%= election['End Date'] %></td>
+                        </tr>
+                    <% }); %>
+                </tbody>
+            </table>
+        <% } %>
+
+        <% if (futureElections.length > 0) { %>
+            <h2>Future Elections</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Election ID</th>
+                        <th>Election Title</th>
+                        <th>Start Date</th>
+                        <th>End Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% futureElections.forEach(function(election) { %>
+                        <tr>
+                            <td><%= election['Election ID'] %></td>
+                            <td><%= election['Election Title'] %></td>
+                            <td><%= election['Start Date'] %></td>
+                            <td><%= election['End Date'] %></td>
+                        </tr>
+                    <% }); %>
+                </tbody>
+            </table>
+        <% } %>
+
     </div>
 </body>
 </html>

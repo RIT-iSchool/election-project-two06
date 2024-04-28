@@ -44,6 +44,8 @@ function parsePsv(filename) {
     return records;
 }
 
+const moment = require('moment');
+
 app.get('/soc_assigned/:name', async (req, res) => {
     try {
         const societyName = req.params.name;
@@ -56,7 +58,13 @@ app.get('/soc_assigned/:name', async (req, res) => {
         // Filter elections for the selected society
         const associatedElections = electionsData.filter(election => election['Society ID'] === societiesData.find(society => society['Society Name'] === societyName)['Society ID']);
         
-        res.render('next_page', { societyName: societyName, elections: associatedElections });
+        // Separate elections into past, present, and future
+        const today = moment();
+        const pastElections = associatedElections.filter(election => moment(election['End Date']).isBefore(today));
+        const presentElections = associatedElections.filter(election => moment(election['Start Date']).isSameOrBefore(today) && moment(election['End Date']).isSameOrAfter(today));
+        const futureElections = associatedElections.filter(election => moment(election['Start Date']).isAfter(today));
+        
+        res.render('next_page', { societyName: societyName, pastElections: pastElections, presentElections: presentElections, futureElections: futureElections });
     } catch (error) {
         console.error("Error fetching election data:", error);
         res.status(500).send('Internal Server Error');
