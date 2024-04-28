@@ -58,13 +58,26 @@ app.get('/', function(request, response) {
     response.render('login'); // Render 'login.ejs' from the views folder
 });
 
+app.get('/soc_assigned', isAuthenticated, async function(request, response) {
+    try {
+        const userId = request.session.userId;
+        // Get the society name based on the user's ID
+        const societyname = await getSocietyNameByUserId(userId);
+        // Render the 'soc_assigned.ejs' template with the society name and offices data
+        response.render('soc_assigned', { soc_names: societyname });
+    } catch (error) {
+        console.error("Error on society route:", error);
+        response.status(500).send('Internal Server Error');
+    }
+});
 
-app.get('/soc_assigned', function(request, response) {
-    response.render('soc_assigned'); // Render 'login.ejs' from the views folder
+app.get('/soc_assigned/:name', (req, res) => {
+    const societyName = req.params.name;
+    res.render('employee_create', { societyName: societyName });
 });
 
 app.get('/admin_page', function(request, response) {
-    response.render('admin_page'); // Render 'login.ejs' from the views folder
+    response.render('admin_page'); // Render 'admin.ejs' from the views folder
 });
 
 app.post('/', async function(request, response) {

@@ -53,14 +53,17 @@
     <div class="container">
         <h1>Assigned Professional Societies</h1>
             <div class="buttons">
-                <button class="option soc1" onclick="goToSoc1()">Society 1</button>
-                <button class="option soc2" onclick="goToSoc2()">Society 2</button>
-                <button class="option soc3" onclick="goToSoc3()">Society 3</button>
+                <% for (name of soc_names) { %>
+                    <button class="option" onclick="goToSociety('<%= name %>')"><%= name %></button>
+                <% } %>
             </div>
         </div>
     </div>
 
     <script>
+        function goToSociety(name) {
+            window.location.href = '/soc_assigned/' + encodeURIComponent(name);
+        }
         // Function to check if token in localstorage
         function checkTokenLocalStorage() {
             if (!localStorage.getItem('token')) {

@@ -35,7 +35,7 @@ async function getSocietyNameByUserId(userId) {
             WHERE us."userid" = $1;
         `;
         const result = await client.query(query, [userId]);
-        return result.rows.length > 0 ? result.rows[0].societyname : null;
+        return result.rows.map(row => row.societyname);
     } catch (error) {
         console.error("Error retrieving society name:", error);
         throw error;
