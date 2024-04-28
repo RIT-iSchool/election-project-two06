@@ -341,6 +341,43 @@
             }
         }
 
+    // Function to handle write-in button click for President
+    function handleWriteInClickPresident() {
+        var firstNameBox = document.getElementById('firstNameBoxPresident');
+        var selectedOption = document.querySelector('.president-options .option.selected');
+
+        // Deselect the previously selected option, if any
+        if (selectedOption) {
+            selectedOption.classList.remove('selected');
+        }
+
+        // Toggle the visibility of the text box
+        if (firstNameBox.style.display === 'none') {
+            firstNameBox.style.display = 'block';
+        } else {
+            firstNameBox.style.display = 'none';
+        }
+    }
+
+    // Function to handle write-in button click for Vice President
+    function handleWriteInClickVicePresident() {
+        var firstNameBox = document.getElementById('firstNameBoxVicePresident');
+        var selectedOption = document.querySelector('.vp-options .option.selected');
+
+        // Deselect the previously selected option, if any
+        if (selectedOption) {
+            selectedOption.classList.remove('selected');
+        }
+
+        // Toggle the visibility of the text box
+        if (firstNameBox.style.display === 'none') {
+            firstNameBox.style.display = 'block';
+        } else {
+            firstNameBox.style.display = 'none';
+        }
+    }
+
+
     </script>
     
 </body>
