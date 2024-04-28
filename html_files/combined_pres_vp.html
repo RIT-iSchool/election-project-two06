@@ -197,7 +197,7 @@
         </div>
         <!-- President write-in and buttons -->
         <div class="write-in">
-            <button class="write-in-fname" onclick="showFirstTextBoxPresident()">Write-in</button>
+            <button class="write-in-fname" onclick="handleWriteInClickPresident()">Write-in</button>
             <div class="description-box" id="firstNameBoxPresident" style="display: none;">
                 <label for="writeInText">Enter Candidate Name:</label>
                 <input type="text" id="writeInTextPresident">
@@ -245,15 +245,13 @@
         </div>
         <!-- Vice President write-in and buttons -->
         <div class="write-in">
-            <button class="write-in-fname" onclick="showFirstTextBoxVicePresident()">Write-in</button>
+            <button class="write-in-fname" onclick="handleWriteInClickVicePresident()">Write-in</button>
             <div class="description-box" id="firstNameBoxVicePresident" style="display: none;">
                 <label for="writeInText">Enter Candidate Name:</label>
                 <input type="text" id="writeInTextVicePresident">
             </div>
         </div>
         <div class="buttons">
-            <!-- Button to navigate back to President -->
-            <button type="button" onclick="scrollToPresident()">Previous: President</button>
             <!-- Button to submit votes -->
             <button type="button" onclick="showVotesPopup()">Submit</button>
             <!-- Button to skip to Ballot Initiatives -->
@@ -268,11 +266,6 @@
             firstNameBox.style.display = 'block';
         }
     
-        function showLastTextBoxPresident() {
-            var lastNameBox = document.getElementById('lastNameBoxPresident');
-            lastNameBox.style.display = 'block';
-        }
-    
         function scrollToVicePresident() {
             document.getElementById("vicePresidentSection").style.display = "block";
             document.getElementById("vicePresidentSection").scrollIntoView({ behavior: 'smooth' });
@@ -282,15 +275,6 @@
         function showFirstTextBoxVicePresident() {
             var firstNameBox = document.getElementById('firstNameBoxVicePresident');
             firstNameBox.style.display = 'block';
-        }
-    
-        function showLastTextBoxVicePresident() {
-            var lastNameBox = document.getElementById('lastNameBoxVicePresident');
-            lastNameBox.style.display = 'block';
-        }
-    
-        function scrollToPresident() {
-            document.getElementById("container").scrollIntoView({ behavior: 'smooth' });
         }
     
         function showVotesPopup() {
@@ -333,17 +317,31 @@
             }
         }
     
-        // Function to handle write-in button click
-        function handleWriteInClick() {
-            // Deselect the currently selected option
-            var selectedOption = document.querySelector('.option.selected');
-            if (selectedOption) {
-                selectedOption.classList.remove('selected');
+        // Function to handle write-in button click for President
+        function handleWriteInClickPresident() {
+            var firstNameBox = document.getElementById('firstNameBoxPresident');
+
+            // Toggle the visibility of the text box
+            if (firstNameBox.style.display === 'none') {
+                firstNameBox.style.display = 'block';
+            } else {
+                firstNameBox.style.display = 'none';
             }
         }
+
+        // Function to handle write-in button click for Vice President
+        function handleWriteInClickVicePresident() {
+            var firstNameBox = document.getElementById('firstNameBoxVicePresident');
+
+            // Toggle the visibility of the text box
+            if (firstNameBox.style.display === 'none') {
+                firstNameBox.style.display = 'block';
+            } else {
+                firstNameBox.style.display = 'none';
+            }
+        }
+
     </script>
     
-        
-
 </body>
 </html>
