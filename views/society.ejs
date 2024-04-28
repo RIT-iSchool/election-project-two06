@@ -197,6 +197,12 @@
                 alert("Please clear the write-in text before voting for a candidate.");
                 return;
             }
+
+            // Check if write-in input box is active and contains text after selecting a candidate
+            if (writeInActive && writeInInput === document.activeElement && option.classList.contains('selected')) {
+                alert("Unselect voting option before entering candidate name.");
+                return;
+            }
             
             var allOptions = option.parentElement.querySelectorAll('.option');
             allOptions.forEach(function(opt) {
@@ -207,7 +213,6 @@
 
             option.classList.toggle('selected');
         }
-
 
         // Function to handle write-in button click for President
         function handleWriteInClickPresident() {
