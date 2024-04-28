@@ -108,6 +108,10 @@
         .buttons button:hover {
             background-color: #45a049;
         }
+
+        .buttons button.selected:hover {
+            background-color: #075225;
+        }
     
         .write-in {
             display: flex;
@@ -179,16 +183,40 @@
                 </div>
             </div>
             <div class="buttons">
-                <!-- Button to navigate to Vice President -->
-                <button type="button" >No Votes</button>
-            </div>
+                <button class="option" onclick="toggleSelection(this)">No Votes</button>
+            </div>            
         <% } %>
-        <button type="button" onclick="submitVotes()">Submit Votes</button>
+        <button type="button" onclick="submitVotes()" class="buttons">Submit Votes</button>
     </div>
 
     <script>   
         // Variable to track if write-in is active and input box is not empty
         var writeInActive = false;
+
+        // // Function to handle selecting option
+        // function toggleSelection(option) {
+        //     // Check if write-in is active and input box is not empty
+        //     if (writeInActive && document.getElementById('writeInTextPresident').value.trim() !== '') {
+        //         alert("Please clear the write-in text before voting for a candidate.");
+        //         return;
+        //     }
+
+        //     // Check if write-in input box is active and contains text after selecting a candidate
+        //     if (writeInActive && writeInInput === document.activeElement && option.classList.contains('selected')) {
+        //         alert("Unselect voting option before entering candidate name.");
+        //         return;
+        //     }
+            
+        //     var allOptions = option.parentElement.querySelectorAll('.option');
+        //     allOptions.forEach(function(opt) {
+        //         if (opt !== option) {
+        //             opt.classList.remove('selected');
+        //         }
+        //     });
+
+        //     option.classList.toggle('selected');
+        // }
+
 
         // Function to handle selecting option
         function toggleSelection(option) {
@@ -203,7 +231,7 @@
                 alert("Unselect voting option before entering candidate name.");
                 return;
             }
-            
+
             var allOptions = option.parentElement.querySelectorAll('.option');
             allOptions.forEach(function(opt) {
                 if (opt !== option) {
@@ -211,8 +239,29 @@
                 }
             });
 
+            // If "No Votes" button is selected, deselect all candidate options
+            if (option.classList.contains('option') && option.innerText === "No Votes") {
+                allOptions.forEach(function(opt) {
+                    opt.classList.remove('selected');
+                });
+            } else {
+                // If a candidate option is selected, ensure "No Votes" button is deselected
+                var noVotesButton = option.parentElement.parentElement.querySelector('.buttons .option');
+                noVotesButton.classList.remove('selected');
+            }
+
             option.classList.toggle('selected');
+
+            // Disable "No Votes" button if any candidate is selected
+            var noVotesButton = option.parentElement.parentElement.querySelector('.buttons .option');
+            var anyOptionSelected = option.parentElement.querySelector('.option.selected');
+            if (anyOptionSelected && noVotesButton.innerText === "No Votes") {
+                noVotesButton.disabled = true;
+            } else {
+                noVotesButton.disabled = false;
+            }
         }
+
 
         // Function to handle write-in button click for President
         function handleWriteInClickPresident() {
