@@ -1,7 +1,7 @@
 const express = require('express');
 const session = require('express-session');
 const path = require('path');
-const { connectToDatabase, getUserByEmail, getSocietyNameByUserId, getSocietyOfficesByUserId, getCandidatesForOffice } = require('./dataAccess');
+const { connectToDatabase, getUserByEmail, getSocietyNameByUserId, getBallotNameByUserId, getSocietyOfficesByUserId, getCandidatesForOffice } = require('./dataAccess');
 const { loginUser } = require('./businessLogic');
 
 const app = express();
@@ -26,6 +26,15 @@ function isAuthenticated(req, res, next) {
         res.redirect('/');
     }
 }
+
+app.get('/welcome', isAuthenticated, async function(request, response) {
+    const userId = request.session.userId;
+    const ballotName = await getBallotNameByUserId(userId); 
+    console.log(ballotName)
+    const societyname = await getSocietyNameByUserId(userId);
+
+    response.render('welcome', { name: societyname, ballotName: ballotName });
+});
 
 app.get('/society', isAuthenticated, async function(request, response) {
     try {

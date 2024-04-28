@@ -22,7 +22,7 @@ async function loginUser(email, password) {
                     if (userType === 'admin') {
                         redirectUrl = '/admin_page'; // Redirect admin to admin_page
                     } else if (userType === 'officer' || userType === 'member') {
-                        redirectUrl = '/society'; // Redirect officer or member to society page
+                        redirectUrl = '/welcome'; // Redirect officer or member to society page
                     } else if (userType === 'employee'){
                         redirectUrl = '/soc_assigned'; // Redirect other user types to default page
                     }

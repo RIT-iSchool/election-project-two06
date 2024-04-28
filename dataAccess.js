@@ -42,6 +42,21 @@ async function getSocietyNameByUserId(userId) {
     }
 }
 
+async function getBallotNameByUserId(userId) {
+    const query = `
+        SELECT b."ballottitle"
+        FROM public."ballot" b
+        JOIN public."professional_society" ps ON b."societyid" = ps."societyid"
+        JOIN public."user_society" us ON ps."societyid" = us."societyid"
+        WHERE us."userid" = $1
+        AND CURRENT_DATE BETWEEN b."startdate" AND b."enddate";
+    `;
+    const result = await client.query(query, [userId]);
+    console.log(result)
+    return result.rows.map(row => row.ballottitle);
+
+}
+
 async function getSocietyOfficesByUserId(userId) {
     try {
         const query = `
@@ -82,5 +97,5 @@ async function getCandidatesForOffice(userId, officeName) {
     }
 }
 
-module.exports = { connectToDatabase, getUserByEmail, getSocietyNameByUserId, getSocietyOfficesByUserId, getCandidatesForOffice };
+module.exports = { connectToDatabase, getUserByEmail, getBallotNameByUserId, getSocietyNameByUserId, getSocietyOfficesByUserId, getCandidatesForOffice };
 
