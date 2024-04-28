@@ -176,8 +176,11 @@
             </div>
             <!-- President write-in and buttons -->
             <div class="write-in">
-                <button class="write-in-fname" onclick="handleWriteInClickPresident()">Write-in</button>
-                <div class="description-box" id="firstNameBoxPresident" style="display: none;">
+                <!-- <button class="write-in-fname" onclick="handleWriteInClick()">Write-in</button>
+                <div class="description-box" id="firstNameBox" style="display: none;"> -->
+                <button class="write-in-fname" onclick="handleWriteInClick('<%= office %>')">Write-in</button>
+                <div class="description-box" id="firstNameBox
+                        
                     <label for="writeInText">Enter Candidate Name:</label>
                     <input type="text" id="writeInTextPresident">
                 </div>
@@ -192,31 +195,6 @@
     <script>   
         // Variable to track if write-in is active and input box is not empty
         var writeInActive = false;
-
-        // // Function to handle selecting option
-        // function toggleSelection(option) {
-        //     // Check if write-in is active and input box is not empty
-        //     if (writeInActive && document.getElementById('writeInTextPresident').value.trim() !== '') {
-        //         alert("Please clear the write-in text before voting for a candidate.");
-        //         return;
-        //     }
-
-        //     // Check if write-in input box is active and contains text after selecting a candidate
-        //     if (writeInActive && writeInInput === document.activeElement && option.classList.contains('selected')) {
-        //         alert("Unselect voting option before entering candidate name.");
-        //         return;
-        //     }
-            
-        //     var allOptions = option.parentElement.querySelectorAll('.option');
-        //     allOptions.forEach(function(opt) {
-        //         if (opt !== option) {
-        //             opt.classList.remove('selected');
-        //         }
-        //     });
-
-        //     option.classList.toggle('selected');
-        // }
-
 
         // Function to handle selecting option
         function toggleSelection(option) {
@@ -260,12 +238,12 @@
             } else {
                 noVotesButton.disabled = false;
             }
+
         }
 
-
         // Function to handle write-in button click for President
-        function handleWriteInClickPresident() {
-            var firstNameBox = document.getElementById('firstNameBoxPresident');
+        function handleWriteInClick() {
+            var firstNameBox = document.getElementById('firstNameBox');
             var selectedOption = document.querySelector('.president-options .option.selected');
 
             // Toggle the visibility of the text box
