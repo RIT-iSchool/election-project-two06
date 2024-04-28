@@ -175,16 +175,34 @@
                 <% }) %>
             </div>
             <!-- President write-in and buttons -->
+<<<<<<< Updated upstream
             <div class="write-in">
                 <!-- <button class="write-in-fname" onclick="handleWriteInClick()">Write-in</button>
                 <div class="description-box" id="firstNameBox" style="display: none;"> -->
                 <button class="write-in-fname" onclick="handleWriteInClick('<%= office %>')">Write-in</button>
                 <div class="description-box" id="firstNameBox
                         
+=======
+            <!-- <div class="write-in">
+                <button class="write-in-fname" onclick="handleWriteInClickPresident()">Write-in</button>
+                <div class="description-box" id="firstNameBoxPresident" style="display: none;">
+>>>>>>> Stashed changes
                     <label for="writeInText">Enter Candidate Name:</label>
                     <input type="text" id="writeInTextPresident">
                 </div>
+            </div> -->
+
+            <div class="write-in">
+                <button class="write-in-fname" onclick="handleWriteInClickPresident()">Write-in</button>
+                <div class="description-box" id="firstNameBoxPresident" style="display: none;">
+                    <label for="writeInText">Enter Candidate First Name:</label>
+                    <input type="text" id="writeInTextPresident" name="firstName">
+                    <label for="writeInText">Enter Candidate Last Name:</label>
+                    <input type="text" id="writeInTextPresident" name="lastName">
+                </div>
             </div>
+            
+
             <div class="buttons">
                 <button class="option" onclick="toggleSelection(this)">No Votes</button>
             </div>            
