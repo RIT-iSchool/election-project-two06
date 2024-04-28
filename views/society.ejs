@@ -32,7 +32,7 @@
             margin-left: 10px;
         }
 
-        .president-options {
+        .president-options, .vp-options {
             display: flex;
             flex-wrap: wrap;
             justify-content: space-between;    
@@ -219,9 +219,9 @@
                 <option value="descending">Descending</option>
             </select>
         </div> -->
-        <div class="president-options" id="vicePresidentOptions">
+        <div class="vp-options" id="vicePresidentOptions">
             <!-- Vice President options go here -->
-            <div class="president-options" id="presidentOptions">
+            <div class="vp-options" id="vicePresidentOptions">
                 <div class="option" onclick="toggleVPSelection(this)">
                     <div class="option-image"><img src="./Candidate1.jpg" alt="Image"></div>
                     <div class="option-name">Name 1</div>
@@ -260,7 +260,7 @@
             <button type="button" onclick="goToBallotInitiatives()">Skip to Ballot Initiatives</button>
         </div>
     </div>
-
+    
     <script>
         // Functions for President section
         function showFirstTextBoxPresident() {
@@ -303,32 +303,47 @@
     
         // Function to handle selecting president option
         function togglePresidentSelection(option) {
-            var allOptions = document.querySelectorAll('.president-options .option');
-    
-            // Deselect all president options
-            allOptions.forEach(function(opt) {
-                opt.classList.remove('selected');
-            });
-    
-            // Select the clicked option
-            option.classList.add('selected');
+            // If the option is already selected, deselect it
+            if (option.classList.contains('selected')) {
+                option.classList.remove('selected');
+            } else {
+                // Deselect all president options
+                var allOptions = document.querySelectorAll('.president-options .option');
+                allOptions.forEach(function(opt) {
+                    opt.classList.remove('selected');
+                });
+                // Select the clicked option
+                option.classList.add('selected');
+            }
         }
     
         // Function to handle selecting vice president option
         function toggleVPSelection(option) {
-            var allOptions = document.querySelectorAll('.vice-president-options .option');
-    
-            // Deselect all vice president options
-            allOptions.forEach(function(opt) {
-                opt.classList.remove('selected');
-            });
-    
-            // Select the clicked option
-            option.classList.add('selected');
+            // If the option is already selected, deselect it
+            if (option.classList.contains('selected')) {
+                option.classList.remove('selected');
+            } else {
+                // Deselect the previously selected vice president option
+                var prevSelectedOption = document.querySelector('.vp-options .option.selected');
+                if (prevSelectedOption) {
+                    prevSelectedOption.classList.remove('selected');
+                }
+                // Select the clicked option
+                option.classList.add('selected');
+            }
         }
     
+        // Function to handle write-in button click
+        function handleWriteInClick() {
+            // Deselect the currently selected option
+            var selectedOption = document.querySelector('.option.selected');
+            if (selectedOption) {
+                selectedOption.classList.remove('selected');
+            }
+        }
     </script>
     
+        
 
 </body>
 </html>
