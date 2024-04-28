@@ -175,23 +175,20 @@
 <body>
     <div class="container">
         <h1>Welcome to <%= name %></h1>
-        <!-- <div class="order">
-            <span>Select Order:</span>
-            <select id="orderSelect" onchange="sortCandidates()">
-                <option value="ascending">Ascending</option>
-                <option value="descending">Descending</option>
-            </select>
-        </div> -->
         <% for (const office in officesData) { %>
             <h2>Voting options for <%= office %></h2>
-            <div class="president-options">
-                <!-- Iterating over each candidate for the current office -->
-                <% for (const candidate of officesData[office]) { %>
+            <div class="<%= office === 'President' ? 'president-options' : 'vp-options' %>">
+                <% officesData[office].forEach(candidate => { %>
                     <div class="option" onclick="toggleSelection(this)">
-                        <div class="option-image"><img src="<%= candidate.image %>" alt="Image"></div>
-                        <div class="option-name"><%= candidate %></div>
+                        <% if(candidate.photo) { %>
+                            <div class="option-image">
+                                <img src="data:image/jpeg;base64,<%= candidate.photo.toString('base64') %>" alt="Photo of <%= candidate.name %>">
+                            </div>
+                        <% } %>
+                        <!-- Display candidate name -->
+                        <div class="option-name"><%= candidate.name %></div>
                     </div>
-                <% } %>
+                <% }) %>
             </div>
             <!-- President write-in and buttons -->
             <div class="write-in">

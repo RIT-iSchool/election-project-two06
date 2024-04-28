@@ -65,7 +65,7 @@ async function getSocietyOfficesByUserId(userId) {
 async function getCandidatesForOffice(userId, officeName) {
     try {
         const query = `
-            SELECT CONCAT(c."cfname", ' ', c."clname") AS cname
+            SELECT CONCAT(c."cfname", ' ', c."clname") AS cname, c.photo
             FROM public."candidate" c
             JOIN public."office" o ON c."officeid" = o."officeid"
             JOIN public."ballot" b ON o."ballotid" = b."ballotid"
@@ -75,7 +75,7 @@ async function getCandidatesForOffice(userId, officeName) {
             AND o."officename" = $2
         `;
         const result = await client.query(query, [userId, officeName]);
-        return result.rows.map(row => row.cname);
+        return result.rows.map(row => ({ name: row.cname, photo: row.photo })); // Include both name and photo
     } catch (error) {
         console.error("Error retrieving candidates for office:", error);
         throw error;
