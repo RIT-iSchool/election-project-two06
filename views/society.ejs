@@ -11,33 +11,33 @@
             margin: 0;
             padding: 0;
         }
-
+    
         .container {
             max-width: 800px;
             margin: 20px auto;
             padding: 0 20px;
         }
-
+    
         h1, h2 {
             text-align: center;
             padding-top: 50px;
         }
-
+    
         .order {
             text-align: center;
             margin-bottom: 20px;
         }
-
+    
         .order select {
             margin-left: 10px;
         }
-
+    
         .president-options, .vp-options {
             display: flex;
             flex-wrap: wrap;
             justify-content: space-between;    
         }
-
+    
         .option {
             width: calc(20% - 20px);
             margin-bottom: 20px;
@@ -47,24 +47,33 @@
             border-radius: 5px;
             text-align: center;
             color: white;
+            cursor: pointer; /* Add cursor pointer */
             transition: background-color 0.3s ease; /* Adding transition for smooth hover effect */
         }
-
+    
+        .option.selected {
+            background-color: #075225; /* Changing background color when selected */
+        }
+    
         .option:hover {
             background-color: #45a049; /* Changing background color on hover */
         }
-
+    
+        .option:active {
+            background-color: #075225; /* Changing background color when actively clicked */
+        }
+    
         .option-image img {
             max-width: 100%;
             height: auto;
         }
-
+    
         .write-in {
             display: flex;
             justify-content: space-between;
             margin-top: 20px;
         }
-
+    
         .write-in button {
             padding: 10px 20px;
             border: none;
@@ -72,21 +81,26 @@
             background-color: #4caf50;
             color: #fff;
             cursor: pointer;
+            transition: background-color 0.3s ease; /* Adding transition for smooth hover effect */
         }
-
+    
         .write-in button:focus {
             outline: none;
         }
-
+    
         .write-in button:hover {
-            background-color: #45a049;
+            background-color: #45a049; /* Changing background color on hover */
         }
-
+    
+        .write-in button:active {
+            background-color: #075225; /* Changing background color when actively clicked */
+        }
+    
         .buttons {
             text-align: center;
             margin-top: 20px;
         }
-
+    
         .buttons button {
             padding: 10px 20px;
             margin: 0 5px;
@@ -95,22 +109,27 @@
             background-color: #4caf50;
             color: #fff;
             cursor: pointer;
+            transition: background-color 0.3s ease; /* Adding transition for smooth hover effect */
         }
-
+    
         .buttons button:focus {
             outline: none;
         }
-
+    
         .buttons button:hover {
-            background-color: #45a049;
+            background-color: #45a049; /* Changing background color on hover */
         }
-
+    
+        .buttons button:active {
+            background-color: #075225; /* Changing background color when actively clicked */
+        }
+    
         .write-in {
             display: flex;
             justify-content: space-between;
             margin-top: 20px;
         }
-
+    
         .write-in button {
             padding: 10px 20px;
             border: none;
@@ -119,25 +138,30 @@
             color: #fff;
             cursor: pointer;
             margin-right: 150px; /* Add margin between buttons */
+            transition: background-color 0.3s ease; /* Adding transition for smooth hover effect */
         }
-
+    
         .write-in button:focus {
             outline: none;
         }
-
+    
         .write-in button:hover {
-            background-color: #45a049;
+            background-color: #45a049; /* Changing background color on hover */
         }
-
+    
+        .write-in button:active {
+            background-color: #075225; /* Changing background color when actively clicked */
+        }
+    
         .description-box {
             margin-top: 20px;
         }
-
+    
         .description-box label {
             display: block;
             margin-bottom: 5px;
         }
-
+    
         .description-box input[type="text"] {
             width: 100%;
             padding: 10px;
@@ -145,20 +169,8 @@
             border: 1px solid #ccc;
             box-sizing: border-box;
         }
-
-        .option.selected {
-            background-color: #075225; /* Changing background color when selected */
-        }
-
-        .option:hover {
-            background-color: #45a049; /* Changing background color on hover */
-            cursor: pointer; /* Change cursor to pointer on hover */
-        }
-
-        .option.selected {
-            background-color: #075225;
-        }
     </style>
+    
 </head>
 <body>
     <div class="container">
@@ -198,66 +210,21 @@
 
     
     <script>
-        // Functions for President section
-        function showFirstTextBoxPresident() {
-            var firstNameBox = document.getElementById('firstNameBoxPresident');
-            firstNameBox.style.display = 'block';
+        // Function to handle selecting option
+        function toggleSelection(option) {
+            // Toggle the selected class on the clicked option
+            option.classList.toggle('selected');
         }
-    
-        function scrollToVicePresident() {
-            document.getElementById("vicePresidentSection").style.display = "block";
-            document.getElementById("vicePresidentSection").scrollIntoView({ behavior: 'smooth' });
-        }
-    
-        // Functions for Vice President section
-        function showFirstTextBoxVicePresident() {
-            var firstNameBox = document.getElementById('firstNameBoxVicePresident');
-            firstNameBox.style.display = 'block';
-        }
-    
-        function showVotesPopup() {
-            alert("Votes added.");
-        }
-    
-        function goToBallotInitiatives() {
-            window.location.href = "ballot_initiatives.html";
-        }
-    
-        // Function to handle selecting president option
-        function togglePresidentSelection(option) {
-            // If the option is already selected, deselect it
-            if (option.classList.contains('selected')) {
-                option.classList.remove('selected');
-            } else {
-                // Deselect all president options
-                var allOptions = document.querySelectorAll('.president-options .option');
-                allOptions.forEach(function(opt) {
-                    opt.classList.remove('selected');
-                });
-                // Select the clicked option
-                option.classList.add('selected');
-            }
-        }
-    
-        // Function to handle selecting vice president option
-        function toggleVPSelection(option) {
-            // If the option is already selected, deselect it
-            if (option.classList.contains('selected')) {
-                option.classList.remove('selected');
-            } else {
-                // Deselect the previously selected vice president option
-                var prevSelectedOption = document.querySelector('.vp-options .option.selected');
-                if (prevSelectedOption) {
-                    prevSelectedOption.classList.remove('selected');
-                }
-                // Select the clicked option
-                option.classList.add('selected');
-            }
-        }
-    
+
         // Function to handle write-in button click for President
         function handleWriteInClickPresident() {
             var firstNameBox = document.getElementById('firstNameBoxPresident');
+            var selectedOption = document.querySelector('.president-options .option.selected');
+
+            // Deselect the previously selected option, if any
+            if (selectedOption) {
+                selectedOption.classList.remove('selected');
+            }
 
             // Toggle the visibility of the text box
             if (firstNameBox.style.display === 'none') {
@@ -270,6 +237,12 @@
         // Function to handle write-in button click for Vice President
         function handleWriteInClickVicePresident() {
             var firstNameBox = document.getElementById('firstNameBoxVicePresident');
+            var selectedOption = document.querySelector('.vp-options .option.selected');
+
+            // Deselect the previously selected option, if any
+            if (selectedOption) {
+                selectedOption.classList.remove('selected');
+            }
 
             // Toggle the visibility of the text box
             if (firstNameBox.style.display === 'none') {
@@ -278,6 +251,19 @@
                 firstNameBox.style.display = 'none';
             }
         }
+
+    
+    // Function to handle selecting option
+    function toggleSelection(option) {
+        var allOptions = option.parentElement.querySelectorAll('.option');
+        allOptions.forEach(function(opt) {
+            if (opt !== option) {
+                opt.classList.remove('selected');
+            }
+        });
+        // Toggle the selected class on the clicked option
+        option.classList.toggle('selected');
+    }
 
     // Function to handle write-in button click for President
     function handleWriteInClickPresident() {
@@ -315,6 +301,67 @@
         }
     }
 
+    // Function to scroll to Vice President section
+    function scrollToVicePresident() {
+        var vpSection = document.getElementById("vicePresidentSection");
+        vpSection.style.display = "block";
+        vpSection.scrollIntoView({ behavior: 'smooth' });
+    }
+
+    // Variable to track if write-in is active and input box is not empty
+    var writeInActive = false;
+
+    // Function to handle selecting option
+    function toggleSelection(option) {
+        // Check if write-in is active and input box is not empty
+        if (writeInActive && document.getElementById('writeInTextPresident').value.trim() !== '') {
+            alert("Please clear the write-in text before voting for a candidate.");
+            return;
+        }
+        
+        // Toggle the selected class on the clicked option
+        option.classList.toggle('selected');
+    }
+
+    // Function to handle write-in button click for President
+    function handleWriteInClickPresident() {
+        var firstNameBox = document.getElementById('firstNameBoxPresident');
+        var selectedOption = document.querySelector('.president-options .option.selected');
+
+        // Toggle the visibility of the text box
+        if (firstNameBox.style.display === 'none') {
+            firstNameBox.style.display = 'block';
+            writeInActive = true;
+        } else {
+            firstNameBox.style.display = 'none';
+            writeInActive = false;
+        }
+
+        // Deselect the previously selected option, if any
+        if (selectedOption) {
+            selectedOption.classList.remove('selected');
+        }
+    }
+
+    // Function to handle write-in button click for Vice President
+    function handleWriteInClickVicePresident() {
+        var firstNameBox = document.getElementById('firstNameBoxVicePresident');
+        var selectedOption = document.querySelector('.vp-options .option.selected');
+
+        // Toggle the visibility of the text box
+        if (firstNameBox.style.display === 'none') {
+            firstNameBox.style.display = 'block';
+            writeInActive = true;
+        } else {
+            firstNameBox.style.display = 'none';
+            writeInActive = false;
+        }
+
+        // Deselect the previously selected option, if any
+        if (selectedOption) {
+            selectedOption.classList.remove('selected');
+        }
+    }
 
     </script>
     
