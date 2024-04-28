@@ -208,182 +208,72 @@
         <button type="button" onclick="submitVotes()">Submit Votes</button>
     </div>
 
-    <script>
+    <script>   
+        // Variable to track if write-in is active and input box is not empty
+        var writeInActive = false;
+
         // Function to handle selecting option
         function toggleSelection(option) {
-            // Toggle the selected class on the clicked option
+            // Check if write-in is active and input box is not empty
+            if (writeInActive && document.getElementById('writeInTextPresident').value.trim() !== '') {
+                alert("Please clear the write-in text before voting for a candidate.");
+                return;
+            }
+            
+            var allOptions = option.parentElement.querySelectorAll('.option');
+            allOptions.forEach(function(opt) {
+                if (opt !== option) {
+                    opt.classList.remove('selected');
+                }
+            });
+
             option.classList.toggle('selected');
         }
+
 
         // Function to handle write-in button click for President
         function handleWriteInClickPresident() {
             var firstNameBox = document.getElementById('firstNameBoxPresident');
             var selectedOption = document.querySelector('.president-options .option.selected');
 
-            // Deselect the previously selected option, if any
-            if (selectedOption) {
-                selectedOption.classList.remove('selected');
-            }
-
             // Toggle the visibility of the text box
             if (firstNameBox.style.display === 'none') {
                 firstNameBox.style.display = 'block';
+                writeInActive = true;
             } else {
                 firstNameBox.style.display = 'none';
+                writeInActive = false;
             }
-        }
-
-        // Function to handle write-in button click for Vice President
-        function handleWriteInClickVicePresident() {
-            var firstNameBox = document.getElementById('firstNameBoxVicePresident');
-            var selectedOption = document.querySelector('.vp-options .option.selected');
 
             // Deselect the previously selected option, if any
             if (selectedOption) {
                 selectedOption.classList.remove('selected');
             }
+        }
 
-            // Toggle the visibility of the text box
-            if (firstNameBox.style.display === 'none') {
-                firstNameBox.style.display = 'block';
-            } else {
-                firstNameBox.style.display = 'none';
+        // Function to check if token in localstorage
+        function checkTokenLocalStorage() {
+            if (!localStorage.getItem('token')) {
+                // Redirect to login page if token doesn't exist in localStorage
+                window.location.href = '/';
             }
         }
-
-    
-    // Function to handle selecting option
-    function toggleSelection(option) {
-        var allOptions = option.parentElement.querySelectorAll('.option');
-        allOptions.forEach(function(opt) {
-            if (opt !== option) {
-                opt.classList.remove('selected');
-            }
-        });
-        // Toggle the selected class on the clicked option
-        option.classList.toggle('selected');
-    }
-
-    // Function to handle write-in button click for President
-    function handleWriteInClickPresident() {
-        var firstNameBox = document.getElementById('firstNameBoxPresident');
-        var selectedOption = document.querySelector('.president-options .option.selected');
-
-        // Deselect the previously selected option, if any
-        if (selectedOption) {
-            selectedOption.classList.remove('selected');
-        }
-
-        // Toggle the visibility of the text box
-        if (firstNameBox.style.display === 'none') {
-            firstNameBox.style.display = 'block';
-        } else {
-            firstNameBox.style.display = 'none';
-        }
-    }
-
-    // Function to handle write-in button click for Vice President
-    function handleWriteInClickVicePresident() {
-        var firstNameBox = document.getElementById('firstNameBoxVicePresident');
-        var selectedOption = document.querySelector('.vp-options .option.selected');
-
-        // Deselect the previously selected option, if any
-        if (selectedOption) {
-            selectedOption.classList.remove('selected');
-        }
-
-        // Toggle the visibility of the text box
-        if (firstNameBox.style.display === 'none') {
-            firstNameBox.style.display = 'block';
-        } else {
-            firstNameBox.style.display = 'none';
-        }
-    }
-
-    // Function to scroll to Vice President section
-    function scrollToVicePresident() {
-        var vpSection = document.getElementById("vicePresidentSection");
-        vpSection.style.display = "block";
-        vpSection.scrollIntoView({ behavior: 'smooth' });
-    }
-
-    // Variable to track if write-in is active and input box is not empty
-    var writeInActive = false;
-
-    // Function to handle selecting option
-    function toggleSelection(option) {
-        // Check if write-in is active and input box is not empty
-        if (writeInActive && document.getElementById('writeInTextPresident').value.trim() !== '') {
-            alert("Please clear the write-in text before voting for a candidate.");
-            return;
-        }
-        
-        // Toggle the selected class on the clicked option
-        option.classList.toggle('selected');
-    }
-
-    // Function to handle write-in button click for President
-    function handleWriteInClickPresident() {
-        var firstNameBox = document.getElementById('firstNameBoxPresident');
-        var selectedOption = document.querySelector('.president-options .option.selected');
-
-        // Toggle the visibility of the text box
-        if (firstNameBox.style.display === 'none') {
-            firstNameBox.style.display = 'block';
-            writeInActive = true;
-        } else {
-            firstNameBox.style.display = 'none';
-            writeInActive = false;
-        }
-
-        // Deselect the previously selected option, if any
-        if (selectedOption) {
-            selectedOption.classList.remove('selected');
-        }
-    }
-
-    // Function to handle write-in button click for Vice President
-    function handleWriteInClickVicePresident() {
-        var firstNameBox = document.getElementById('firstNameBoxVicePresident');
-        var selectedOption = document.querySelector('.vp-options .option.selected');
-
-        // Toggle the visibility of the text box
-        if (firstNameBox.style.display === 'none') {
-            firstNameBox.style.display = 'block';
-            writeInActive = true;
-        } else {
-            firstNameBox.style.display = 'none';
-            writeInActive = false;
-        }
-
-        // Deselect the previously selected option, if any
-        if (selectedOption) {
-            selectedOption.classList.remove('selected');
-        }
-    }
-    // Function to check if token in localstorage
-    function checkTokenLocalStorage() {
-        if (!localStorage.getItem('token')) {
-            // Redirect to login page if token doesn't exist in localStorage
+        function logout() {
+            localStorage.removeItem('token');
+            // Redirect to login page after logout
             window.location.href = '/';
         }
-    }
-    function logout() {
-        localStorage.removeItem('token');
-        // Redirect to login page after logout
-        window.location.href = '/';
-    }
-    // Function to handle the pageshow event
-    function handlePageShow(event) {
-        if (event.persisted) {
-            // If the page is shown from the cache (e.g., when navigating back),
-            // check if the token is still in local storage
-            checkTokenLocalStorage();
+        // Function to handle the pageshow event
+        function handlePageShow(event) {
+            if (event.persisted) {
+                // If the page is shown from the cache (e.g., when navigating back),
+                // check if the token is still in local storage
+                checkTokenLocalStorage();
+            }
         }
-    }
 
-    // Add event listener for the pageshow event
-    window.addEventListener('pageshow', handlePageShow);
+        // Add event listener for the pageshow event
+        window.addEventListener('pageshow', handlePageShow);
     </script>
     
 </body>
