@@ -260,6 +260,37 @@
     </div>
     
     <script>
+        // Assuming officesData is an object containing office names and their associated candidates
+        const officesData = `<%- JSON.stringify(officesData) %>`;
+
+        // Function to dynamically generate voting options based on the received data
+        function renderVotingOptions() {
+            // Iterate over the office data and generate HTML for each office
+            Object.keys(officesData).forEach(function(office) {
+                const candidates = officesData[office];
+                const container = document.createElement('div');
+                container.classList.add('container');
+                container.innerHTML = `
+                    <h2>Voting options for ${office}</h2>
+                    <div class="president-options">
+                        ${candidates.map(candidate => `
+                            <div class="option" onclick="toggleSelection(this)">
+                                <div class="option-image"><img src="${candidate.image}" alt="Image"></div>
+                                <div class="option-name">${candidate.name}</div>
+                            </div>
+                        `).join('')}
+                    </div>
+                    <!-- Write-in and buttons -->
+                    <!-- Add your write-in and button HTML here -->
+                `;
+                document.body.appendChild(container);
+            });
+            
+        }
+
+        // Call the renderVotingOptions function to generate the voting options
+        renderVotingOptions();
+        console.log(officesData);
         // Functions for President section
         function showFirstTextBoxPresident() {
             var firstNameBox = document.getElementById('firstNameBoxPresident');

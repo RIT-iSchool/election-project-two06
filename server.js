@@ -1,7 +1,7 @@
 const express = require('express');
 const session = require('express-session');
 const path = require('path');
-const { connectToDatabase, getUserByEmail, getSocietyNameByUserId, getSocietyOfficesByUserId } = require('./dataAccess');
+const { connectToDatabase, getUserByEmail, getSocietyNameByUserId, getSocietyOfficesByUserId, getCandidatesForOffice } = require('./dataAccess');
 const { loginUser } = require('./businessLogic');
 
 const app = express();
@@ -39,8 +39,16 @@ app.get('/society', isAuthenticated, async function(request, response) {
             // No valid ballots are found, so render a different page or pass a message
             response.render('noRunningBallots', { name: societyname }); // You need to create this EJS template
         } else {
-            // Render the 'society.ejs' template with the society name and offices
-            response.render('society', { name: societyname, offices: offices });
+            // Retrieve the candidates for each office
+            const officeData = {};
+            for (const office of offices) {
+                const candidates = await getCandidatesForOffice(userId, office);
+                console.log(candidates);
+                officeData[office] = candidates;
+            }
+            console.log(officeData);
+            // Render the 'society.ejs' template with the society name and offices data
+            response.render('society', { name: societyname, officesData: officeData });
         }
     } catch (error) {
         console.error("Error on society route:", error);

@@ -62,5 +62,25 @@ async function getSocietyOfficesByUserId(userId) {
 }
 
 
-module.exports = { connectToDatabase, getUserByEmail, getSocietyNameByUserId, getSocietyOfficesByUserId };
+async function getCandidatesForOffice(userId, officeName) {
+    try {
+        const query = `
+            SELECT CONCAT(c."cfname", ' ', c."clname") AS cname
+            FROM public."candidate" c
+            JOIN public."office" o ON c."officeid" = o."officeid"
+            JOIN public."ballot" b ON o."ballotid" = b."ballotid"
+            JOIN public."professional_society" ps ON b."societyid" = ps."societyid"
+            JOIN public."user_society" us ON ps."societyid" = us."societyid"
+            WHERE us."userid" = $1
+            AND o."officename" = $2
+        `;
+        const result = await client.query(query, [userId, officeName]);
+        return result.rows.map(row => row.candidate_name);
+    } catch (error) {
+        console.error("Error retrieving candidates for office:", error);
+        throw error;
+    }
+}
+
+module.exports = { connectToDatabase, getUserByEmail, getSocietyNameByUserId, getSocietyOfficesByUserId, getCandidatesForOffice };
 
