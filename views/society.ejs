@@ -163,7 +163,6 @@
 <body>
     <div class="container">
         <h1>Welcome to <%= name %></h1>
-        <h2>Voting options for President</h2>
         <!-- <div class="order">
             <span>Select Order:</span>
             <select id="orderSelect" onchange="sortCandidates()">
@@ -171,126 +170,34 @@
                 <option value="descending">Descending</option>
             </select>
         </div> -->
-        <div class="president-options" id="presidentOptions">
-            <!-- President options go here -->
-            <div class="president-options" id="presidentOptions">
-                <div class="option" onclick="togglePresidentSelection(this)">
-                    <div class="option-image"><img src="./Candidate1.jpg" alt="Image"></div>
-                    <div class="option-name">Name 1</div>
-                </div>
-                <div class="option" onclick="togglePresidentSelection(this)">
-                    <div class="option-image"><img src="./Candidate2.jpeg" alt="Image"></div>
-                    <div class="option-name">Name 2</div>
-                </div>
-                <div class="option" onclick="togglePresidentSelection(this)">
-                    <div class="option-image"><img src="./Candidate3.jpg" alt="Image"></div>
-                    <div class="option-name">Name 3</div>
-                </div>
-                <div class="option" onclick="togglePresidentSelection(this)">
-                    <div class="option-image"><img src="./Candidate4.jpeg" alt="Image"></div>
-                    <div class="option-name">Name 4</div>
-                </div>
-                <div class="option" onclick="togglePresidentSelection(this)">
-                    <div class="option-image"><img src="./Candidate5.jpeg" alt="Image"></div>
-                    <div class="option-name">Name 5</div>
-                </div>
-        </div>
-        <!-- President write-in and buttons -->
-        <div class="write-in">
-            <button class="write-in-fname" onclick="handleWriteInClickPresident()">Write-in</button>
-            <div class="description-box" id="firstNameBoxPresident" style="display: none;">
-                <label for="writeInText">Enter Candidate Name:</label>
-                <input type="text" id="writeInTextPresident">
+        <% for (const office in officesData) { %>
+            <h2>Voting options for <%= office %></h2>
+            <div class="president-options">
+                <!-- Iterating over each candidate for the current office -->
+                <% for (const candidate of officesData[office]) { %>
+                    <div class="option" onclick="toggleSelection(this)">
+                        <div class="option-image"><img src="<%= candidate.image %>" alt="Image"></div>
+                        <div class="option-name"><%= candidate %></div>
+                    </div>
+                <% } %>
             </div>
-        </div>
-        <div class="buttons">
-            <!-- Button to navigate to Vice President -->
-            <button type="button" onclick="scrollToVicePresident()">Next: Vice President</button>
-        </div>
+            <!-- President write-in and buttons -->
+            <div class="write-in">
+                <button class="write-in-fname" onclick="handleWriteInClickPresident()">Write-in</button>
+                <div class="description-box" id="firstNameBoxPresident" style="display: none;">
+                    <label for="writeInText">Enter Candidate Name:</label>
+                    <input type="text" id="writeInTextPresident">
+                </div>
+            </div>
+            <div class="buttons">
+                <!-- Button to navigate to Vice President -->
+                <button type="button" onclick="scrollToVicePresident()">Next: Vice President</button>
+            </div>
+        <% } %>
     </div>
 
-    <!-- Vice President section -->
-    <div class="container" id="vicePresidentSection" style="display: none;">
-        <h2>Voting options for Vice President</h2>
-        <!-- <div class="order">
-            <span>Select Order:</span>
-            <select id="orderSelectVicePresident" onchange="sortCandidatesVicePresident()">
-                <option value="ascending">Ascending</option>
-                <option value="descending">Descending</option>
-            </select>
-        </div> -->
-        <div class="vp-options" id="vicePresidentOptions">
-            <!-- Vice President options go here -->
-            <div class="vp-options" id="vicePresidentOptions">
-                <div class="option" onclick="toggleVPSelection(this)">
-                    <div class="option-image"><img src="./Candidate1.jpg" alt="Image"></div>
-                    <div class="option-name">Name 1</div>
-                </div>
-                <div class="option" onclick="toggleVPSelection(this)">
-                    <div class="option-image"><img src="./Candidate2.jpeg" alt="Image"></div>
-                    <div class="option-name">Name 2</div>
-                </div>
-                <div class="option" onclick="toggleVPSelection(this)">
-                    <div class="option-image"><img src="./Candidate3.jpg" alt="Image"></div>
-                    <div class="option-name">Name 3</div>
-                </div>
-                <div class="option" onclick="toggleVPSelection(this)">
-                    <div class="option-image"><img src="./Candidate4.jpeg" alt="Image"></div>
-                    <div class="option-name">Name 4</div>
-                </div>
-                <div class="option" onclick="toggleVPSelection(this)">
-                    <div class="option-image"><img src="./Candidate5.jpeg" alt="Image"></div>
-                    <div class="option-name">Name 5</div>
-                </div>
-        </div>
-        <!-- Vice President write-in and buttons -->
-        <div class="write-in">
-            <button class="write-in-fname" onclick="handleWriteInClickVicePresident()">Write-in</button>
-            <div class="description-box" id="firstNameBoxVicePresident" style="display: none;">
-                <label for="writeInText">Enter Candidate Name:</label>
-                <input type="text" id="writeInTextVicePresident">
-            </div>
-        </div>
-        <div class="buttons">
-            <!-- Button to submit votes -->
-            <button type="button" onclick="showVotesPopup()">Submit</button>
-            <!-- Button to skip to Ballot Initiatives -->
-            <button type="button" onclick="goToBallotInitiatives()">Skip to Ballot Initiatives</button>
-        </div>
-    </div>
     
     <script>
-        // Assuming officesData is an object containing office names and their associated candidates
-        const officesData = `<%- JSON.stringify(officesData) %>`;
-
-        // Function to dynamically generate voting options based on the received data
-        function renderVotingOptions() {
-            // Iterate over the office data and generate HTML for each office
-            Object.keys(officesData).forEach(function(office) {
-                const candidates = officesData[office];
-                const container = document.createElement('div');
-                container.classList.add('container');
-                container.innerHTML = `
-                    <h2>Voting options for ${office}</h2>
-                    <div class="president-options">
-                        ${candidates.map(candidate => `
-                            <div class="option" onclick="toggleSelection(this)">
-                                <div class="option-image"><img src="${candidate.image}" alt="Image"></div>
-                                <div class="option-name">${candidate.name}</div>
-                            </div>
-                        `).join('')}
-                    </div>
-                    <!-- Write-in and buttons -->
-                    <!-- Add your write-in and button HTML here -->
-                `;
-                document.body.appendChild(container);
-            });
-            
-        }
-
-        // Call the renderVotingOptions function to generate the voting options
-        renderVotingOptions();
-        console.log(officesData);
         // Functions for President section
         function showFirstTextBoxPresident() {
             var firstNameBox = document.getElementById('firstNameBoxPresident');

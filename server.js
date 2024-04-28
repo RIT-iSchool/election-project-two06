@@ -43,10 +43,8 @@ app.get('/society', isAuthenticated, async function(request, response) {
             const officeData = {};
             for (const office of offices) {
                 const candidates = await getCandidatesForOffice(userId, office);
-                console.log(candidates);
                 officeData[office] = candidates;
             }
-            console.log(officeData);
             // Render the 'society.ejs' template with the society name and offices data
             response.render('society', { name: societyname, officesData: officeData });
         }
