@@ -1,6 +1,8 @@
 const express = require('express');
 const session = require('express-session');
 const path = require('path');
+const fs = require('fs');
+
 const { connectToDatabase, getUserByEmail, getSocietyNameByUserId, getBallotNameByUserId, getSocietyOfficesByUserId, getCandidatesForOffice } = require('./dataAccess');
 const { loginUser } = require('./businessLogic');
 
@@ -26,6 +28,40 @@ function isAuthenticated(req, res, next) {
         res.redirect('/');
     }
 }
+
+// Function to parse PSV files
+function parsePsv(filename) {
+    const data = fs.readFileSync(filename, 'utf8');
+    const lines = data.trim().split('\n');
+    const headers = lines[0].split('|');
+    const records = lines.slice(1).map(line => {
+        const fields = line.split('|');
+        return headers.reduce((record, header, index) => {
+            record[header.trim()] = fields[index].trim();
+            return record;
+        }, {});
+    });
+    return records;
+}
+
+app.get('/soc_assigned/:name', async (req, res) => {
+    try {
+        const societyName = req.params.name;
+        
+        // Fetch elections data
+        const electionsData = parsePsv('./ElectionTestData/elections.psv');
+        // Fetch societies data
+        const societiesData = parsePsv('./ElectionTestData/societies.psv');
+        
+        // Filter elections for the selected society
+        const associatedElections = electionsData.filter(election => election['Society ID'] === societiesData.find(society => society['Society Name'] === societyName)['Society ID']);
+        
+        res.render('next_page', { societyName: societyName, elections: associatedElections });
+    } catch (error) {
+        console.error("Error fetching election data:", error);
+        res.status(500).send('Internal Server Error');
+    }
+});
 
 app.get('/welcome', isAuthenticated, async function(request, response) {
     const userId = request.session.userId;
@@ -70,10 +106,10 @@ app.get('/', function(request, response) {
 app.get('/soc_assigned', isAuthenticated, async function(request, response) {
     try {
         const userId = request.session.userId;
-        // Get the society name based on the user's ID
-        const societyname = await getSocietyNameByUserId(userId);
-        // Render the 'soc_assigned.ejs' template with the society name and offices data
-        response.render('soc_assigned', { soc_names: societyname });
+        // Get the society names based on the user's ID
+        const societyNames = await getSocietyNameByUserId(userId);
+        // Render the 'soc_assigned.ejs' template with the society names
+        response.render('soc_assigned', { soc_names: societyNames });
     } catch (error) {
         console.error("Error on society route:", error);
         response.status(500).send('Internal Server Error');
@@ -82,7 +118,7 @@ app.get('/soc_assigned', isAuthenticated, async function(request, response) {
 
 app.get('/soc_assigned/:name', (req, res) => {
     const societyName = req.params.name;
-    res.render('employee_create', { societyName: societyName });
+    res.render('next_page', { societyName: societyName });
 });
 
 app.get('/admin_page', function(request, response) {

@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Elections Associated with <%= societyName %></title>
+    <style>
+        /* Your CSS styles here */
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Elections Associated with <%= societyName %></h1>
+        <table>
+            <thead>
+                <tr>
+                    <th>Election ID</th>
+                    <th>Election Title</th>
+                    <th>Start Date</th>
+                    <th>End Date</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% elections.forEach(function(election) { %>
+                    <tr>
+                        <td><%= election['Election ID'] %></td>
+                        <td><%= election['Election Title'] %></td>
+                        <td><%= election['Start Date'] %></td>
+                        <td><%= election['End Date'] %></td>
+                    </tr>
+                <% }); %>
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>
