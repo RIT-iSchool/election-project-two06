@@ -169,11 +169,11 @@
         </div>
     </div>
 
-    <script>   
+    <script>  
         // Object to track if write-in is active and input box is not empty for each category
         var writeInActive = false;
-
-          // Function to handle selecting option
+      
+        // Function to handle selecting option
         function toggleSelection(option) {
             // Check if write-in is active and input box is not empty
             if (writeInActive && document.getElementById('writeInText').value.trim() !== '') {
@@ -194,24 +194,10 @@
                 allOptions.forEach(function(opt) {
                     opt.classList.remove('selected');
                 });
-            } else {
-                // If a candidate option is selected, ensure "No Votes" button is deselected
-                var noVotesButton = option.parentElement.parentElement.querySelector('.buttons .option');
-                noVotesButton.classList.remove('selected');
-            }
+            } 
 
             option.classList.toggle('selected');
-
-            // Ensures No Votes button can not be selected is candidate is selected
-            var noVotesButton = option.parentElement.parentElement.querySelector('.buttons .option');
-            var anyOptionSelected = option.parentElement.querySelector('.option.selected');
-            if (anyOptionSelected && noVotesButton.innerText === "No Votes") {
-                noVotesButton.disabled = true;
-            } else {
-                noVotesButton.disabled = false;
-            }
         }
-
 
         // Function to handle write-in button click for each category
         function handleWriteInClick(office) {
@@ -246,8 +232,6 @@
                 writeInActive[writeInActiveKey] = false;
             }
         }
-
-
  
         // Function to submit votes
         function submitVotes() {
