@@ -1,7 +1,158 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <!-- Meta tags, title, and styles -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+    
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 0 20px;
+            overflow-y: auto;
+            max-height: 600px; 
+        }
+
+        h1, h2 {
+            text-align: center;
+            padding-top: 50px;
+        }
+    
+        .order {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+    
+        .order select {
+            margin-left: 10px;
+        }
+    
+        .president-options, .vp-options {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;    
+        }
+    
+        .option {
+            width: calc(20% - 20px);
+            margin-bottom: 20px;
+            background-color: #4caf50;
+            padding: 10px;
+            box-sizing: border-box;
+            border-radius: 5px;
+            text-align: center;
+            color: white;
+        }
+
+        .option:hover {
+            background-color: #45a049;
+            cursor: pointer;
+        }
+
+        .option.selected {
+            background-color: #075225;
+        }
+    
+        .option-image img {
+            max-width: 100%;
+            height: auto;
+        }
+    
+        .write-in {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+    
+        .write-in button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            background-color: #4caf50;
+            color: #fff;
+        }
+    
+        .write-in button:focus {
+            outline: none;
+        }
+    
+        .write-in button:hover {
+            background-color: #45a049;
+        }
+    
+        .buttons {
+            text-align: center;
+            margin-top: 20px;
+        }
+    
+        .buttons button {
+            padding: 10px 20px;
+            margin: 0 5px;
+            border: none;
+            border-radius: 5px;
+            background-color: #4caf50;
+            color: #fff;
+        }
+    
+        .buttons button:focus {
+            outline: none;
+        }
+    
+        .buttons button:hover {
+            background-color: #45a049;
+        }
+
+        .buttons button.selected:hover {
+            background-color: #075225;
+        }
+    
+        .write-in {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+    
+        .write-in button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            background-color: #4caf50;
+            color: #fff;
+            cursor: pointer;
+            margin-right: 150px; /* Add margin between buttons */
+        }
+    
+        .write-in button:focus {
+            outline: none;
+        }
+    
+        .write-in button:hover {
+            background-color: #45a049; /* Changing background color on hover */
+        }
+    
+        .description-box {
+            margin-top: 20px;
+        }
+    
+        .description-box label {
+            display: block;
+            margin-bottom: 5px;
+        }
+    
+        .description-box input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            box-sizing: border-box;
+        }
+    </style>
 </head>
 <body>
     <div class="container">
@@ -9,74 +160,23 @@
 
         <% if (pastElections.length > 0) { %>
             <h2>Past Elections</h2>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Election ID</th>
-                        <th>Election Title</th>
-                        <th>Start Date</th>
-                        <th>End Date</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <% pastElections.forEach(function(election) { %>
-                        <tr>
-                            <td><%= election['Election ID'] %></td>
-                            <td><%= election['Election Title'] %></td>
-                            <td><%= election['Start Date'] %></td>
-                            <td><%= election['End Date'] %></td>
-                        </tr>
-                    <% }); %>
-                </tbody>
-            </table>
+            <% pastElections.forEach(function(election) { %>
+                <button class="election-btn"><%= election['Election Title'] %></button>
+            <% }); %>
         <% } %>
 
         <% if (presentElections.length > 0) { %>
             <h2>Present Elections</h2>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Election ID</th>
-                        <th>Election Title</th>
-                        <th>Start Date</th>
-                        <th>End Date</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <% presentElections.forEach(function(election) { %>
-                        <tr>
-                            <td><%= election['Election ID'] %></td>
-                            <td><%= election['Election Title'] %></td>
-                            <td><%= election['Start Date'] %></td>
-                            <td><%= election['End Date'] %></td>
-                        </tr>
-                    <% }); %>
-                </tbody>
-            </table>
+            <% presentElections.forEach(function(election) { %>
+                <button class="election-btn"><%= election['Election Title'] %></button>
+            <% }); %>
         <% } %>
 
         <% if (futureElections.length > 0) { %>
             <h2>Future Elections</h2>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Election ID</th>
-                        <th>Election Title</th>
-                        <th>Start Date</th>
-                        <th>End Date</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <% futureElections.forEach(function(election) { %>
-                        <tr>
-                            <td><%= election['Election ID'] %></td>
-                            <td><%= election['Election Title'] %></td>
-                            <td><%= election['Start Date'] %></td>
-                            <td><%= election['End Date'] %></td>
-                        </tr>
-                    <% }); %>
-                </tbody>
-            </table>
+            <% futureElections.forEach(function(election) { %>
+                <button class="election-btn"><%= election['Election Title'] %></button>
+            <% }); %>
         <% } %>
 
     </div>
