@@ -164,7 +164,9 @@
                 <button class="option" onclick="toggleSelection(this)">No Votes</button>
             </div>
         <% } %>
-        <button type="button" onclick="submitVotes()" class="buttons">Submit Votes</button>
+        <div class="buttons">
+            <button type="button" onclick="submitVotes()" class="buttons">Submit Votes</button>
+        </div>
     </div>
 
     <script>   
@@ -215,12 +217,37 @@
             }
 
         }
+        // // Function to handle write-in button click for each category
+        // function handleWriteInClick(office) {
+        //     var writeInBoxId = office.toLowerCase() + 'WriteInBox';
+        //     var writeInActiveKey = office.toLowerCase();
+
+        //     var writeInBox = document.getElementById(writeInBoxId);
+
+        //     // Toggle the visibility of the text box
+        //     if (writeInBox.style.display === 'none') {
+        //         writeInBox.style.display = 'block';
+        //         writeInActive[writeInActiveKey] = true;
+        //     } else {
+        //         writeInBox.style.display = 'none';
+        //         writeInActive[writeInActiveKey] = false;
+        //     }
+        // }
+
         // Function to handle write-in button click for each category
         function handleWriteInClick(office) {
             var writeInBoxId = office.toLowerCase() + 'WriteInBox';
             var writeInActiveKey = office.toLowerCase();
 
             var writeInBox = document.getElementById(writeInBoxId);
+
+            // Clear the selection of any candidate
+            var allOptions = document.querySelectorAll('.' + office.toLowerCase() + '-options .option');
+            allOptions.forEach(function(option) {
+                if (option.classList.contains('selected')) {
+                    option.classList.remove('selected');
+                }
+            });
 
             // Toggle the visibility of the text box
             if (writeInBox.style.display === 'none') {
@@ -230,6 +257,12 @@
                 writeInBox.style.display = 'none';
                 writeInActive[writeInActiveKey] = false;
             }
+        }
+
+
+        // Function to submit votes
+        function submitVotes() {
+
         }
 
         // Function to check if token in localstorage
