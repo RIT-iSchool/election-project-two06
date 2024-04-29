@@ -15,7 +15,8 @@ CREATE TABLE Users (
     LName text NOT NULL,
     Email text NOT NULL,
     UserType text NOT NULL,
-    Password text NOT NULL
+    Password text NOT NULL,
+    is_pwd_encrypted boolean
 );
 
 CREATE TABLE Professional_Society (
@@ -61,7 +62,8 @@ CREATE TABLE Candidate (
     CFName text NOT NULL,
     CLName text NOT NULL,
     C_Credentials text,
-    C_Bio text
+    C_Bio text,
+    Photo bytea
 );
 
 CREATE TABLE Vote (
@@ -89,6 +91,20 @@ CREATE TABLE Write_Ins (
     CLName text NOT NULL,
     OfficeID int REFERENCES Office(OfficeID) NOT NULL
 );
+
+CREATE OR REPLACE FUNCTION encrypt_users_password()
+RETURNS TRIGGER AS $$
+BEGIN
+    -- Call the encryption script
+    PERFORM pg_notify('encrypt_users_password', 'encrypt');
+
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER trigger_encrypt_users_password
+AFTER INSERT OR UPDATE OR DELETE ON public.users
+FOR EACH ROW EXECUTE FUNCTION encrypt_users_password();
 
 COPY Users FROM '/tmp/users.psv' DELIMITER '|' CSV HEADER;
 COPY Professional_Society FROM '/tmp/societies.psv' DELIMITER '|' CSV HEADER;

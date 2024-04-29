@@ -1,24 +1,59 @@
 const express = require('express');
 const session = require('express-session');
 const path = require('path');
-const fs = require('fs');
-
 const { connectToDatabase, getUserByEmail, getSocietyNameByUserId, getBallotNameByUserId, getSocietyOfficesByUserId, getCandidatesForOffice } = require('./dataAccess');
 const { loginUser } = require('./businessLogic');
+const { encryptPasswords } = require('./encrypt');
+const { uploadImage } = require('./image');
 
-const app = express();
-app.use(express.urlencoded({ extended: true }));
-app.use(express.static(__dirname));
+// Create a function to perform setup tasks asynchronously
+async function setup() {
+    try {
+        // Encrypt passwords
+        await encryptPasswords();
+        // Directory containing the images
+        const imagesDir = path.join(__dirname, 'candidate_photos');
+        // Automatically upload all images
+        await new Promise((resolve, reject) => {
+            fs.readdir(imagesDir, (err, files) => {
+                if (err) {
+                    reject('Failed to list images directory:' + err);
+                }
 
-app.use(session({
-    secret: 'your_secret_key', // Change this to a random string
-    resave: false,
-    saveUninitialized: true
-}));
+                const promises = files.map(file => {
+                    const candidateId = parseInt(file.split('.')[0], 10);
+                    const imagePath = path.join(imagesDir, file);
+                    return uploadImage(candidateId, imagePath);
+                });
 
-// Set EJS as the view engine
-app.set('view engine', 'ejs');
-app.set('views', path.join(__dirname, 'views'));
+                Promise.all(promises)
+                    .then(() => resolve())
+                    .catch(error => reject(error));
+            });
+        });
+
+        // Start the server after completing setup tasks
+        startServer();
+    } catch (error) {
+        console.error('Setup error:', error);
+    }
+}
+
+// Define a function to start the server
+function startServer() {
+    const app = express();
+    app.use(express.urlencoded({ extended: true }));
+    app.use(express.static(__dirname));
+
+    app.use(session({
+        secret: 'your_secret_key', // Change this to a random string
+        resave: false,
+        saveUninitialized: true
+    }));
+
+    // Set EJS as the view engine
+    app.set('view engine', 'ejs');
+    app.set('views', path.join(__dirname, 'views'));
 
 // Middleware to check if user is authenticated
 function isAuthenticated(req, res, next) {
@@ -28,48 +63,6 @@ function isAuthenticated(req, res, next) {
         res.redirect('/');
     }
 }
-
-// Function to parse PSV files
-function parsePsv(filename) {
-    const data = fs.readFileSync(filename, 'utf8');
-    const lines = data.trim().split('\n');
-    const headers = lines[0].split('|');
-    const records = lines.slice(1).map(line => {
-        const fields = line.split('|');
-        return headers.reduce((record, header, index) => {
-            record[header.trim()] = fields[index].trim();
-            return record;
-        }, {});
-    });
-    return records;
-}
-
-const moment = require('moment');
-
-app.get('/soc_assigned/:name', async (req, res) => {
-    try {
-        const societyName = req.params.name;
-        
-        // Fetch elections data
-        const electionsData = parsePsv('./ElectionTestData/elections.psv');
-        // Fetch societies data
-        const societiesData = parsePsv('./ElectionTestData/societies.psv');
-        
-        // Filter elections for the selected society
-        const associatedElections = electionsData.filter(election => election['Society ID'] === societiesData.find(society => society['Society Name'] === societyName)['Society ID']);
-        
-        // Separate elections into past, present, and future
-        const today = moment();
-        const pastElections = associatedElections.filter(election => moment(election['End Date']).isBefore(today));
-        const presentElections = associatedElections.filter(election => moment(election['Start Date']).isSameOrBefore(today) && moment(election['End Date']).isSameOrAfter(today));
-        const futureElections = associatedElections.filter(election => moment(election['Start Date']).isAfter(today));
-        
-        res.render('next_page', { societyName: societyName, pastElections: pastElections, presentElections: presentElections, futureElections: futureElections });
-    } catch (error) {
-        console.error("Error fetching election data:", error);
-        res.status(500).send('Internal Server Error');
-    }
-});
 
 app.get('/welcome', isAuthenticated, async function(request, response) {
     const userId = request.session.userId;
@@ -114,10 +107,10 @@ app.get('/', function(request, response) {
 app.get('/soc_assigned', isAuthenticated, async function(request, response) {
     try {
         const userId = request.session.userId;
-        // Get the society names based on the user's ID
-        const societyNames = await getSocietyNameByUserId(userId);
-        // Render the 'soc_assigned.ejs' template with the society names
-        response.render('soc_assigned', { soc_names: societyNames });
+        // Get the society name based on the user's ID
+        const societyname = await getSocietyNameByUserId(userId);
+        // Render the 'soc_assigned.ejs' template with the society name and offices data
+        response.render('soc_assigned', { soc_names: societyname });
     } catch (error) {
         console.error("Error on society route:", error);
         response.status(500).send('Internal Server Error');
@@ -126,7 +119,7 @@ app.get('/soc_assigned', isAuthenticated, async function(request, response) {
 
 app.get('/soc_assigned/:name', (req, res) => {
     const societyName = req.params.name;
-    res.render('next_page', { societyName: societyName });
+    res.render('employee_create', { societyName: societyName });
 });
 
 app.get('/admin_page', function(request, response) {
@@ -149,11 +142,15 @@ app.post('/', async function(request, response) {
     }
 });
 
-connectToDatabase().then(() => {
-    app.listen(2000, () => {
-        console.log('Server is running on http://localhost:2000/');
+    // Start the server
+    connectToDatabase().then(() => {
+        app.listen(2000, () => {
+            console.log('Server is running on http://localhost:2000/');
+        });
+    }).catch(error => {
+        console.error("Database connection error:", error);
     });
-}).catch(error => {
-    console.error("Database connection error:", error);
-});
+}
 
+// Call the setup function to run setup tasks and start the server
+setup();

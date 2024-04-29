@@ -52,7 +52,6 @@ async function getBallotNameByUserId(userId) {
         AND CURRENT_DATE BETWEEN b."startdate" AND b."enddate";
     `;
     const result = await client.query(query, [userId]);
-    console.log(result)
     return result.rows.map(row => row.ballottitle);
 
 }
