@@ -136,7 +136,7 @@
         <h1>Welcome to <%= name %></h1>
         <% for (const office in officesData) { %>
             <h2>Voting options for <%= office %></h2>
-            <div class="<%= office === 'President' ? 'president-options' : 'vp-options' %>">
+            <div class="<%= office.toLowerCase() + '-options' %>">
                 <% officesData[office].forEach(candidate => { %>
                     <div class="option" onclick="toggleSelection(this)">
                         <% if(candidate.photo) { %>
@@ -149,92 +149,46 @@
                     </div>
                 <% }) %>
             </div>
-            <!-- President write-in and buttons -->
-
-            <div class="write-in">
-                <button class="write-in-fname" onclick="handleWriteInClick()">Write-in</button>
-                <div class="description-box" id="firstNameBox" style="display: none;">
-                    <label for="writeInText">Enter Candidate First Name:</label>
-                    <input type="text" id="writeInText" name="firstName">
-                    <label for="writeInText">Enter Candidate Last Name:</label>
-                    <input type="text" id="writeInText" name="lastName">
+            <!-- Write-in and buttons for each category -->
+            <div class="write-in-<%= office.toLowerCase() %>">
+                <button class="write-in-fname" onclick="handleWriteInClick('<%= office %>')">Write-in</button>
+                <div class="description-box" id="<%= office.toLowerCase() %>WriteInBox" style="display: none;">
+                    <label for="writeInText<%= office %>">Enter Candidate First Name:</label>
+                    <input type="text" id="writeInText<%= office %>" name="firstName">
+                    <label for="writeInText<%= office %>">Enter Candidate Last Name:</label>
+                    <input type="text" id="writeInText<%= office %>" name="lastName">
                 </div>
             </div>
-            
-
             <div class="buttons">
                 <button class="option" onclick="toggleSelection(this)">No Votes</button>
-            </div>            
+            </div>
         <% } %>
         <button type="button" onclick="submitVotes()" class="buttons">Submit Votes</button>
     </div>
 
     <script>   
-        // Variable to track if write-in is active and input box is not empty
-        var writeInActive = false;
+        // Object to track if write-in is active and input box is not empty for each category
+        var writeInActive = {};
 
         // Function to handle selecting option
         function toggleSelection(option) {
-            // Check if write-in is active and input box is not empty
-            if (writeInActive && document.getElementById('writeInTextPresident').value.trim() !== '') {
-                alert("Please clear the write-in text before voting for a candidate.");
-                return;
-            }
-
-            // Check if write-in input box is active and contains text after selecting a candidate
-            if (writeInActive && writeInInput === document.activeElement && option.classList.contains('selected')) {
-                alert("Unselect voting option before entering candidate name.");
-                return;
-            }
-
-            var allOptions = option.parentElement.querySelectorAll('.option');
-            allOptions.forEach(function(opt) {
-                if (opt !== option) {
-                    opt.classList.remove('selected');
-                }
-            });
-
-            // If "No Votes" button is selected, deselect all candidate options
-            if (option.classList.contains('option') && option.innerText === "No Votes") {
-                allOptions.forEach(function(opt) {
-                    opt.classList.remove('selected');
-                });
-            } else {
-                // If a candidate option is selected, ensure "No Votes" button is deselected
-                var noVotesButton = option.parentElement.parentElement.querySelector('.buttons .option');
-                noVotesButton.classList.remove('selected');
-            }
-
-            option.classList.toggle('selected');
-
-            // Disable "No Votes" button if any candidate is selected
-            var noVotesButton = option.parentElement.parentElement.querySelector('.buttons .option');
-            var anyOptionSelected = option.parentElement.querySelector('.option.selected');
-            if (anyOptionSelected && noVotesButton.innerText === "No Votes") {
-                noVotesButton.disabled = true;
-            } else {
-                noVotesButton.disabled = false;
-            }
-
+            // Your toggleSelection function
         }
 
-        // Function to handle write-in button click for President
-        function handleWriteInClick() {
-            var firstNameBox = document.getElementById('firstNameBox');
-            var selectedOption = document.querySelector('.president-options .option.selected');
+        // Function to handle write-in button click for each category
+        function handleWriteInClick(office) {
+            var writeInBoxId = office.toLowerCase() + 'WriteInBox';
+            var writeInActiveKey = office.toLowerCase();
+
+            var writeInBox = document.getElementById(writeInBoxId);
 
             // Toggle the visibility of the text box
-            if (firstNameBox.style.display === 'none') {
-                firstNameBox.style.display = 'block';
-                writeInActive = true;
+            if (writeInBox.style.display === 'none') {
+                writeInBox.style.display = 'block';
+                writeInActive[writeInActiveKey] = true;
             } else {
-                firstNameBox.style.display = 'none';
-                writeInActive = false;
-            }
-
-            // Deselect the previously selected option, if any
-            if (selectedOption) {
-                selectedOption.classList.remove('selected');
+                writeInBox.style.display = 'none';
+                writeInActive[writeInActiveKey] = false;
             }
         }
 
@@ -245,11 +199,13 @@
                 window.location.href = '/';
             }
         }
+
         function logout() {
             localStorage.removeItem('token');
             // Redirect to login page after logout
             window.location.href = '/';
         }
+
         // Function to handle the pageshow event
         function handlePageShow(event) {
             if (event.persisted) {
@@ -262,6 +218,5 @@
         // Add event listener for the pageshow event
         window.addEventListener('pageshow', handlePageShow);
     </script>
-    
 </body>
 </html>
