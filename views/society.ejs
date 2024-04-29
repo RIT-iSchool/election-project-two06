@@ -64,29 +64,7 @@
             max-width: 100%;
             height: auto;
         }
-    
-        .write-in {
-            display: flex;
-            justify-content: space-between;
-            margin-top: 20px;
-        }
-    
-        .write-in button {
-            padding: 10px 20px;
-            border: none;
-            border-radius: 5px;
-            background-color: #4caf50;
-            color: #fff;
-        }
-    
-        .write-in button:focus {
-            outline: none;
-        }
-    
-        .write-in button:hover {
-            background-color: #45a049;
-        }
-    
+      
         .buttons {
             text-align: center;
             margin-top: 20px;
@@ -113,12 +91,6 @@
             background-color: #075225;
         }
     
-        .write-in {
-            display: flex;
-            justify-content: space-between;
-            margin-top: 20px;
-        }
-    
         .write-in button {
             padding: 10px 20px;
             border: none;
@@ -136,22 +108,25 @@
         .write-in button:hover {
             background-color: #45a049; /* Changing background color on hover */
         }
-    
-        .description-box {
+
+        write-in {
+            display: flex;
+            justify-content: center; /* Center the elements horizontally */
             margin-top: 20px;
         }
-    
+
+        .description-box {
+            margin-top: 10px;
+        }
+
         .description-box label {
             display: block;
             margin-bottom: 5px;
         }
-    
+
         .description-box input[type="text"] {
-            width: 100%;
-            padding: 10px;
-            border-radius: 5px;
-            border: 1px solid #ccc;
-            box-sizing: border-box;
+            width: 40%; 
+            margin-bottom: 10px; 
         }
     </style>
     
@@ -177,12 +152,12 @@
             <!-- President write-in and buttons -->
 
             <div class="write-in">
-                <button class="write-in-fname" onclick="handleWriteInClickPresident()">Write-in</button>
-                <div class="description-box" id="firstNameBoxPresident" style="display: none;">
+                <button class="write-in-fname" onclick="handleWriteInClick()">Write-in</button>
+                <div class="description-box" id="firstNameBox" style="display: none;">
                     <label for="writeInText">Enter Candidate First Name:</label>
-                    <input type="text" id="writeInTextPresident" name="firstName">
+                    <input type="text" id="writeInText" name="firstName">
                     <label for="writeInText">Enter Candidate Last Name:</label>
-                    <input type="text" id="writeInTextPresident" name="lastName">
+                    <input type="text" id="writeInText" name="lastName">
                 </div>
             </div>
             
