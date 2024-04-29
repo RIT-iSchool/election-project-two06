@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Election Results</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            box-sizing: border-box;
+            text-align: center; /* Center align the content */
+        }
+
+        h1 {
+            padding-top: 100px;
+        }
+
+        .buttons {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap; /* Allow buttons to wrap to the next line if necessary */
+        }
+
+        .option {
+            padding: 10px 20px;
+            margin: 10px;
+            border: none;
+            border-radius: 5px;
+            background-color: #4caf50;
+            color: #fff;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .option:focus {
+            outline: none;
+        }
+
+        .option:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Election Results</h1>
+        <% society %>
+        <% election %>
+        
+    </div>
+
+    <script>
+        function goToUsers() {
+            window.location.href = '/admin_page/users/';
+        }
+        function goToSociety(name) {
+            window.location.href = '/soc_assigned/' + encodeURIComponent(name);
+        }
+        function checkTokenLocalStorage() {
+            if (!localStorage.getItem('token')) {
+                // Redirect to login page if token doesn't exist in localStorage
+                window.location.href = '/';
+            }
+        }
+        function logout() {
+            localStorage.removeItem('token');
+            // Redirect to login page after logout
+            window.location.href = '/';
+        }
+        // Function to handle the pageshow event
+        function handlePageShow(event) {
+            if (event.persisted) {
+                // If the page is shown from the cache (e.g., when navigating back),
+                // check if the token is still in local storage
+                checkTokenLocalStorage();
+            }
+        }
+
+        // Add event listener for the pageshow event
+        window.addEventListener('pageshow', handlePageShow);
+
+    </script>
+
+</body>
+</html>
