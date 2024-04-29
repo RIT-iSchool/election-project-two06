@@ -173,20 +173,15 @@
         // Object to track if write-in is active and input box is not empty for each category
         var writeInActive = false;
 
-        // Function to handle selecting option
+          // Function to handle selecting option
         function toggleSelection(option) {
             // Check if write-in is active and input box is not empty
-            if (writeInActive && document.getElementById('writeInTextPresident').value.trim() !== '') {
+            if (writeInActive && document.getElementById('writeInText').value.trim() !== '') {
                 alert("Please clear the write-in text before voting for a candidate.");
                 return;
             }
 
-            // Check if write-in input box is active and contains text after selecting a candidate
-            if (writeInActive && writeInInput === document.activeElement && option.classList.contains('selected')) {
-                alert("Unselect voting option before entering candidate name.");
-                return;
-            }
-
+            // Ensures only one candidate can be selected
             var allOptions = option.parentElement.querySelectorAll('.option');
             allOptions.forEach(function(opt) {
                 if (opt !== option) {
@@ -194,7 +189,7 @@
                 }
             });
 
-            // If "No Votes" button is selected, deselect all candidate options
+            // Ensures the select option works
             if (option.classList.contains('option') && option.innerText === "No Votes") {
                 allOptions.forEach(function(opt) {
                     opt.classList.remove('selected');
@@ -207,7 +202,7 @@
 
             option.classList.toggle('selected');
 
-            // Disable "No Votes" button if any candidate is selected
+            // Ensures No Votes button can not be selected is candidate is selected
             var noVotesButton = option.parentElement.parentElement.querySelector('.buttons .option');
             var anyOptionSelected = option.parentElement.querySelector('.option.selected');
             if (anyOptionSelected && noVotesButton.innerText === "No Votes") {
@@ -215,24 +210,8 @@
             } else {
                 noVotesButton.disabled = false;
             }
-
         }
-        // // Function to handle write-in button click for each category
-        // function handleWriteInClick(office) {
-        //     var writeInBoxId = office.toLowerCase() + 'WriteInBox';
-        //     var writeInActiveKey = office.toLowerCase();
 
-        //     var writeInBox = document.getElementById(writeInBoxId);
-
-        //     // Toggle the visibility of the text box
-        //     if (writeInBox.style.display === 'none') {
-        //         writeInBox.style.display = 'block';
-        //         writeInActive[writeInActiveKey] = true;
-        //     } else {
-        //         writeInBox.style.display = 'none';
-        //         writeInActive[writeInActiveKey] = false;
-        //     }
-        // }
 
         // Function to handle write-in button click for each category
         function handleWriteInClick(office) {
@@ -241,12 +220,21 @@
 
             var writeInBox = document.getElementById(writeInBoxId);
 
-            // Clear the selection of any candidate
+            // Clear the selection of any candidate in the specific office
             var allOptions = document.querySelectorAll('.' + office.toLowerCase() + '-options .option');
             allOptions.forEach(function(option) {
                 if (option.classList.contains('selected')) {
                     option.classList.remove('selected');
                 }
+            });
+
+            // Deselect all buttons in all categories
+            var allCategories = document.querySelectorAll('.president-options, .vp-options');
+            allCategories.forEach(function(category) {
+                var allButtons = category.querySelectorAll('.option');
+                allButtons.forEach(function(button) {
+                    button.classList.remove('selected');
+                });
             });
 
             // Toggle the visibility of the text box
@@ -260,6 +248,7 @@
         }
 
 
+ 
         // Function to submit votes
         function submitVotes() {
 
