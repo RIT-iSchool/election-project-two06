@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Voting Options for President and Vice President</title>
+    <title>Elections Associated with <%= societyName %></title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -11,7 +11,7 @@
             margin: 0;
             padding: 0;
         }
-    
+
         .container {
             max-width: 800px;
             margin: 20px auto;
@@ -24,231 +24,66 @@
             text-align: center;
             padding-top: 50px;
         }
-    
-        .order {
-            text-align: center;
-            margin-bottom: 20px;
-        }
-    
-        .order select {
-            margin-left: 10px;
-        }
-    
-        .president-options, .vp-options {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: space-between;    
-        }
-    
-        .option {
-            width: calc(20% - 20px);
-            margin-bottom: 20px;
-            background-color: #4caf50;
+
+        .election-btn {
+            width: 100%;
             padding: 10px;
-            box-sizing: border-box;
+            margin-bottom: 10px;
+            background-color: #4caf50;
+            border: none;
             border-radius: 5px;
-            text-align: center;
             color: white;
-        }
-
-        .option:hover {
-            background-color: #45a049;
             cursor: pointer;
+            transition: background-color 0.3s ease;
         }
 
-        .option.selected {
-            background-color: #075225;
-        }
-    
-        .option-image img {
-            max-width: 100%;
-            height: auto;
-        }
-      
-        .buttons {
-            text-align: center;
-            margin-top: 20px;
-        }
-    
-        .buttons button {
-            padding: 10px 20px;
-            margin: 0 5px;
-            border: none;
-            border-radius: 5px;
-            background-color: #4caf50;
-            color: #fff;
-        }
-    
-        .buttons button:focus {
-            outline: none;
-        }
-    
-        .buttons button:hover {
+        .election-btn:hover {
             background-color: #45a049;
         }
-
-        .buttons button.selected:hover {
-            background-color: #075225;
-        }
-    
-        .write-in button {
-            padding: 10px 20px;
-            border: none;
-            border-radius: 5px;
-            background-color: #4caf50;
-            color: #fff;
-            cursor: pointer;
-            margin-right: 150px; /* Add margin between buttons */
-        }
-    
-        .write-in button:focus {
-            outline: none;
-        }
-    
-        .write-in button:hover {
-            background-color: #45a049; /* Changing background color on hover */
-        }
-
-        .write-in {
-            display: flex;
-            /* justify-content: center;  */
-            margin-top: 20px;
-        }
-
-        .description-box {
-            margin-top: 10px;
-        }
-
-        .description-box label {
-            display: block;
-            margin-bottom: 5px;
-        }
-
-        .description-box input[type="text"] {
-            width: 100%; 
-            margin-bottom: 10px; 
-        }
-
     </style>
-    
 </head>
 <body>
     <div class="container">
-        <h1>Welcome to <%= name %></h1>
-        <% for (const office in officesData) { %>
-            <h2>Voting options for <%= office %></h2>
-            <div class="<%= office.toLowerCase() ? 'president-options' : 'vp-options' %>">
-                <% officesData[office].forEach(candidate => { %>
-                    <div class="option" onclick="toggleSelection(this)">
-                        <% if(candidate.photo) { %>
-                            <div class="option-image">
-                                <img src="data:image/jpeg;base64,<%= candidate.photo.toString('base64') %>" alt="Photo of <%= candidate.name %>">
-                            </div>
-                        <% } %>
-                        <!-- Display candidate name -->
-                        <div class="option-name"><%= candidate.name %></div>
-                    </div>
-                <% }) %>
-            </div>
-            <!-- Write-in and buttons for each category -->
-            <div class="write-in <%= office.toLowerCase() %>">
-                <button class="write-in-fname" onclick="handleWriteInClick('<%= office %>')">Write-in</button>
-                <div class="description-box" id="<%= office.toLowerCase() %>WriteInBox" style="display: none;">
-                    <label for="writeInText<%= office %>">Enter Candidate First Name:</label>
-                    <input type="text" id="writeInText<%= office %>" name="firstName">
-                    <label for="writeInText<%= office %>">Enter Candidate Last Name:</label>
-                    <input type="text" id="writeInText<%= office %>" name="lastName">
-                </div>
-            </div>
+        <h1>Elections Associated with <%= societyName %></h1>
+
+        <% if (pastElections.length > 0) { %>
+            <h2>Past Elections</h2>
+            <% pastElections.forEach(function(election) { %>
+                <button class="election-btn" onclick="goToElection('<%= societyName %>','<%= election %>')"><%= election['Election Title'] %></button>
+            <% }); %>
         <% } %>
-        <div class="buttons">
-            <button type="button" onclick="submitVotes()" class="buttons">Submit Votes</button>
-        </div>
+
+        <% if (presentElections.length > 0) { %>
+            <h2>Present Elections</h2>
+            <% presentElections.forEach(function(election) { %>
+                <button class="election-btn"><%= election['Election Title'] %></button>
+            <% }); %>
+        <% } %>
+
+        <% if (futureElections.length > 0) { %>
+            <h2>Future Elections</h2>
+            <% futureElections.forEach(function(election) { %>
+                <button class="election-btn"><%= election['Election Title'] %></button>
+            <% }); %>
+        <% } %>
+
     </div>
 
-    <script>  
-        // Object to track if write-in is active and input box is not empty for each category
-        var writeInActive = false;
-      
-        // Function to handle selecting option
-        function toggleSelection(option) {
-            // Check if write-in is active and input box is not empty
-            if (writeInActive && document.getElementById('writeInText').value.trim() !== '') {
-                alert("Please clear the write-in text before voting for a candidate.");
-                return;
-            }
-
-            // Ensures only one candidate can be selected
-            var allOptions = option.parentElement.querySelectorAll('.option');
-            allOptions.forEach(function(opt) {
-                if (opt !== option) {
-                    opt.classList.remove('selected');
-                }
-            });
-
-            // Ensures the select option works
-            if (option.classList.contains('option') && option.innerText === "No Votes") {
-                allOptions.forEach(function(opt) {
-                    opt.classList.remove('selected');
-                });
-            } 
-
-            option.classList.toggle('selected');
+    <script>
+        function goToElection(society, election) {
+            window.location.href = '/soc_assigned/' + encodeURIComponent(society) + '/' + encodeURIComponent(election);
         }
-
-        // Function to handle write-in button click for each category
-        function handleWriteInClick(office) {
-            var writeInBoxId = office.toLowerCase() + 'WriteInBox';
-            var writeInActiveKey = office.toLowerCase();
-
-            var writeInBox = document.getElementById(writeInBoxId);
-
-            // Clear the selection of any candidate in the specific office
-            var allOptions = document.querySelectorAll('.' + office.toLowerCase() + '-options .option');
-            allOptions.forEach(function(option) {
-                if (option.classList.contains('selected')) {
-                    option.classList.remove('selected');
-                }
-            });
-
-            // Deselect all buttons in all categories
-            var allCategories = document.querySelectorAll('.president-options, .vp-options');
-            allCategories.forEach(function(category) {
-                var allButtons = category.querySelectorAll('.option');
-                allButtons.forEach(function(button) {
-                    button.classList.remove('selected');
-                });
-            });
-
-            // Toggle the visibility of the text box
-            if (writeInBox.style.display === 'none') {
-                writeInBox.style.display = 'block';
-                writeInActive[writeInActiveKey] = true;
-            } else {
-                writeInBox.style.display = 'none';
-                writeInActive[writeInActiveKey] = false;
-            }
-        }
- 
-        // Function to submit votes
-        function submitVotes() {
-
-        }
-
-        // Function to check if token in localstorage
         function checkTokenLocalStorage() {
             if (!localStorage.getItem('token')) {
                 // Redirect to login page if token doesn't exist in localStorage
                 window.location.href = '/';
             }
         }
-
         function logout() {
             localStorage.removeItem('token');
             // Redirect to login page after logout
             window.location.href = '/';
         }
-
         // Function to handle the pageshow event
         function handlePageShow(event) {
             if (event.persisted) {
@@ -260,6 +95,7 @@
 
         // Add event listener for the pageshow event
         window.addEventListener('pageshow', handlePageShow);
+
     </script>
 </body>
 </html>

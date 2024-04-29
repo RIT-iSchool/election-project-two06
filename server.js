@@ -3,7 +3,7 @@ const session = require('express-session');
 const path = require('path');
 const fs = require('fs');
 
-const { connectToDatabase, getUserByEmail, getSocietyNameByUserId, getBallotNameByUserId, getSocietyOfficesByUserId, getCandidatesForOffice } = require('./dataAccess');
+const { connectToDatabase, getUserByEmail, getSocietyNameByUserId, getSocietiesForAdmin, getBallotNameByUserId, getSocietyOfficesByUserId, getCandidatesForOffice } = require('./dataAccess');
 const { loginUser } = require('./businessLogic');
 
 const { encryptPasswords } = require('./encrypt');
@@ -102,7 +102,7 @@ function startServer() {
             const presentElections = associatedElections.filter(election => moment(election['Start Date']).isSameOrBefore(today) && moment(election['End Date']).isSameOrAfter(today));
             const futureElections = associatedElections.filter(election => moment(election['Start Date']).isAfter(today));
             
-            res.render('next_page', { societyName: societyName, pastElections: pastElections, presentElections: presentElections, futureElections: futureElections });
+            res.render('society', { societyName: societyName, pastElections: pastElections, presentElections: presentElections, futureElections: futureElections });
         } catch (error) {
             console.error("Error fetching election data:", error);
             res.status(500).send('Internal Server Error');
@@ -111,14 +111,13 @@ function startServer() {
 
     app.get('/welcome', isAuthenticated, async function(request, response) {
         const userId = request.session.userId;
-        const ballotName = await getBallotNameByUserId(userId); 
-        console.log(ballotName)
+        const ballotName = await getBallotNameByUserId(userId);
         const societyname = await getSocietyNameByUserId(userId);
 
         response.render('welcome', { name: societyname, ballotName: ballotName });
     });
 
-    app.get('/society', isAuthenticated, async function(request, response) {
+    app.get('/voting', isAuthenticated, async function(request, response) {
         try {
             const userId = request.session.userId;
             // Get the society name based on the user's ID
@@ -136,11 +135,11 @@ function startServer() {
                     const candidates = await getCandidatesForOffice(userId, office);
                     officeData[office] = candidates;
                 }
-                // Render the 'society.ejs' template with the society name and offices data
-                response.render('society', { name: societyname, officesData: officeData });
+                // Render the 'voting.ejs' template with the society name and offices data
+                response.render('voting', { name: societyname, officesData: officeData });
             }
         } catch (error) {
-            console.error("Error on society route:", error);
+            console.error("Error on voting route:", error);
             response.status(500).send('Internal Server Error');
         }
     });
@@ -164,13 +163,38 @@ function startServer() {
 
     app.get('/soc_assigned/:name', (req, res) => {
         const societyName = req.params.name;
-        res.render('next_page', { societyName: societyName });
+        res.render('society', { societyName: societyName });
+    });
+    app.get('/soc_assigned/:society/:election', (req, res) => {
+        const societyName = req.params.society;
+        const electionName = req.params.election;
+        res.render('election', { society: societyName, election: electionName });
     });
 
-    app.get('/admin_page', function(request, response) {
-        response.render('admin_page'); // Render 'admin.ejs' from the views folder
+    app.get('/admin_page', async function(request, response) {
+        try {
+            const userId = request.session.userId;
+            // Get the society names based on the user's ID
+            const societyNames = await getSocietiesForAdmin(userId);
+            // Render the 'soc_assigned.ejs' template with the society names
+            response.render('admin_page', { soc_names: societyNames });
+        } catch (error) {
+            console.error("Error on society route:", error);
+            response.status(500).send('Internal Server Error');
+        }
     });
-
+    app.get('/admin_page/users', async function(request, response) {
+        try {
+            const userId = request.session.userId;
+            // Get the society names based on the user's ID
+            const userDetails = await getUsersForAdmin(userId);
+            // Render the 'soc_assigned.ejs' template with the society names
+            response.render('users', { users: userDetails });
+        } catch (error) {
+            console.error("Error on society route:", error);
+            response.status(500).send('Internal Server Error');
+        }
+    });
     app.post('/', async function(request, response) {
         const { email, password } = request.body;
 

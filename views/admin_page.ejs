@@ -53,39 +53,21 @@
 <body>
     <div class="container">
         <h1>Professional Societies</h1>
-        <div class="buttons" id="societyButtons">
-            <!-- Society buttons will be dynamically added here -->
+        <button onclick="goToUsers()">Users</button>
+        <div class="buttons">
+            <% for (name of soc_names) { %>
+                <button class="option" onclick="goToSociety('<%= name %>')"><%= name %></button>
+            <% } %>
         </div>
     </div>
 
     <script>
-        // Function to fetch societies from the database
-        function fetchSocieties() {
-            // Assuming you have a JSON endpoint to fetch societies
-            fetch('path_to_your_endpoint')
-                .then(response => response.json())
-                .then(societies => {
-                    const societyButtonsContainer = document.getElementById('societyButtons');
-
-                    // Loop through each society and create a button for it
-                    societies.forEach(society => {
-                        const button = document.createElement('button');
-                        button.className = 'option';
-                        button.textContent = society.SocietyName;
-                        button.onclick = function() {
-                            // Redirect to the page for the selected society, passing the society ID as a parameter
-                            window.location.href = 'society.php?society_id=' + society.SocietyID;
-                        };
-
-                        societyButtonsContainer.appendChild(button);
-                    });
-                })
-                .catch(error => console.error('Error fetching societies:', error));
+        function goToUsers() {
+            window.location.href = '/admin_page/users/';
         }
-
-        // Call the fetchSocieties function when the page loads
-        window.onload = fetchSocieties;
-        // Function to check if token in localstorage
+        function goToSociety(name) {
+            window.location.href = '/soc_assigned/' + encodeURIComponent(name);
+        }
         function checkTokenLocalStorage() {
             if (!localStorage.getItem('token')) {
                 // Redirect to login page if token doesn't exist in localStorage

@@ -41,7 +41,48 @@ async function getSocietyNameByUserId(userId) {
         throw error;
     }
 }
-
+async function getSocietiesForAdmin(userId) {
+    try {
+        const query = `SELECT "usertype" FROM public."users" WHERE "userid" = $1;`;
+        const userResult = await client.query(query, [userId]);
+        const userType = userResult.rows[0].usertype;
+        if (userType !== 'admin') {
+            // If the user is not an admin, return an empty array
+            return [];
+        }
+        // If the user is an admin, proceed with the query to get society names
+        const societiesQuery = `SELECT societyname FROM professional_society;`;
+        const societiesResult = await client.query(societiesQuery);
+        // Extract the society names from the result
+        const societyNames = societiesResult.rows.map(row => row.societyname);
+        // Return the array of society names
+        return societyNames;
+    } catch (error) {
+        console.error("Error retrieving society name:", error);
+        throw error;
+    }
+}
+async function getUsersForAdmin(userID) {
+    try {
+        const query = `SELECT "usertype" FROM public."users" WHERE "userid" = $1;`;
+        const userResult = await client.query(query, [userId]);
+        const userType = userResult.rows[0].usertype;
+        if (userType !== 'admin') {
+            // If the user is not an admin, return an empty array
+            return [];
+        }
+        // If the user is an admin, proceed with the query to get users
+        const usersQuery = `SELECT fname, lname, email, usertype, password, is_pwd_encrypted FROM public."users";`;
+        const usersResult = await client.query(usersQuery);
+        // Extract the society names from the result
+        const userDetails = usersResult.rows.map(row => row.user);
+        // Return the array of users
+        return userDetails;
+    } catch (error) {
+        console.error("Error retrieving society name:", error);
+        throw error;
+    }
+}
 async function getBallotNameByUserId(userId) {
     const query = `
         SELECT b."ballottitle"
@@ -96,5 +137,5 @@ async function getCandidatesForOffice(userId, officeName) {
     }
 }
 
-module.exports = { connectToDatabase, getUserByEmail, getBallotNameByUserId, getSocietyNameByUserId, getSocietyOfficesByUserId, getCandidatesForOffice };
+module.exports = { connectToDatabase, getUserByEmail, getBallotNameByUserId, getUsersForAdmin, getSocietyNameByUserId, getSocietiesForAdmin, getSocietyOfficesByUserId, getCandidatesForOffice };
 
