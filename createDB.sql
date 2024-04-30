@@ -106,6 +106,9 @@ CREATE TRIGGER trigger_encrypt_users_password
 AFTER INSERT OR UPDATE OR DELETE ON public.users
 FOR EACH ROW EXECUTE FUNCTION encrypt_users_password();
 
+ALTER SEQUENCE users_userid_seq RESTART WITH 41;
+
+
 COPY Users FROM '/tmp/users.psv' DELIMITER '|' CSV HEADER;
 COPY Professional_Society FROM '/tmp/societies.psv' DELIMITER '|' CSV HEADER;
 COPY User_Society FROM '/tmp/user_soc.psv' DELIMITER '|' CSV HEADER;

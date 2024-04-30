@@ -212,4 +212,21 @@ async function getElectionsBySocietyId(societyId) {
 
 
 module.exports = { getSocietyDetailsBySocietyName, getElectionsBySocietyId, connectToDatabase, getUserByEmail, getBallotNameBySocId, getUsersForAdmin, getBallotInitBySocietyId, getSocietyDetailsByUserId, getSocietiesForAdmin, getSocietyOfficesBySocId, getCandidatesForOffice, updateUser, getUserDetailsByUserId };
+async function createUser(userDetails) {
+    try {
+        const createQuery = `
+            INSERT INTO public.users (fname, lname, email, usertype, password)
+            VALUES ($1, $2, $3, $4, $5);
+        `;
+        const values = [userDetails.fname, userDetails.lname, userDetails.email, userDetails.usertype, userDetails.password];
+        console.log(values);
+        await client.query(createQuery, values);
+        console.log('User created successfully');
+    } catch (error) {
+        console.error('Error updating user details:', error);
+        throw error;
+    }
+}
+
+module.exports = { connectToDatabase, createUser, getUserByEmail, getBallotNameBySocId, getUsersForAdmin, getBallotInitBySocietyId, getSocietyDetailsByUserId, getSocietiesForAdmin, getSocietyOfficesBySocId, getCandidatesForOffice, updateUser, getUserDetailsByUserId };
 

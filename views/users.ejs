@@ -71,11 +71,28 @@
             text-decoration: none;
             cursor: pointer;
         }
+        .option {
+            padding: 10px 20px;
+            margin: 10px;
+            border: none;
+            border-radius: 5px;
+            background-color: #4caf50;
+            color: #fff;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        .option:focus {
+            outline: none;
+        }
+
+        .option:hover {
+            background-color: #45a049;
+        }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>Users</h1>
+        <h1>Users <button class="option" onclick="openCreateModal()">Create User</button></h1>
         <table id="userTable" class="display">
             <thead>
                 <tr>
@@ -108,10 +125,45 @@
             </tbody>
         </table>
     </div>
+    <!-- Modal for creating a user -->
+    <div id="createUserModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal(document.getElementById('createUserModal'))">&times;</span>
+            <h2>Create User</h2>
+            <div class="container">
+                <h2>User Information</h2>
+                <form id="userForm">
+                    <div class="form-group">
+                        <label for="userFName">Enter First Name:</label>
+                        <input type="text" id="userFName" name="userFName" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="userLName">Enter Last Name:</label>
+                        <input type="text" id="userLName" name="userLName" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="userEmail">Enter Email:</label>
+                        <input type="email" id="userEmail" name="userEmail" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="userType">Enter User Role:</label>
+                        <input type="text" id="userType" name="userType" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="userPass">Enter Password:</label>
+                        <input type="text" id="userPassword" name="userPassword" required>
+                    </div>
+                    <div class="buttons">
+                        <button type="button" onclick="submitUser()">Submit</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
     <!-- Pop-up modal for editing user details -->
     <div id="editModal" class="modal" style="display: none;">
         <div class="modal-content">
-            <span class="close" onclick="closeModal()">&times;</span>
+            <span class="close" onclick="closeModal(document.getElementById('editModal'))">&times;</span>
             <h2>Edit User</h2>
             <form id="editForm">
                 <!-- User details inputs -->
@@ -121,7 +173,7 @@
                 <input type="text" id="lname" name="lname">
                 <label for="email">Email:</label>
                 <input type="email" id="email" name="email" readonly>
-                <label for="usertype">User Type:</label>
+                <label for="usertype">User Role:</label>
                 <input type="usertype" id="usertype" name="usertype">
                 <button type="button" onclick="submitEdit()">Save</button>
             </form>
@@ -178,7 +230,8 @@
                 if (response.ok) {
                     // User details updated successfully
                     console.log('User details updated successfully');
-                    closeModal(); // Close the modal after successful update
+                    const modal = document.getElementById("editModal");
+                    closeModal(modal); // Close the modal after successful update
                     // Reload the page to fetch updated user details from the server
                     window.location.reload();
                 } else {
@@ -190,9 +243,50 @@
             }
         }
 
-        function closeModal() {
+        function openCreateModal() {
+            const modal = document.getElementById("createUserModal");
+            modal.style.display = "block";
+        }
+        // Function to submit the form data for creating a user
+        async function submitUser() {
+            const fname = document.getElementById("userFName").value;
+            const lname = document.getElementById("userLName").value;
+            const email = document.getElementById("userEmail").value;
+            const usertype = document.getElementById("userType").value;
+            const password = document.getElementById("userPassword").value;
+
+            const data = {
+                fname: fname,
+                lname: lname,
+                email: email,
+                usertype: usertype,
+                password: password
+            };
+
+            try {
+                const response = await fetch('/admin_page/create_user', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                });
+
+                if (response.ok) {
+                    console.log('User created successfully');
+                    const modal = document.getElementById("createUserModal");
+                    closeModal(modal);
+                    window.location.reload(); // Reload the page to fetch updated user details
+                } else {
+                    console.error('Error creating user:', response.statusText);
+                }
+            } catch (error) {
+                console.error('Error creating user:', error);
+            }
+        }
+
+        function closeModal(modal) {
             // Close the modal
-            const modal = document.getElementById("editModal");
             modal.style.display = "none";
         }
         // Call closeModal when the close button is clicked

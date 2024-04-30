@@ -4,7 +4,7 @@ const bodyParser = require('body-parser');
 const path = require('path');
 const fs = require('fs');
 
-const { getSocietyDetailsBySocietyName, getElectionsBySocietyId, connectToDatabase, getUserByEmail, getBallotNameBySocId, getUsersForAdmin, getBallotInitBySocietyId, getSocietyDetailsByUserId, getSocietiesForAdmin, getSocietyOfficesBySocId, getCandidatesForOffice, updateUser, getUserDetailsByUserId } = require('./dataAccess');
+const { getSocietyDetailsBySocietyName, getElectionsBySocietyId, connectToDatabase, createUser, getUserByEmail, getBallotNameBySocId, getUsersForAdmin, getBallotInitBySocietyId, getSocietyDetailsByUserId, getSocietiesForAdmin, getSocietyOfficesBySocId, getCandidatesForOffice, updateUser, getUserDetailsByUserId } = require('./dataAccess');
 const { loginUser } = require('./businessLogic');
 
 const { encryptPasswords } = require('./encrypt');
@@ -264,6 +264,18 @@ function startServer() {
             // Implement logic to update user details in the database
             await updateUser(userid, { fname, lname, email, usertype });
             res.status(200).json({ message: 'User details updated successfully' });
+        } catch (error) {
+            console.error("Error updating user details:", error);
+            res.status(500).json({ error: 'Internal Server Error' });
+        }
+    });
+    // Route for creating user details via AJAX
+    app.post('/admin_page/create_user', async (req, res) => {
+        try {
+            const { fname, lname, email, usertype, password } = req.body; // Assuming these are the fields being updated
+            // Implement logic to create user details in the database
+            await createUser( {fname, lname, email, usertype, password} );
+            res.status(200).json({ message: 'User created successfully' });
         } catch (error) {
             console.error("Error updating user details:", error);
             res.status(500).json({ error: 'Internal Server Error' });
