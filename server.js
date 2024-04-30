@@ -87,7 +87,7 @@ function startServer() {
 
     const moment = require('moment');
 
-    app.get('/soc_assigned/:name', async (req, res) => {
+    app.get('/soc_assigned/:name', isAuthenticated, async (req, res) => {
         try {
             const societyName = req.params.name;
             const societyDetails = await getSocietyDetailsBySocietyName(societyName);
@@ -124,7 +124,9 @@ function startServer() {
         response.render('welcome', { name: societyDetails[0].societyname, ballotName: ballotDetails[0].ballotName });
     });
 
-    // In your Express server setup
+    app.get('/soc_assigned/:name/ballot_info', isAuthenticated, async function(req, res) {
+        res.render('ballot_info');
+    });
 
     app.get('/ballot_initiatives', isAuthenticated, async (req, res) => {
         try {
@@ -181,17 +183,14 @@ function startServer() {
         }
     });
 
-    app.get('/soc_assigned/:name', (req, res) => {
-        const societyName = req.params.name;
-        res.render('society', { societyName: societyName });
-    });
-    app.get('/soc_assigned/:society/:election', (req, res) => {
+ 
+    app.get('/soc_assigned/:society/:election', isAuthenticated, (req, res) => {
         const societyName = req.params.society;
         const electionName = req.params.election;
         res.render('election', { society: societyName, election: electionName });
     });
 
-    app.get('/admin_page', async function(request, response) {
+    app.get('/admin_page', isAuthenticated, async function(request, response) {
         try {
             const userId = request.session.userId;
             // Get the society names based on the user's ID
@@ -203,7 +202,7 @@ function startServer() {
             response.status(500).send('Internal Server Error');
         }
     });
-    app.get('/admin_page/users', async function(request, response) {
+    app.get('/admin_page/users', isAuthenticated, async function(request, response) {
         try {
             const userId = request.session.userId;
             // Get the society names based on the user's ID
@@ -218,7 +217,7 @@ function startServer() {
         }
     });
     // Route for fetching user details via AJAX
-    app.get('/admin_page/user_details/:id', async (req, res) => {
+    app.get('/admin_page/user_details/:id', isAuthenticated, async (req, res) => {
         try {
             const id = req.params.id;
             // Fetch user details from the database based on email

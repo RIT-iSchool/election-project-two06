@@ -105,7 +105,7 @@
         <% } %>
 
         <div class="buttons">
-            <button type="button" onclick="goToCreateBallot()">Create Ballot</button>
+            <button type="button" onclick="goToCreateBallot('<%= societyName %>')">Create Ballot</button>
         </div>
 
     </div>
@@ -115,8 +115,8 @@
             window.location.href = '/soc_assigned/' + encodeURIComponent(society) + '/' + encodeURIComponent(election);
         }
 
-        function goToCreateBallot() {
-            window.location.href = '/soc_assigned/ballot_info' ;
+        function goToCreateBallot(society) {
+            window.location.href = '/soc_assigned/' + encodeURIComponent(society) + '/ballot_info' ;
         }
         
     </script>
