@@ -29,13 +29,28 @@ async function getUserByEmail(email) {
 async function getSocietyNameByUserId(userId) {
     try {
         const query = `
-            SELECT ps."societyname"
+            SELECT ps."societyid", ps."societyname"
             FROM public."user_society" us
             JOIN public."professional_society" ps ON us."societyid" = ps."societyid"
             WHERE us."userid" = $1;
         `;
         const result = await client.query(query, [userId]);
-        return result.rows.map(row => row.societyname);
+        return result.rows;
+    } catch (error) {
+        console.error("Error retrieving society name:", error);
+        throw error;
+    }
+}
+async function getBallotInitBySocietyId(societyId) {
+    try {
+        const query = `
+            SELECT bi."description", bi."creationdate"
+            FROM public."ballot_initiative" bi
+            WHERE bi."societyid" = $1;
+        `;
+        const result = await client.query(query, [societyId]);
+        console.log(result);
+        return result.rows;
     } catch (error) {
         console.error("Error retrieving society name:", error);
         throw error;
@@ -137,5 +152,5 @@ async function getCandidatesForOffice(userId, officeName) {
     }
 }
 
-module.exports = { connectToDatabase, getUserByEmail, getBallotNameByUserId, getUsersForAdmin, getSocietyNameByUserId, getSocietiesForAdmin, getSocietyOfficesByUserId, getCandidatesForOffice };
+module.exports = { connectToDatabase, getUserByEmail, getBallotNameByUserId, getUsersForAdmin, getBallotInitBySocietyId, getSocietyNameByUserId, getSocietiesForAdmin, getSocietyOfficesByUserId, getCandidatesForOffice };
 

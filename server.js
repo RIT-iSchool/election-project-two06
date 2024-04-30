@@ -3,7 +3,7 @@ const session = require('express-session');
 const path = require('path');
 const fs = require('fs');
 
-const { connectToDatabase, getUserByEmail, getSocietyNameByUserId, getSocietiesForAdmin, getBallotNameByUserId, getSocietyOfficesByUserId, getCandidatesForOffice } = require('./dataAccess');
+const { connectToDatabase, getUserByEmail, getSocietyNameByUserId, getBallotInitBySocietyId, getSocietiesForAdmin, getBallotNameByUserId, getSocietyOfficesByUserId, getCandidatesForOffice } = require('./dataAccess');
 const { loginUser } = require('./businessLogic');
 
 const { encryptPasswords } = require('./encrypt');
@@ -112,22 +112,40 @@ function startServer() {
     app.get('/welcome', isAuthenticated, async function(request, response) {
         const userId = request.session.userId;
         const ballotName = await getBallotNameByUserId(userId);
-        const societyname = await getSocietyNameByUserId(userId);
+        const societyDetails = await getSocietyNameByUserId(userId);
 
-        response.render('welcome', { name: societyname, ballotName: ballotName });
+        response.render('welcome', { name: societyDetails.societyname, ballotName: ballotName });
     });
 
+ // In your Express server setup
+
+app.get('/ballot_initiatives', isAuthenticated, async (req, res) => {
+    try {
+        const userId = req.session.userId;
+        const societyDetails = await getSocietyNameByUserId(userId);
+        const societyId = societyDetails.societyid;
+        const initDetails = await getBallotInitBySocietyId(societyId);
+        // Render the 'ballot_initiatives.ejs' template with the fetched initiatives
+        res.render('ballot_initiatives', { initiatives: initDetails });
+    } catch (error) {
+        console.error("Error fetching ballot initiatives:", error);
+        res.status(500).send('Internal Server Error');
+    }
+});
+
+    
+    
     app.get('/voting', isAuthenticated, async function(request, response) {
         try {
             const userId = request.session.userId;
             // Get the society name based on the user's ID
-            const societyname = await getSocietyNameByUserId(userId);
+            const societyDetails = await getSocietyNameByUserId(userId);
             // Get the office names associated with the user's society
             const offices = await getSocietyOfficesByUserId(userId);
 
             if (offices.length === 0) {
                 // No valid ballots are found, so render a different page or pass a message
-                response.render('noRunningBallots', { name: societyname }); // You need to create this EJS template
+                response.render('noRunningBallots', { name: societyDetails.societyname }); // You need to create this EJS template
             } else {
                 // Retrieve the candidates for each office
                 const officeData = {};
@@ -136,7 +154,7 @@ function startServer() {
                     officeData[office] = candidates;
                 }
                 // Render the 'voting.ejs' template with the society name and offices data
-                response.render('voting', { name: societyname, officesData: officeData });
+                response.render('voting', { name: societyDetails.societyname, officesData: officeData });
             }
         } catch (error) {
             console.error("Error on voting route:", error);
@@ -152,9 +170,9 @@ function startServer() {
         try {
             const userId = request.session.userId;
             // Get the society names based on the user's ID
-            const societyNames = await getSocietyNameByUserId(userId);
+            const societyDetails = await getSocietyNameByUserId(userId);
             // Render the 'soc_assigned.ejs' template with the society names
-            response.render('soc_assigned', { soc_names: societyNames });
+            response.render('soc_assigned', { soc_names: societyDetails.societyname });
         } catch (error) {
             console.error("Error on society route:", error);
             response.status(500).send('Internal Server Error');

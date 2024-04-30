@@ -1,3 +1,5 @@
+<!-- ballot_initiatives.ejs -->
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -5,87 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ballot Initiative Options</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
-            margin: 0;
-            padding: 0;
-        }
-
-        .container {
-            max-width: 800px;
-            margin: 20px auto;
-            padding: 0 20px;
-        }
-
-        h2 {
-            text-align: center;
-            padding-top: 150px;
-        }
-
-        .ballot-options {
-            margin-top: 20px;
-        }
-
-        .option {
-            display: flex;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-
-        .option input[type="checkbox"] {
-            margin-right: 10px; /* Adjusted margin to separate checkbox from description */
-            width: 30px; /* Increase size of checkboxes */
-            height: 30px; /* Increase size of checkboxes */
-        }
-
-        .option-description {
-            flex: 1;
-            background-color: #fff;
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-        }
-
-        .suggestions {
-            margin-top: 20px;
-        }
-
-        .suggestions label {
-            display: block;
-            margin-bottom: 5px;
-        }
-
-        .suggestions input[type="text"] {
-            width: 90%;
-            padding: 15px; /* Increased padding for text field */
-            border: 1px solid #ccc;
-            border-radius: 5px;
-        }
-
-        .buttons {
-            text-align: center;
-            margin-top: 20px;
-        }
-
-        .buttons button {
-            padding: 10px 20px;
-            margin: 0 5px;
-            border: none;
-            border-radius: 5px;
-            background-color: #4caf50;
-            color: #fff;
-            cursor: pointer;
-        }
-
-        .buttons button:focus {
-            outline: none;
-        }
-
-        .buttons button:hover {
-            background-color: #45a049;
-        }
-
+        /* Your CSS styles */
     </style>
 </head>
 <body>
@@ -99,18 +21,12 @@
             </select>
         </div>
         <div class="ballot-options">
-            <div class="option">
-                <div class="option-description">Description 1...</div>
-                <input type="checkbox">
-            </div>
-            <div class="option">
-                <div class="option-description">Description 2...</div>
-                <input type="checkbox">
-            </div>
-            <div class="option">
-                <div class="option-description">Description 3...</div>
-                <input type="checkbox">
-            </div>
+            <% initiatives.forEach(initiative => { %>
+                <div class="option">
+                    <div class="option-description"><%= initiative.description %></div>
+                    <input type="checkbox">
+                </div>
+            <% }); %>
         </div>
         <div class="suggestions">
             <label for="suggestion">Suggestions</label>
