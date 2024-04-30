@@ -123,7 +123,7 @@ app.get('/ballot_initiatives', isAuthenticated, async (req, res) => {
     try {
         const userId = req.session.userId;
         const societyDetails = await getSocietyNameByUserId(userId);
-        const societyId = societyDetails.societyid;
+        const societyId = societyDetails[0].societyid;
         const initDetails = await getBallotInitBySocietyId(societyId);
         // Render the 'ballot_initiatives.ejs' template with the fetched initiatives
         res.render('ballot_initiatives', { initiatives: initDetails });

@@ -49,7 +49,6 @@ async function getBallotInitBySocietyId(societyId) {
             WHERE bi."societyid" = $1;
         `;
         const result = await client.query(query, [societyId]);
-        console.log(result);
         return result.rows;
     } catch (error) {
         console.error("Error retrieving society name:", error);
