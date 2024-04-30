@@ -17,18 +17,52 @@
             margin: 20px auto;
             padding: 20px;
             box-sizing: border-box;
-            text-align: center; /* Center align the content */
         }
 
-        h1 {
-            padding-top: 100px;
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .sections-container {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .section {
+            width: 30%; /* Adjust the width as needed */
+        }
+
+        .section-title {
+            font-size: 20px;
+            margin-bottom: 10px;
+        }
+
+        .section-title-report {
+            font-size: 20px;
+            margin-bottom: 10px;
+            text-align: right;
+            margin-right: 20px
+        }
+
+        .section-title-users {
+            font-size: 20px;
+            margin-bottom: 10px;
+            margin-left: 20px
         }
 
         .buttons {
             display: flex;
-            justify-content: center;
-            flex-wrap: wrap; /* Allow buttons to wrap to the next line if necessary */
+            flex-direction: column;
+            align-items: center;
         }
+
+        .buttons-users {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start; 
+        }
+
 
         .option {
             padding: 10px 20px;
@@ -52,16 +86,38 @@
 </head>
 <body>
     <div class="container">
-        <h1>Professional Societies</h1>
-        <button class="option" onclick="goToUsers()">Users</button>
-        <div class="buttons">
-            <% if (soc_names && soc_names.length) { %>
-                <% for (let name of soc_names) { %>
-                    <button class="option" onclick="goToSociety('<%= name %>')"><%= name %></button>
-                <% } %>
-            <% } else { %>
-                <p>No society names found.</p>
-            <% } %>
+        <div class="header">
+            <h1>Welcome Admin</h1>
+        </div>
+
+        <div class="sections-container">
+            <div class="section">
+                <h2 class="section-title-users">Users</h2>
+                <div class="buttons-users">
+                    <button class="option" onclick="goToUsers()">Create/Edit Users</button>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2 class="section-title">Professional Societies</h2>
+                <div class="buttons">
+                    <% if (soc_names && soc_names.length) { %>
+                        <% for (let name of soc_names) { %>
+                            <button class="option" onclick="goToSociety('<%= name %>')"><%= name %></button>
+                        <% } %>
+                    <% } else { %>
+                        <p>No society names found.</p>
+                    <% } %>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2 class="section-title-report">Report Generation</h2>
+                <div class="buttons">
+                    <button class="option" onclick="generateReport('soc')">Society Report</button>
+                    <button class="option" onclick="generateReport('stat')">Statistics Report</button>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -72,6 +128,15 @@
         function goToSociety(name) {
             window.location.href = '/soc_assigned/' + encodeURIComponent(name);
         }
+
+        function generateReport(type) {
+            if (type === 'society') {
+                // Code to generate SOC report
+            } else if (type === 'statistics') {
+                // Code to generate Stat report
+            }
+        }
+
         function checkTokenLocalStorage() {
             if (!localStorage.getItem('token')) {
                 // Redirect to login page if token doesn't exist in localStorage
