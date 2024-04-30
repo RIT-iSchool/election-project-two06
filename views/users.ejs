@@ -276,6 +276,7 @@
                     console.log('User created successfully');
                     const modal = document.getElementById("createUserModal");
                     closeModal(modal);
+                    clearForm(); // Clear the form fields after successful user creation
                     window.location.reload(); // Reload the page to fetch updated user details
                 } else {
                     console.error('Error creating user:', response.statusText);
@@ -283,6 +284,15 @@
             } catch (error) {
                 console.error('Error creating user:', error);
             }
+        }
+
+        // Function to clear the form fields
+        function clearForm() {
+            document.getElementById("userFName").value = "";
+            document.getElementById("userLName").value = "";
+            document.getElementById("userEmail").value = "";
+            document.getElementById("userType").value = "";
+            document.getElementById("userPassword").value = "";
         }
 
         function closeModal(modal) {
