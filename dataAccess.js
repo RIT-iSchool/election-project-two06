@@ -139,7 +139,7 @@ async function getCandidatesForOffice(socId, officeName) {
             FROM public."candidate" c
             JOIN public."office" o ON c."officeid" = o."officeid"
             JOIN public."ballot" b ON o."ballotid" = b."ballotid"
-            WHERE us."societyid" = $1
+            WHERE b."societyid" = $1
             AND o."officename" = $2
         `;
         const result = await client.query(query, [socId, officeName]);
