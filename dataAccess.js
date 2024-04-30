@@ -199,21 +199,47 @@ async function getSocietyDetailsBySocietyName(societyName) {
     }
 }
 
+
 async function getElectionsBySocietyId(societyId) {
     try {
-        const query = `
-        SELECT "ballotid" as "electionid", "ballottitle" as "title", 
-            "startdate" as "startDate", "enddate" as "endDate"
-                FROM public."ballot"
-                    WHERE "societyid" =  $1;
+        console.log(societyId);
+
+        // Query for past elections
+        const queryPast = `
+            SELECT b."ballotid", b."ballottitle", b."startdate", b."enddate"
+            FROM public."ballot" b
+            WHERE "societyid" = $1 AND CURRENT_DATE > b."enddate";
         `;
-        const result = await client.query(query, [societyId]);
-        return result.rows;
+
+        // Query for present elections
+        const queryPresent = `
+            SELECT b."ballotid", b."ballottitle", b."startdate", b."enddate"
+            FROM public."ballot" b
+            WHERE "societyid" = $1 AND CURRENT_DATE BETWEEN b."startdate" AND b."enddate";
+        `;
+
+        // Query for future elections
+        const queryFuture = `
+            SELECT b."ballotid", b."ballottitle", b."startdate", b."enddate"
+            FROM public."ballot" b
+            WHERE "societyid" = $1 AND CURRENT_DATE < b."startdate";
+        `;
+
+        const resultPast = await client.query(queryPast, [societyId]);
+        const resultPresent = await client.query(queryPresent, [societyId]);
+        const resultFuture = await client.query(queryFuture, [societyId]);
+
+        return {
+            pastElections: resultPast.rows,
+            presentElections: resultPresent.rows,
+            futureElections: resultFuture.rows
+        };
     } catch (error) {
         console.error("Error retrieving elections by society ID:", error);
         throw error;
     }
 }
+
 
 async function createUser(userDetails) {
     try {

@@ -3,6 +3,7 @@ const session = require('express-session');
 const bodyParser = require('body-parser');
 const path = require('path');
 const fs = require('fs');
+const moment = require('moment');
 
 const { connectToDatabase, 
     getSocietyDetailsBySocietyName,
@@ -99,10 +100,10 @@ function startServer() {
     
             const associatedElections = await getElectionsBySocietyId(societyDetails.societyid);
             const today = moment();
-            const pastElections = associatedElections.filter(election => moment(election.creationdate).isBefore(today));
-            const presentElections = associatedElections.filter(election => moment(election.creationdate).isSameOrBefore(today));
-            const futureElections = associatedElections.filter(election => moment(election.creationdate).isAfter(today));
-   
+            const pastElections = associatedElections.pastElections.filter(election => moment(election.startdate).isBefore(today));
+            const presentElections = associatedElections.presentElections.filter(election => moment(election.startdate).isSameOrBefore(today));
+            const futureElections = associatedElections.futureElections.filter(election => moment(election.startdate).isAfter(today));
+    
             res.render('society', {
                 societyName: selectedSociety,
                 pastElections: pastElections,
@@ -114,6 +115,7 @@ function startServer() {
             res.status(500).send('Internal Server Error');
         }
     });
+    
     
     app.get('/welcome', isAuthenticated, async function(request, response) {
         const userId = request.session.userId;
