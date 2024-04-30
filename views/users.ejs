@@ -34,6 +34,43 @@
             text-align: center;
             margin-bottom: 20px;
         }
+        /* Modal container */
+        .modal {
+            display: none; /* Hidden by default */
+            position: fixed; /* Stay in place */
+            z-index: 1; /* Sit on top */
+            left: 0;
+            top: 0;
+            width: 100%; /* Full width */
+            height: 100%; /* Full height */
+            overflow: auto; /* Enable scroll if needed */
+            background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+        }
+
+        /* Modal content */
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto; /* 15% from the top and centered */
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%; /* Could be more or less, depending on screen size */
+            box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);
+        }
+
+        /* Close button */
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
@@ -59,7 +96,7 @@
                             <td><%= user.usertype %></td>
                             <td>
                                 <!-- Edit button for each user -->
-                                <button onclick="editUser('<%= user.id %>')">Edit</button>
+                                <button onclick="editUser('<%= user.userid %>')">Edit</button>
                             </td>
                         </tr>
                     <% }); %>
@@ -91,6 +128,7 @@
         </div>
     </div>
     <script>
+        let userId;
         function editUser(id) {
             // Open the modal
             const modal = document.getElementById("editModal");
@@ -99,7 +137,7 @@
             fetch(`/admin_page/user_details/${id}`)
                 .then(response => response.json())
                 .then(data => {
-                    console.log(data.fname);
+                    userId = id;
                     // Populate modal fields with user details
                     document.getElementById("fname").value = data.fname;
                     document.getElementById("lname").value = data.lname;
@@ -117,18 +155,23 @@
             const email = document.getElementById("email").value;
             const usertype = document.getElementById("usertype").value;
 
-            // Create form data to send in the POST request
-            const formData = new FormData();
-            formData.append('fname', fname);
-            formData.append('lname', lname);
-            formData.append('email', email);
-            formData.append('usertype', usertype);
+            // Construct the data object
+            const data = {
+                userid: userId, // Assuming userId is defined somewhere
+                fname: fname,
+                lname: lname,
+                email: email,
+                usertype: usertype
+            };
 
             try {
                 // Send a POST request to update the user details
                 const response = await fetch('/admin_page/update_user', {
                     method: 'POST',
-                    body: formData
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
                 });
 
                 // Check if the request was successful
@@ -136,6 +179,8 @@
                     // User details updated successfully
                     console.log('User details updated successfully');
                     closeModal(); // Close the modal after successful update
+                    // Reload the page to fetch updated user details from the server
+                    window.location.reload();
                 } else {
                     // Error updating user details
                     console.error('Error updating user details:', response.statusText);
@@ -150,9 +195,15 @@
             const modal = document.getElementById("editModal");
             modal.style.display = "none";
         }
+        // Call closeModal when the close button is clicked
+        const closeButtons = document.getElementsByClassName('close');
+        for (const button of closeButtons) {
+            button.addEventListener('click', closeModal);
+        }
         $(document).ready(function() {
             $('#userTable').DataTable();
         });
+
         function checkTokenLocalStorage() {
             if (!localStorage.getItem('token')) {
                 // Redirect to login page if token doesn't exist in localStorage
@@ -172,7 +223,6 @@
                 checkTokenLocalStorage();
             }
         }
-
         // Add event listener for the pageshow event
         window.addEventListener('pageshow', handlePageShow);
     </script>

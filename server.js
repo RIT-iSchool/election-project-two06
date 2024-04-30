@@ -1,5 +1,6 @@
 const express = require('express');
 const session = require('express-session');
+const bodyParser = require('body-parser');
 const path = require('path');
 const fs = require('fs');
 
@@ -45,6 +46,10 @@ async function setup() {
 // Define a function to start the server
 function startServer() {
     const app = express();
+
+    //Parse JSON bodies
+    app.use(bodyParser.json());
+
     app.use(express.urlencoded({ extended: true }));
     app.use(express.static(__dirname));
 
@@ -212,11 +217,10 @@ function startServer() {
     // Route for fetching user details via AJAX
     app.get('/admin_page/user_details/:id', async (req, res) => {
         try {
-            const userId = req.session.userId;
+            const id = req.params.id;
             // Fetch user details from the database based on email
-            const userDetails = await getUserDetailsByUserId(userId);
+            const userDetails = await getUserDetailsByUserId(id);
             // Send JSON response with user details
-            console.log(userDetails);
             res.json(userDetails);
         } catch (error) {
             console.error("Error fetching user details:", error);
@@ -226,10 +230,9 @@ function startServer() {
     // Route for updating user details via AJAX
     app.post('/admin_page/update_user', async (req, res) => {
         try {
-            const { email, fname, lname } = req.body; // Assuming these are the fields being updated
+            const { userid, fname, lname, email, usertype } = req.body; // Assuming these are the fields being updated
             // Implement logic to update user details in the database
-            // Example:
-            // await updateUserDetails(email, { fname, lname });
+            await updateUser(userid, { fname, lname, email, usertype });
             res.status(200).json({ message: 'User details updated successfully' });
         } catch (error) {
             console.error("Error updating user details:", error);
