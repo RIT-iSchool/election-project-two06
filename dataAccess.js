@@ -201,7 +201,6 @@ async function getSocietyDetailsBySocietyName(societyName) {
 
 async function getElectionsBySocietyId(societyId) {
     try {
-        console.log(societyId)
         const query = `
         SELECT "ballotid" as "electionid", "ballottitle" as "title", 
             "startdate" as "startDate", "enddate" as "endDate"
@@ -223,7 +222,6 @@ async function createUser(userDetails) {
             VALUES ($1, $2, $3, $4, $5);
         `;
         const values = [userDetails.fname, userDetails.lname, userDetails.email, userDetails.usertype, userDetails.password];
-        console.log(values);
         await client.query(createQuery, values);
         console.log('User created successfully');
     } catch (error) {

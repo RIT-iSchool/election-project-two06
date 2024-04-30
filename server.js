@@ -85,38 +85,19 @@ function startServer() {
         }
     }
 
-    // Function to parse PSV files
-    // function parsePsv(filename) {
-    //     const data = fs.readFileSync(filename, 'utf8');
-    //     const lines = data.trim().split('\n');
-    //     const headers = lines[0].split('|');
-    //     const records = lines.slice(1).map(line => {
-    //         const fields = line.split('|');
-    //         return headers.reduce((record, header, index) => {
-    //             record[header.trim()] = fields[index].trim();
-    //             return record;
-    //         }, {});
-    //     });
-    //     return records;
-    // }
-
     const moment = require('moment');
 
     app.get('/soc_assigned/:name', async (req, res) => {
         try {
             const societyName = req.params.name;
-            console.log("Requested Society Name:", societyName); // Debugging
             const societyDetails = await getSocietyDetailsBySocietyName(societyName);
-            console.log("Society Details:", societyDetails); // Debugging
             const selectedSociety = societyDetails.societyname;
-            console.log(selectedSociety)
             if (!selectedSociety) {
                 console.log("Society not found!"); // Debugging
                 return res.status(404).send('Society not found');
             }
     
             const associatedElections = await getElectionsBySocietyId(societyDetails.societyid);
-            console.log(associatedElections)
             const today = moment();
             const pastElections = associatedElections.filter(election => moment(election.creationdate).isBefore(today));
             const presentElections = associatedElections.filter(election => moment(election.creationdate).isSameOrBefore(today));
@@ -265,6 +246,8 @@ function startServer() {
             const { fname, lname, email, usertype, password } = req.body; // Assuming these are the fields being updated
             // Implement logic to create user details in the database
             await createUser( {fname, lname, email, usertype, password} );
+            // Encrypt the added user password
+            await encryptPasswords();
             res.status(200).json({ message: 'User created successfully' });
         } catch (error) {
             console.error("Error updating user details:", error);
