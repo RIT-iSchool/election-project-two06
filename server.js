@@ -4,7 +4,20 @@ const bodyParser = require('body-parser');
 const path = require('path');
 const fs = require('fs');
 
-const { getSocietyDetailsBySocietyName, getElectionsBySocietyId, connectToDatabase, createUser, getUserByEmail, getBallotDetailsBySocId, getUsersForAdmin, getBallotInitBySocietyId, getSocietyDetailsByUserId, getSocietiesForAdmin, getSocietyOfficesBySocId, getCandidatesForOffice, updateUser, getUserDetailsByUserId } = require('./dataAccess');
+const { connectToDatabase, 
+    getSocietyDetailsBySocietyName,
+    getElectionsBySocietyId,
+    createUser, 
+    getUserByEmail, 
+    getBallotDetailsBySocId, 
+    getUsersForAdmin, 
+    getBallotInitBySocietyId, 
+    getSocietyDetailsByUserId, 
+    getSocietiesForAdmin, 
+    getSocietyOfficesBySocId, 
+    getCandidatesForOffice, 
+    updateUser, 
+    getUserDetailsByUserId } = require('./dataAccess');
 const { loginUser } = require('./businessLogic');
 
 const { encryptPasswords } = require('./encrypt');
@@ -87,7 +100,7 @@ function startServer() {
     //     return records;
     // }
 
-    // const moment = require('moment');
+    const moment = require('moment');
 
     app.get('/soc_assigned/:name', async (req, res) => {
         try {
@@ -153,7 +166,7 @@ function startServer() {
 
             if (offices.length === 0) {
                 // No valid ballots are found, so render a different page or pass a message
-                response.render('noRunningBallots', { name: societyDetails.societyname }); // You need to create this EJS template
+                response.render('noRunningBallots', { name: societyDetails[0].societyname }); // You need to create this EJS template
             } else {
                 // Retrieve the candidates for each office
                 const officeData = {};
@@ -162,7 +175,7 @@ function startServer() {
                     officeData[office] = candidates;
                 }
                 // Render the 'voting.ejs' template with the society name and offices data
-                response.render('voting', { name: societyDetails.societyname, officesData: officeData });
+                response.render('voting', { name: societyDetails[0].societyname, officesData: officeData });
             }
         } catch (error) {
             console.error("Error on voting route:", error);
