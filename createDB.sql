@@ -58,6 +58,7 @@ CREATE TABLE Candidate (
     CandidateID int PRIMARY KEY NOT NULL GENERATED ALWAYS AS IDENTITY,
     OfficeID int REFERENCES Office(OfficeID),
     BallotID int REFERENCES Ballot(BallotID),
+    AllowedVotes int,
     CFName text NOT NULL,
     CLName text NOT NULL,
     C_Credentials text,
@@ -93,8 +94,9 @@ CREATE TABLE Write_Ins (
 
 ALTER SEQUENCE users_userid_seq RESTART WITH 41;
 ALTER SEQUENCE professional_society_societyid_seq RESTART WITH 6;
+ALTER SEQUENCE user_society_uniquesocietyid_seq RESTART WITH 41;
 ALTER SEQUENCE ballot_initiative_ballotinitid_seq RESTART WITH 11;
-ALTER SEQUENCE Ballot_ballotid_seq RESTART WITH 14;
+ALTER SEQUENCE ballot_ballotid_seq RESTART WITH 14;
 ALTER SEQUENCE office_officeid_seq RESTART WITH 30;
 ALTER SEQUENCE candidate_candidateid_seq RESTART WITH 77;
 ALTER SEQUENCE vote_voteid_seq RESTART WITH 119;

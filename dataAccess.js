@@ -217,12 +217,20 @@ async function getElectionsBySocietyId(societyId) {
 
 async function createUser(userDetails) {
     try {
-        const createQuery = `
+        const userQuery = `
             INSERT INTO public.users (fname, lname, email, usertype, password)
             VALUES ($1, $2, $3, $4, $5);
         `;
-        const values = [userDetails.fname, userDetails.lname, userDetails.email, userDetails.usertype, userDetails.password];
-        await client.query(createQuery, values);
+        const userValues = [userDetails.fname, userDetails.lname, userDetails.email, userDetails.usertype, userDetails.password];
+        await client.query(userQuery, userValues);
+        const userId = await getUserByEmail(userDetails.email);
+        const socId = await getSocietyDetailsBySocietyName(userDetails.society);
+        const userSocQuery = `
+            INSERT INTO public.user_society (userid, societyid)
+            VALUES ($1, $2);
+        `;
+        const socValues = [userId.userid, socId.societyid];
+        await client.query(userSocQuery, socValues);
         console.log('User created successfully');
     } catch (error) {
         console.error('Error updating user details:', error);

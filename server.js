@@ -207,9 +207,11 @@ function startServer() {
         try {
             const userId = request.session.userId;
             // Get the society names based on the user's ID
+            const societyNames = await getSocietiesForAdmin(userId);
+            // Get the user details based on the user's ID
             const userDetails = await getUsersForAdmin(userId);
             // Render the 'soc_assigned.ejs' template with the society names
-            response.render('users', { users: userDetails });
+            response.render('users', { users: userDetails, societynames: societyNames });
         } catch (error) {
             console.error("Error on users route:", error);
             response.status(500).send('Internal Server Error');
@@ -243,9 +245,9 @@ function startServer() {
     // Route for creating user details via AJAX
     app.post('/admin_page/create_user', async (req, res) => {
         try {
-            const { fname, lname, email, usertype, password } = req.body; // Assuming these are the fields being updated
+            const { fname, lname, email, usertype, password, society } = req.body; // Assuming these are the fields being updated
             // Implement logic to create user details in the database
-            await createUser( {fname, lname, email, usertype, password} );
+            await createUser( {fname, lname, email, usertype, password, society} );
             // Encrypt the added user password
             await encryptPasswords();
             res.status(200).json({ message: 'User created successfully' });
