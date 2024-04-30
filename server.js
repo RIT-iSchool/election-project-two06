@@ -114,7 +114,7 @@ function startServer() {
         const socId = request.session.socId;
         const ballotName = await getBallotNameBySocId(socId);
         const societyDetails = await getSocietyDetailsByUserId(userId);
-        response.render('welcome', { society: societyDetails, ballotName: ballotName });
+        response.render('welcome', { name: societyDetails[0].societyname, ballotName: ballotName });
     });
 
     // In your Express server setup
