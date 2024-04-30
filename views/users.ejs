@@ -146,8 +146,14 @@
                         <input type="email" id="userEmail" name="userEmail" required>
                     </div>
                     <div class="form-group">
-                        <label for="userType">Enter User Role:</label>
-                        <input type="text" id="userType" name="userType" required>
+                        <label for="userType">Select User Role:</label>
+                        <select id="userType" name="userType" required>
+                            <option value="" disabled selected>Select user role</option>
+                            <option value="president">President</option>
+                            <option value="vice-president">Vice President</option>
+                            <option value="secretary">Secretary</option>
+                            <option value="treasurer">Treasurer</option>
+                        </select>
                     </div>
                     <div class="form-group">
                         <label for="userPass">Enter Password:</label>
