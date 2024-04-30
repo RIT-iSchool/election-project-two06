@@ -40,34 +40,50 @@
         .election-btn:hover {
             background-color: #45a049;
         }
-    </style>
-</head>
-<body>
+        </style>
+        </head>
+
+        <body>
     <div class="container">
         <h1>Elections Associated with <%= societyName %></h1>
 
         <% if (pastElections.length > 0) { %>
             <h2>Past Elections</h2>
-            <% pastElections.forEach(function(election) { %>
-                <% const title = election['Election Title']; %>
-                <button class="election-btn" onclick="goToElection('<%= societyName %>','<%= title %>')"><%= election['Election Title'] %></button>
-            <% }); %>
+            <ul>
+                <% pastElections.forEach(function(election) { %>
+                    <li>
+                        <button class="election-btn" onclick="goToElection('<%= societyName %>','<%= election.title %>')">
+                            <%= election.title %>
+                        </button>
+                    </li>
+                <% }); %>
+            </ul>
         <% } %>
 
         <% if (presentElections.length > 0) { %>
             <h2>Present Elections</h2>
-            <% presentElections.forEach(function(election) { %>
-                <% const title = election['Election Title']; %>
-                <button class="election-btn" onclick="goToElection('<%= societyName %>','<%= title %>')"><%= election['Election Title'] %></button>
-            <% }); %>
+            <ul>
+                <% presentElections.forEach(function(election) { %>
+                    <li>
+                        <button class="election-btn" onclick="goToElection('<%= societyName %>','<%= election.title %>')">
+                            <%= election.title %>
+                        </button>
+                    </li>
+                <% }); %>
+            </ul>
         <% } %>
 
         <% if (futureElections.length > 0) { %>
             <h2>Future Elections</h2>
-            <% futureElections.forEach(function(election) { %>
-                <% const title = election['Election Title']; %>
-                <button class="election-btn" onclick="goToElection('<%= societyName %>','<%= title %>')"><%= election['Election Title'] %></button>
-            <% }); %>
+            <ul>
+                <% futureElections.forEach(function(election) { %>
+                    <li>
+                        <button class="election-btn" onclick="goToElection('<%= societyName %>','<%= election.title %>')">
+                            <%= election.title %>
+                        </button>
+                    </li>
+                <% }); %>
+            </ul>
         <% } %>
 
     </div>
@@ -76,29 +92,8 @@
         function goToElection(society, election) {
             window.location.href = '/soc_assigned/' + encodeURIComponent(society) + '/' + encodeURIComponent(election);
         }
-        function checkTokenLocalStorage() {
-            if (!localStorage.getItem('token')) {
-                // Redirect to login page if token doesn't exist in localStorage
-                window.location.href = '/';
-            }
-        }
-        function logout() {
-            localStorage.removeItem('token');
-            // Redirect to login page after logout
-            window.location.href = '/';
-        }
-        // Function to handle the pageshow event
-        function handlePageShow(event) {
-            if (event.persisted) {
-                // If the page is shown from the cache (e.g., when navigating back),
-                // check if the token is still in local storage
-                checkTokenLocalStorage();
-            }
-        }
-
-        // Add event listener for the pageshow event
-        window.addEventListener('pageshow', handlePageShow);
-
+        // Add any additional scripts here
     </script>
 </body>
 </html>
+

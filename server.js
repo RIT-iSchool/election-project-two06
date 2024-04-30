@@ -4,7 +4,7 @@ const bodyParser = require('body-parser');
 const path = require('path');
 const fs = require('fs');
 
-const { connectToDatabase, getUserByEmail, getBallotNameBySocId, getUsersForAdmin, getBallotInitBySocietyId, getSocietyDetailsByUserId, getSocietiesForAdmin, getSocietyOfficesBySocId, getCandidatesForOffice, updateUser, getUserDetailsByUserId } = require('./dataAccess');
+const { getSocietyDetailsBySocietyName, getElectionsBySocietyId, connectToDatabase, getUserByEmail, getBallotNameBySocId, getUsersForAdmin, getBallotInitBySocietyId, getSocietyDetailsByUserId, getSocietiesForAdmin, getSocietyOfficesBySocId, getCandidatesForOffice, updateUser, getUserDetailsByUserId } = require('./dataAccess');
 const { loginUser } = require('./businessLogic');
 
 const { encryptPasswords } = require('./encrypt');
@@ -92,34 +92,64 @@ function startServer() {
     app.get('/soc_assigned/:name', async (req, res) => {
         try {
             const societyName = req.params.name;
-            
-            // Fetch elections data
-            const electionsData = parsePsv('./ElectionTestData/elections.psv');
-            // Fetch societies data
-            const societiesData = parsePsv('./ElectionTestData/societies.psv');
-            
-            // Filter elections for the selected society
-            const associatedElections = electionsData.filter(election => election['Society ID'] === societiesData.find(society => society['Society Name'] === societyName)['Society ID']);
-            
-            // Separate elections into past, present, and future
+            console.log("Requested Society Name:", societyName); // Debugging
+            const societyDetails = await getSocietyDetailsBySocietyName(societyName);
+            console.log("Society Details:", societyDetails); // Debugging
+            const selectedSociety = societyDetails.societyname;
+            console.log(selectedSociety)
+            if (!selectedSociety) {
+                console.log("Society not found!"); // Debugging
+                return res.status(404).send('Society not found');
+            }
+    
+            const associatedElections = await getElectionsBySocietyId(societyDetails.societyid);
+            console.log(associatedElections)
             const today = moment();
-            const pastElections = associatedElections.filter(election => moment(election['End Date']).isBefore(today));
-            const presentElections = associatedElections.filter(election => moment(election['Start Date']).isSameOrBefore(today) && moment(election['End Date']).isSameOrAfter(today));
-            const futureElections = associatedElections.filter(election => moment(election['Start Date']).isAfter(today));
-            
-            res.render('society', { societyName: societyName, pastElections: pastElections, presentElections: presentElections, futureElections: futureElections });
+            const pastElections = associatedElections.filter(election => moment(election.creationdate).isBefore(today));
+            const presentElections = associatedElections.filter(election => moment(election.creationdate).isSameOrBefore(today));
+            const futureElections = associatedElections.filter(election => moment(election.creationdate).isAfter(today));
+   
+            res.render('society', {
+                societyName: selectedSociety,
+                pastElections: pastElections,
+                presentElections: presentElections,
+                futureElections: futureElections
+            });
         } catch (error) {
-            console.error("Error fetching election data:", error);
+            console.error("Error fetching society data:", error);
             res.status(500).send('Internal Server Error');
         }
     });
-
+    // app.get('/soc_assigned/:name', async (req, res) => {
+    //     try {
+    //         const societyName = req.params.name;
+    //         const societyDetails = await getSocietyDetailsBySocietyName(societyName); // Function to retrieve society details by name
+    //         console.log(societyDetails)
+    //         if (!societyDetails) {
+    //             return res.status(404).send('Society not found');
+    //         }
+    
+    //         // Fetch elections associated with the society ID
+    //         const elections = await getElectionsBySocietyId(societyDetails.societyid);
+    //         console.log(elections)
+    
+    //         res.render('society', {
+    //             societyName: societyName,
+    //             elections: elections // Pass election data to the template
+    //         });
+    //     } catch (error) {
+    //         console.error("Error fetching society data:", error);
+    //         res.status(500).send('Internal Server Error');
+    //     }
+    // });
+    
     app.get('/welcome', isAuthenticated, async function(request, response) {
         const userId = request.session.userId;
         const socId = request.session.socId;
         const ballotName = await getBallotNameBySocId(socId);
         const societyDetails = await getSocietyDetailsByUserId(userId);
-        response.render('welcome', { name: societyDetails[0].societyname, ballotName: ballotName });
+
+        response.render('welcome', { name: societyDetails.societyname, ballotName: ballotName });
     });
 
     // In your Express server setup
@@ -146,7 +176,7 @@ function startServer() {
 
             if (offices.length === 0) {
                 // No valid ballots are found, so render a different page or pass a message
-                response.render('noRunningBallots', { name: societyDetails[0].societyname }); // You need to create this EJS template
+                response.render('noRunningBallots', { name: societyDetails.societyname }); // You need to create this EJS template
             } else {
                 // Retrieve the candidates for each office
                 const officeData = {};
@@ -155,7 +185,7 @@ function startServer() {
                     officeData[office] = candidates;
                 }
                 // Render the 'voting.ejs' template with the society name and offices data
-                response.render('voting', { name: societyDetails[0].societyname, officesData: officeData });
+                response.render('voting', { name: societyDetails.societyname, officesData: officeData });
             }
         } catch (error) {
             console.error("Error on voting route:", error);
@@ -248,9 +278,11 @@ function startServer() {
             if (loginResult.success) {
                 request.session.userId = userData.userid; // Set user ID in session
                 const userId = request.session.userId;
-                if (userData.usertype !== 'admin') {
+                if (!userData.usertype == 'admin') {
                     const socDetails = await getSocietyDetailsByUserId(userId);
-                    request.session.socId = socDetails[0].societyid;
+                    console.log(socDetails);
+                    console.log(socDetails.societyid);
+                    request.session.socId = socDetails.societyid;
                 }
             }
             response.json(loginResult);

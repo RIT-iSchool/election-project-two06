@@ -178,5 +178,38 @@ async function getUserDetailsByUserId(userId) {
     }
 }
 
-module.exports = { connectToDatabase, getUserByEmail, getBallotNameBySocId, getUsersForAdmin, getBallotInitBySocietyId, getSocietyDetailsByUserId, getSocietiesForAdmin, getSocietyOfficesBySocId, getCandidatesForOffice, updateUser, getUserDetailsByUserId };
+async function getSocietyDetailsBySocietyName(societyName) {
+    try {
+        const query = `
+            SELECT "societyid" as "societyid", "societyname" as "societyname"
+            FROM public."professional_society"
+            WHERE "societyname" = $1;
+        `;
+        const result = await client.query(query, [societyName]);
+        return result.rows.length > 0 ? result.rows[0] : null;
+    } catch (error) {
+        console.error("Error retrieving society details by name:", error);
+        throw error;
+    }
+}
+
+async function getElectionsBySocietyId(societyId) {
+    try {
+        console.log(societyId)
+        const query = `
+        SELECT "ballotid" as "electionid", "ballottitle" as "title", 
+            "startdate" as "startDate", "enddate" as "endDate"
+                FROM public."ballot"
+                    WHERE "societyid" =  $1;
+        `;
+        const result = await client.query(query, [societyId]);
+        return result.rows;
+    } catch (error) {
+        console.error("Error retrieving elections by society ID:", error);
+        throw error;
+    }
+}
+
+
+module.exports = { getSocietyDetailsBySocietyName, getElectionsBySocietyId, connectToDatabase, getUserByEmail, getBallotNameBySocId, getUsersForAdmin, getBallotInitBySocietyId, getSocietyDetailsByUserId, getSocietiesForAdmin, getSocietyOfficesBySocId, getCandidatesForOffice, updateUser, getUserDetailsByUserId };
 
