@@ -40,6 +40,24 @@
         .election-btn:hover {
             background-color: #45a049;
         }
+
+        .buttons {
+            text-align: center;
+        }
+
+        .buttons button {
+            padding: 10px 20px;
+            border: none;
+            background-color: #4caf50;
+            color: #fff;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .buttons button:hover {
+            background-color: #45a049;
+        }
         </style>
         </head>
 
@@ -86,13 +104,21 @@
             </ul>
         <% } %>
 
+        <div class="buttons">
+            <button type="button" onclick="goToCreateBallot()">Create Ballot</button>
+        </div>
+
     </div>
 
     <script>
         function goToElection(society, election) {
             window.location.href = '/soc_assigned/' + encodeURIComponent(society) + '/' + encodeURIComponent(election);
         }
-        // Add any additional scripts here
+
+        function goToCreateBallot() {
+            window.location.href = '/soc_assigned/ballot_info' ;
+        }
+        
     </script>
 </body>
 </html>

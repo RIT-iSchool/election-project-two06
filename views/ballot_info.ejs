@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!-- <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -99,6 +99,166 @@
         function goToOfficePage() {
             window.location.href = "office_info.html";
         }
+    </script>
+
+</body>
+</html> -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ballot Information</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 20px auto;
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            margin-top: 30px;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .form-group input[type="text"],
+        .form-group input[type="date"] {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+
+        .form-group input[type="date"]::-webkit-calendar-picker-indicator {
+            cursor: pointer;
+        }
+
+        .buttons {
+            text-align: center;
+        }
+
+        .buttons button {
+            padding: 10px 20px;
+            border: none;
+            background-color: #4caf50;
+            color: #fff;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .buttons button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <div id="createUserModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="container">
+                <h2>Ballot Information</h2>
+                <form>
+                    <div class="form-group">
+                        <label for="ballotName">Enter Ballot Name:</label>
+                        <input type="text" id="ballotName" name="ballotName" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="startDate">Enter Election Start Date:</label>
+                        <input type="date" id="startDate" name="startDate" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="endDate">Enter Election End Date:</label>
+                        <input type="date" id="endDate" name="endDate" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="numOffices">Number of Offices:</label>
+                        <input type="number" id="numOffices" name="numOffices" min="1" required>
+                    </div>
+                    <div class="buttons">
+                        <button type="button" onclick="submitEdit()">Save</button>
+                        <button type="button" onclick="goToOfficePage()">Next</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function goToOfficePage() {
+            window.location.href = "office_info.html";
+        }
+
+        // Function to submit the form data for creating a user
+        async function submitEdit() {
+            const ballotName = document.getElementById("ballotName").value;
+            const startDate = document.getElementById("startDate").value;
+            const endDate = document.getElementById("endDate").value;
+            const numOffices = document.getElementById("numOffices").value;
+            // const password = document.getElementById("userPassword").value;
+
+            const data = {
+                ballotName: ballotName,
+                startDate: startDate,
+                endDate: endDate,
+                numOffices: numOffices,
+                // password: password
+            };
+
+            try {
+                const response = await fetch('/soc_assigned/ballot_info', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                });
+
+                if (response.ok) {
+                    console.log('Ballot Information created successfully');
+                    const modal = document.getElementById("createUserModal");
+                    closeModal(modal);
+                    clearForm(); // Clear the form fields after successful user creation
+                    window.location.reload(); // Reload the page to fetch updated user details
+                } else {
+                    console.error('Error creating user:', response.statusText);
+                }
+            } catch (error) {
+                console.error('Error creating user:', error);
+            }
+        }
+
+        // Function to clear the form fields
+        function clearForm() {
+            document.getElementById("ballotName").value = "";
+            document.getElementById("startDate").value = "";
+            document.getElementById("endDate").value = "";
+            document.getElementById("numOffices").value = "";
+            // document.getElementById("userPassword").value = "";
+        }
+
     </script>
 
 </body>
