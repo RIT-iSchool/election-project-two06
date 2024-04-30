@@ -102,15 +102,21 @@ async function getUsersForAdmin(userID) {
         throw error;
     }
 }
-async function getBallotNameBySocId(socId) {
-    const query = `
-        SELECT b."ballottitle"
-        FROM public."ballot" b
-        WHERE b."societyid" = $1
-        AND CURRENT_DATE BETWEEN b."startdate" AND b."enddate";
-    `;
-    const result = await client.query(query, [socId]);
-    return result.rows.map(row => row.ballottitle);
+
+async function getBallotDetailsBySocId(socId) {
+    try {
+        const query = `
+            SELECT b."ballotid", b."ballottitle"
+            FROM public."ballot" b
+            WHERE b."societyid" = $1
+            AND CURRENT_DATE BETWEEN b."startdate" AND b."enddate";
+        `;
+        const result = await client.query(query, [socId]);
+        return result.rows.map(row =>  ({ballotId: row.ballotid, ballotName: row.ballottitle}) )
+    } catch (error) {
+        console.error("Error retrieving ballot details:", error);
+        throw error;
+    }
 
 }
 
@@ -210,8 +216,6 @@ async function getElectionsBySocietyId(societyId) {
     }
 }
 
-
-module.exports = { getSocietyDetailsBySocietyName, getElectionsBySocietyId, connectToDatabase, getUserByEmail, getBallotNameBySocId, getUsersForAdmin, getBallotInitBySocietyId, getSocietyDetailsByUserId, getSocietiesForAdmin, getSocietyOfficesBySocId, getCandidatesForOffice, updateUser, getUserDetailsByUserId };
 async function createUser(userDetails) {
     try {
         const createQuery = `
@@ -228,5 +232,18 @@ async function createUser(userDetails) {
     }
 }
 
-module.exports = { connectToDatabase, createUser, getUserByEmail, getBallotNameBySocId, getUsersForAdmin, getBallotInitBySocietyId, getSocietyDetailsByUserId, getSocietiesForAdmin, getSocietyOfficesBySocId, getCandidatesForOffice, updateUser, getUserDetailsByUserId };
+module.exports = { connectToDatabase, 
+    getSocietyDetailsBySocietyName,
+    getElectionsBySocietyId,
+    createUser, 
+    getUserByEmail, 
+    getBallotDetailsBySocId, 
+    getUsersForAdmin, 
+    getBallotInitBySocietyId, 
+    getSocietyDetailsByUserId, 
+    getSocietiesForAdmin, 
+    getSocietyOfficesBySocId, 
+    getCandidatesForOffice, 
+    updateUser, 
+    getUserDetailsByUserId };
 

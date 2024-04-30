@@ -4,7 +4,7 @@ const bodyParser = require('body-parser');
 const path = require('path');
 const fs = require('fs');
 
-const { getSocietyDetailsBySocietyName, getElectionsBySocietyId, connectToDatabase, createUser, getUserByEmail, getBallotNameBySocId, getUsersForAdmin, getBallotInitBySocietyId, getSocietyDetailsByUserId, getSocietiesForAdmin, getSocietyOfficesBySocId, getCandidatesForOffice, updateUser, getUserDetailsByUserId } = require('./dataAccess');
+const { getSocietyDetailsBySocietyName, getElectionsBySocietyId, connectToDatabase, createUser, getUserByEmail, getBallotDetailsBySocId, getUsersForAdmin, getBallotInitBySocietyId, getSocietyDetailsByUserId, getSocietiesForAdmin, getSocietyOfficesBySocId, getCandidatesForOffice, updateUser, getUserDetailsByUserId } = require('./dataAccess');
 const { loginUser } = require('./businessLogic');
 
 const { encryptPasswords } = require('./encrypt');
@@ -73,21 +73,21 @@ function startServer() {
     }
 
     // Function to parse PSV files
-    function parsePsv(filename) {
-        const data = fs.readFileSync(filename, 'utf8');
-        const lines = data.trim().split('\n');
-        const headers = lines[0].split('|');
-        const records = lines.slice(1).map(line => {
-            const fields = line.split('|');
-            return headers.reduce((record, header, index) => {
-                record[header.trim()] = fields[index].trim();
-                return record;
-            }, {});
-        });
-        return records;
-    }
+    // function parsePsv(filename) {
+    //     const data = fs.readFileSync(filename, 'utf8');
+    //     const lines = data.trim().split('\n');
+    //     const headers = lines[0].split('|');
+    //     const records = lines.slice(1).map(line => {
+    //         const fields = line.split('|');
+    //         return headers.reduce((record, header, index) => {
+    //             record[header.trim()] = fields[index].trim();
+    //             return record;
+    //         }, {});
+    //     });
+    //     return records;
+    // }
 
-    const moment = require('moment');
+    // const moment = require('moment');
 
     app.get('/soc_assigned/:name', async (req, res) => {
         try {
@@ -120,36 +120,14 @@ function startServer() {
             res.status(500).send('Internal Server Error');
         }
     });
-    // app.get('/soc_assigned/:name', async (req, res) => {
-    //     try {
-    //         const societyName = req.params.name;
-    //         const societyDetails = await getSocietyDetailsBySocietyName(societyName); // Function to retrieve society details by name
-    //         console.log(societyDetails)
-    //         if (!societyDetails) {
-    //             return res.status(404).send('Society not found');
-    //         }
-    
-    //         // Fetch elections associated with the society ID
-    //         const elections = await getElectionsBySocietyId(societyDetails.societyid);
-    //         console.log(elections)
-    
-    //         res.render('society', {
-    //             societyName: societyName,
-    //             elections: elections // Pass election data to the template
-    //         });
-    //     } catch (error) {
-    //         console.error("Error fetching society data:", error);
-    //         res.status(500).send('Internal Server Error');
-    //     }
-    // });
     
     app.get('/welcome', isAuthenticated, async function(request, response) {
         const userId = request.session.userId;
         const socId = request.session.socId;
-        const ballotName = await getBallotNameBySocId(socId);
+        const ballotDetails = await getBallotDetailsBySocId(socId);
         const societyDetails = await getSocietyDetailsByUserId(userId);
 
-        response.render('welcome', { name: societyDetails.societyname, ballotName: ballotName });
+        response.render('welcome', { name: societyDetails[0].societyname, ballotName: ballotDetails[0].ballotName });
     });
 
     // In your Express server setup
@@ -165,13 +143,12 @@ function startServer() {
             res.status(500).send('Internal Server Error');
         }
     });
+
     app.get('/voting', isAuthenticated, async function(request, response) {
         try {
             const userId = request.session.userId;
             const socId = request.session.socId;
-            // Get the society name based on the user's ID
             const societyDetails = await getSocietyDetailsByUserId(userId);
-            // Get the office names associated with the user's society
             const offices = await getSocietyOfficesBySocId(socId);
 
             if (offices.length === 0) {
@@ -290,11 +267,9 @@ function startServer() {
             if (loginResult.success) {
                 request.session.userId = userData.userid; // Set user ID in session
                 const userId = request.session.userId;
-                if (!userData.usertype == 'admin') {
+                if (userData.usertype !== 'admin') {
                     const socDetails = await getSocietyDetailsByUserId(userId);
-                    console.log(socDetails);
-                    console.log(socDetails.societyid);
-                    request.session.socId = socDetails.societyid;
+                    request.session.socId = socDetails[0].societyid;
                 }
             }
             response.json(loginResult);
