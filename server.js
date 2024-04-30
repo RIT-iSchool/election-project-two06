@@ -114,8 +114,7 @@ function startServer() {
         const socId = request.session.socId;
         const ballotName = await getBallotNameBySocId(socId);
         const societyDetails = await getSocietyDetailsByUserId(userId);
-
-        response.render('welcome', { name: societyDetails.societyname, ballotName: ballotName });
+        response.render('welcome', { society: societyDetails, ballotName: ballotName });
     });
 
     // In your Express server setup
@@ -246,11 +245,9 @@ function startServer() {
             if (loginResult.success) {
                 request.session.userId = userData.userid; // Set user ID in session
                 const userId = request.session.userId;
-                if (!userData.usertype == 'admin') {
+                if (userData.usertype !== 'admin') {
                     const socDetails = await getSocietyDetailsByUserId(userId);
-                    console.log(socDetails);
-                    console.log(socDetails.societyid);
-                    request.session.socId = socDetails.societyid;
+                    request.session.socId = socDetails[0].societyid;
                 }
             }
             response.json(loginResult);

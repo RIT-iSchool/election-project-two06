@@ -171,7 +171,6 @@ async function getUserDetailsByUserId(userId) {
             SELECT "fname", "lname", "email", "usertype" FROM public."users" WHERE "userid" = $1;
         `;
         const result = await client.query(selectUser, [userId]);
-        console.log(result);
         return result.rows.length > 0 ? result.rows[0] : null;
     } catch (error) {
         console.error('Error updating user details:', error);
