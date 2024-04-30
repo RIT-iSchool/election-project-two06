@@ -60,40 +60,45 @@ async function getSocietiesForAdmin(userId) {
         const query = `SELECT "usertype" FROM public."users" WHERE "userid" = $1;`;
         const userResult = await client.query(query, [userId]);
         const userType = userResult.rows[0].usertype;
-        if (userType !== 'admin') {
+        if (userType == 'admin') {
+            // If the user is an admin, proceed with the query to get society names
+            const societiesQuery = `SELECT societyname FROM professional_society;`;
+            const societiesResult = await client.query(societiesQuery);
+            // Extract the society names from the result
+            const societyNames = societiesResult.rows.map(row => row.societyname);
+            // Return the array of society names
+            return societyNames;
+        } else {
             // If the user is not an admin, return an empty array
             return [];
         }
-        // If the user is an admin, proceed with the query to get society names
-        const societiesQuery = `SELECT societyname FROM professional_society;`;
-        const societiesResult = await client.query(societiesQuery);
-        // Extract the society names from the result
-        const societyNames = societiesResult.rows.map(row => row.societyname);
-        // Return the array of society names
-        return societyNames;
+        
     } catch (error) {
-        console.error("Error retrieving society name:", error);
+        console.error("Error retrieving societies:", error);
         throw error;
     }
 }
 async function getUsersForAdmin(userID) {
     try {
         const query = `SELECT "usertype" FROM public."users" WHERE "userid" = $1;`;
-        const userResult = await client.query(query, [userId]);
-        const userType = userResult.rows[0].usertype;
-        if (userType !== 'admin') {
-            // If the user is not an admin, return an empty array
-            return [];
+        const userResult = await client.query(query, [userID]);
+        // Check if userResult.rows[0] is defined before accessing its properties
+        if (userResult.rows[0] && userResult.rows[0].usertype) {
+            const userType = userResult.rows[0].usertype;
+            if (userType == 'admin') {
+                // If the user is an admin, proceed with the query to get users
+                const usersQuery = `SELECT "userid", "fname", "lname", "email", "usertype", "password" FROM public."users";`;
+                const usersResult = await client.query(usersQuery);
+                // Extract the society names from the result
+                const userDetails = usersResult.rows;
+                // Return the array of users
+                return userDetails;
+            }
         }
-        // If the user is an admin, proceed with the query to get users
-        const usersQuery = `SELECT fname, lname, email, usertype, password, is_pwd_encrypted FROM public."users";`;
-        const usersResult = await client.query(usersQuery);
-        // Extract the society names from the result
-        const userDetails = usersResult.rows.map(row => row.user);
-        // Return the array of users
-        return userDetails;
+        // If the user is not an admin, return an empty array
+        return [];
     } catch (error) {
-        console.error("Error retrieving society name:", error);
+        console.error("Error retrieving user details:", error);
         throw error;
     }
 }
@@ -151,5 +156,34 @@ async function getCandidatesForOffice(userId, officeName) {
     }
 }
 
-module.exports = { connectToDatabase, getUserByEmail, getBallotNameByUserId, getUsersForAdmin, getBallotInitBySocietyId, getSocietyNameByUserId, getSocietiesForAdmin, getSocietyOfficesByUserId, getCandidatesForOffice };
+async function updateUser(userId, updatedDetails) {
+    try {
+        const updateQuery = `
+            UPDATE public.users 
+            SET fname = $1, lname = $2, email = $3, usertype = $4
+            WHERE userid = $5
+        `;
+        const values = [updatedDetails.fname, updatedDetails.lname, updatedDetails.email, updatedDetails.usertype, userId];
+        await client.query(updateQuery, values);
+        console.log('User details updated successfully');
+    } catch (error) {
+        console.error('Error updating user details:', error);
+        throw error;
+    }
+}
+async function getUserDetailsByUserId(userId) {
+    try {
+        const selectUser = `
+            SELECT "fname", "lname", "email", "usertype" FROM public."users" WHERE "userid" = $1;
+        `;
+        const result = await client.query(selectUser, [userId]);
+        console.log(result);
+        return result.rows.length > 0 ? result.rows[0] : null;
+    } catch (error) {
+        console.error('Error updating user details:', error);
+        throw error;
+    }
+}
+
+module.exports = { connectToDatabase, getUserByEmail, getBallotNameByUserId, getUsersForAdmin, getBallotInitBySocietyId, getSocietyNameByUserId, getSocietiesForAdmin, getSocietyOfficesByUserId, getCandidatesForOffice, updateUser, getUserDetailsByUserId };
 

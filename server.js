@@ -3,7 +3,7 @@ const session = require('express-session');
 const path = require('path');
 const fs = require('fs');
 
-const { connectToDatabase, getUserByEmail, getSocietyNameByUserId, getBallotInitBySocietyId, getSocietiesForAdmin, getBallotNameByUserId, getSocietyOfficesByUserId, getCandidatesForOffice } = require('./dataAccess');
+const { connectToDatabase, getUserByEmail, getBallotNameByUserId, getUsersForAdmin, getBallotInitBySocietyId, getSocietyNameByUserId, getSocietiesForAdmin, getSocietyOfficesByUserId, getCandidatesForOffice, updateUser, getUserDetailsByUserId } = require('./dataAccess');
 const { loginUser } = require('./businessLogic');
 
 const { encryptPasswords } = require('./encrypt');
@@ -209,8 +209,35 @@ app.get('/ballot_initiatives', isAuthenticated, async (req, res) => {
             // Render the 'soc_assigned.ejs' template with the society names
             response.render('users', { users: userDetails });
         } catch (error) {
-            console.error("Error on society route:", error);
+            console.error("Error on users route:", error);
             response.status(500).send('Internal Server Error');
+        }
+    });
+    // Route for fetching user details via AJAX
+    app.get('/admin_page/user_details/:id', async (req, res) => {
+        try {
+            const userId = req.session.userId;
+            // Fetch user details from the database based on email
+            const userDetails = await getUserDetailsByUserId(userId);
+            // Send JSON response with user details
+            console.log(userDetails);
+            res.json(userDetails);
+        } catch (error) {
+            console.error("Error fetching user details:", error);
+            res.status(500).json({ error: 'Internal Server Error' });
+        }
+    });
+    // Route for updating user details via AJAX
+    app.post('/admin_page/update_user', async (req, res) => {
+        try {
+            const { email, fname, lname } = req.body; // Assuming these are the fields being updated
+            // Implement logic to update user details in the database
+            // Example:
+            // await updateUserDetails(email, { fname, lname });
+            res.status(200).json({ message: 'User details updated successfully' });
+        } catch (error) {
+            console.error("Error updating user details:", error);
+            res.status(500).json({ error: 'Internal Server Error' });
         }
     });
     app.post('/', async function(request, response) {

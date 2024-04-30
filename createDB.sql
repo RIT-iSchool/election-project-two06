@@ -16,7 +16,7 @@ CREATE TABLE Users (
     Email text NOT NULL,
     UserType text NOT NULL,
     Password text NOT NULL,
-    is_pwd_encrypted boolean
+    is_pwd_encrypted boolean DEFAULT false
 );
 
 CREATE TABLE Professional_Society (

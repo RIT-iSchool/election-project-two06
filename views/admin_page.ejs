@@ -53,10 +53,14 @@
 <body>
     <div class="container">
         <h1>Professional Societies</h1>
-        <button onclick="goToUsers()">Users</button>
+        <button class="option" onclick="goToUsers()">Users</button>
         <div class="buttons">
-            <% for (name of soc_names) { %>
-                <button class="option" onclick="goToSociety('<%= name %>')"><%= name %></button>
+            <% if (soc_names && soc_names.length) { %>
+                <% for (let name of soc_names) { %>
+                    <button class="option" onclick="goToSociety('<%= name %>')"><%= name %></button>
+                <% } %>
+            <% } else { %>
+                <p>No society names found.</p>
             <% } %>
         </div>
     </div>

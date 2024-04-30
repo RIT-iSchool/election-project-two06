@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Users</title>
+    <!-- DataTables CSS -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.css">
+
+    <!-- jQuery -->
+    <script type="text/javascript" charset="utf8" src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <!-- DataTables JavaScript -->
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.js"></script>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 20px auto;
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Users</h1>
+        <table id="userTable" class="display">
+            <thead>
+                <tr>
+                    <th>First Name</th>
+                    <th>Last Name</th>
+                    <th>Email</th>
+                    <th>User Type</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% if (users && users.length) { %>
+                    <% users.forEach(function(user) { %>
+                        <tr>
+                            <td><%= user.fname %></td>
+                            <td><%= user.lname %></td>
+                            <td><%= user.email %></td>
+                            <td><%= user.usertype %></td>
+                            <td>
+                                <!-- Edit button for each user -->
+                                <button onclick="editUser('<%= user.id %>')">Edit</button>
+                            </td>
+                        </tr>
+                    <% }); %>
+                <% } else { %>
+                    <tr>
+                        <td colspan="4">No users found.</td>
+                    </tr>
+                <% } %>                
+            </tbody>
+        </table>
+    </div>
+    <!-- Pop-up modal for editing user details -->
+    <div id="editModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <h2>Edit User</h2>
+            <form id="editForm">
+                <!-- User details inputs -->
+                <label for="fname">First Name:</label>
+                <input type="text" id="fname" name="fname">
+                <label for="lname">Last Name:</label>
+                <input type="text" id="lname" name="lname">
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email" readonly>
+                <label for="usertype">User Type:</label>
+                <input type="usertype" id="usertype" name="usertype">
+                <button type="button" onclick="submitEdit()">Save</button>
+            </form>
+        </div>
+    </div>
+    <script>
+        function editUser(id) {
+            // Open the modal
+            const modal = document.getElementById("editModal");
+            modal.style.display = "block";
+            // Fetch user details via AJAX
+            fetch(`/admin_page/user_details/${id}`)
+                .then(response => response.json())
+                .then(data => {
+                    console.log(data.fname);
+                    // Populate modal fields with user details
+                    document.getElementById("fname").value = data.fname;
+                    document.getElementById("lname").value = data.lname;
+                    document.getElementById("email").value = data.email;
+                    document.getElementById("usertype").value = data.usertype;
+                })
+                .catch(error => console.error("Error fetching user details:", error));
+        }
+
+        async function submitEdit() {
+            // Implement submitting edited user details via AJAX
+            // Get edited user details from the form
+            const fname = document.getElementById("fname").value;
+            const lname = document.getElementById("lname").value;
+            const email = document.getElementById("email").value;
+            const usertype = document.getElementById("usertype").value;
+
+            // Create form data to send in the POST request
+            const formData = new FormData();
+            formData.append('fname', fname);
+            formData.append('lname', lname);
+            formData.append('email', email);
+            formData.append('usertype', usertype);
+
+            try {
+                // Send a POST request to update the user details
+                const response = await fetch('/admin_page/update_user', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                // Check if the request was successful
+                if (response.ok) {
+                    // User details updated successfully
+                    console.log('User details updated successfully');
+                    closeModal(); // Close the modal after successful update
+                } else {
+                    // Error updating user details
+                    console.error('Error updating user details:', response.statusText);
+                }
+            } catch (error) {
+                console.error('Error updating user details:', error);
+            }
+        }
+
+        function closeModal() {
+            // Close the modal
+            const modal = document.getElementById("editModal");
+            modal.style.display = "none";
+        }
+        $(document).ready(function() {
+            $('#userTable').DataTable();
+        });
+        function checkTokenLocalStorage() {
+            if (!localStorage.getItem('token')) {
+                // Redirect to login page if token doesn't exist in localStorage
+                window.location.href = '/';
+            }
+        }
+        function logout() {
+            localStorage.removeItem('token');
+            // Redirect to login page after logout
+            window.location.href = '/';
+        }
+        // Function to handle the pageshow event
+        function handlePageShow(event) {
+            if (event.persisted) {
+                // If the page is shown from the cache (e.g., when navigating back),
+                // check if the token is still in local storage
+                checkTokenLocalStorage();
+            }
+        }
+
+        // Add event listener for the pageshow event
+        window.addEventListener('pageshow', handlePageShow);
+    </script>
+</body>
+</html>
