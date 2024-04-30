@@ -141,7 +141,7 @@ function startServer() {
 
             if (offices.length === 0) {
                 // No valid ballots are found, so render a different page or pass a message
-                response.render('noRunningBallots', { name: societyDetails.societyname }); // You need to create this EJS template
+                response.render('noRunningBallots', { name: societyDetails[0].societyname }); // You need to create this EJS template
             } else {
                 // Retrieve the candidates for each office
                 const officeData = {};
@@ -150,7 +150,7 @@ function startServer() {
                     officeData[office] = candidates;
                 }
                 // Render the 'voting.ejs' template with the society name and offices data
-                response.render('voting', { name: societyDetails.societyname, officesData: officeData });
+                response.render('voting', { name: societyDetails[0].societyname, officesData: officeData });
             }
         } catch (error) {
             console.error("Error on voting route:", error);
