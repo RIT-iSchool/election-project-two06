@@ -53,8 +53,8 @@
     <div class="container">
         <h1>Assigned Professional Societies</h1>
             <div class="buttons">
-                <% for (name of soc_names) { %>
-                    <button class="option" onclick="goToSociety('<%= name %>')"><%= name %></button>
+                <% for (const society of societies) { %>
+                    <button class="option" onclick="goToSociety('<%= society.societyname %>')"><%= society.societyname %></button>
                 <% } %>
             </div>
         </div>

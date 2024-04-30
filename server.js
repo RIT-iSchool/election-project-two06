@@ -3,7 +3,7 @@ const session = require('express-session');
 const path = require('path');
 const fs = require('fs');
 
-const { connectToDatabase, getUserByEmail, getBallotNameByUserId, getUsersForAdmin, getBallotInitBySocietyId, getSocietyNameByUserId, getSocietiesForAdmin, getSocietyOfficesByUserId, getCandidatesForOffice, updateUser, getUserDetailsByUserId } = require('./dataAccess');
+const { connectToDatabase, getUserByEmail, getBallotNameBySocId, getUsersForAdmin, getBallotInitBySocietyId, getSocietyDetailsByUserId, getSocietiesForAdmin, getSocietyOfficesBySocId, getCandidatesForOffice, updateUser, getUserDetailsByUserId } = require('./dataAccess');
 const { loginUser } = require('./businessLogic');
 
 const { encryptPasswords } = require('./encrypt');
@@ -111,37 +111,34 @@ function startServer() {
 
     app.get('/welcome', isAuthenticated, async function(request, response) {
         const userId = request.session.userId;
-        const ballotName = await getBallotNameByUserId(userId);
-        const societyDetails = await getSocietyNameByUserId(userId);
+        const socId = request.session.socId;
+        const ballotName = await getBallotNameBySocId(socId);
+        const societyDetails = await getSocietyDetailsByUserId(userId);
 
         response.render('welcome', { name: societyDetails.societyname, ballotName: ballotName });
     });
 
- // In your Express server setup
+    // In your Express server setup
 
-app.get('/ballot_initiatives', isAuthenticated, async (req, res) => {
-    try {
-        const userId = req.session.userId;
-        const societyDetails = await getSocietyNameByUserId(userId);
-        const societyId = societyDetails[0].societyid;
-        const initDetails = await getBallotInitBySocietyId(societyId);
-        // Render the 'ballot_initiatives.ejs' template with the fetched initiatives
-        res.render('ballot_initiatives', { initiatives: initDetails });
-    } catch (error) {
-        console.error("Error fetching ballot initiatives:", error);
-        res.status(500).send('Internal Server Error');
-    }
-});
-
-    
-    
+    app.get('/ballot_initiatives', isAuthenticated, async (req, res) => {
+        try {
+            const societyId = req.session.socId;
+            const initDetails = await getBallotInitBySocietyId(societyId);
+            // Render the 'ballot_initiatives.ejs' template with the fetched initiatives
+            res.render('ballot_initiatives', { initiatives: initDetails });
+        } catch (error) {
+            console.error("Error fetching ballot initiatives:", error);
+            res.status(500).send('Internal Server Error');
+        }
+    });
     app.get('/voting', isAuthenticated, async function(request, response) {
         try {
             const userId = request.session.userId;
+            const socId = request.session.socId;
             // Get the society name based on the user's ID
-            const societyDetails = await getSocietyNameByUserId(userId);
+            const societyDetails = await getSocietyDetailsByUserId(userId);
             // Get the office names associated with the user's society
-            const offices = await getSocietyOfficesByUserId(userId);
+            const offices = await getSocietyOfficesBySocId(socId);
 
             if (offices.length === 0) {
                 // No valid ballots are found, so render a different page or pass a message
@@ -150,7 +147,7 @@ app.get('/ballot_initiatives', isAuthenticated, async (req, res) => {
                 // Retrieve the candidates for each office
                 const officeData = {};
                 for (const office of offices) {
-                    const candidates = await getCandidatesForOffice(userId, office);
+                    const candidates = await getCandidatesForOffice(socId, office);
                     officeData[office] = candidates;
                 }
                 // Render the 'voting.ejs' template with the society name and offices data
@@ -170,9 +167,9 @@ app.get('/ballot_initiatives', isAuthenticated, async (req, res) => {
         try {
             const userId = request.session.userId;
             // Get the society names based on the user's ID
-            const societyDetails = await getSocietyNameByUserId(userId);
+            const societyDetails = await getSocietyDetailsByUserId(userId);
             // Render the 'soc_assigned.ejs' template with the society names
-            response.render('soc_assigned', { soc_names: societyDetails.societyname });
+            response.render('soc_assigned', { societies: societyDetails });
         } catch (error) {
             console.error("Error on society route:", error);
             response.status(500).send('Internal Server Error');
@@ -248,6 +245,13 @@ app.get('/ballot_initiatives', isAuthenticated, async (req, res) => {
             const userData = await getUserByEmail(email);
             if (loginResult.success) {
                 request.session.userId = userData.userid; // Set user ID in session
+                const userId = request.session.userId;
+                if (!userData.usertype == 'admin') {
+                    const socDetails = await getSocietyDetailsByUserId(userId);
+                    console.log(socDetails);
+                    console.log(socDetails.societyid);
+                    request.session.socId = socDetails.societyid;
+                }
             }
             response.json(loginResult);
         } catch (error) {

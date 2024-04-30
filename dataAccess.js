@@ -26,12 +26,12 @@ async function getUserByEmail(email) {
         throw error;
     }
 }
-async function getSocietyNameByUserId(userId) {
+async function getSocietyDetailsByUserId(userId) {
     try {
         const query = `
             SELECT ps."societyid", ps."societyname"
-            FROM public."user_society" us
-            JOIN public."professional_society" ps ON us."societyid" = ps."societyid"
+            FROM public."professional_society" ps
+            JOIN public."user_society" us ON us."societyid" = ps."societyid"
             WHERE us."userid" = $1;
         `;
         const result = await client.query(query, [userId]);
@@ -102,32 +102,28 @@ async function getUsersForAdmin(userID) {
         throw error;
     }
 }
-async function getBallotNameByUserId(userId) {
+async function getBallotNameBySocId(socId) {
     const query = `
         SELECT b."ballottitle"
         FROM public."ballot" b
-        JOIN public."professional_society" ps ON b."societyid" = ps."societyid"
-        JOIN public."user_society" us ON ps."societyid" = us."societyid"
-        WHERE us."userid" = $1
+        WHERE b."societyid" = $1
         AND CURRENT_DATE BETWEEN b."startdate" AND b."enddate";
     `;
-    const result = await client.query(query, [userId]);
+    const result = await client.query(query, [socId]);
     return result.rows.map(row => row.ballottitle);
 
 }
 
-async function getSocietyOfficesByUserId(userId) {
+async function getSocietyOfficesBySocId(socId) {
     try {
         const query = `
             SELECT o."officename"
             FROM public."office" o
             JOIN public."ballot" b ON o."ballotid" = b."ballotid"
-            JOIN public."professional_society" ps ON b."societyid" = ps."societyid"
-            JOIN public."user_society" us ON ps."societyid" = us."societyid"
-            WHERE us."userid" = $1
+            WHERE b."societyid" = $1
             AND CURRENT_DATE BETWEEN b."startdate" AND b."enddate";
         `;
-        const result = await client.query(query, [userId]);
+        const result = await client.query(query, [socId]);
         return result.rows.map(row => row.officename);
     } catch (error) {
         console.error("Error retrieving society offices:", error);
@@ -136,19 +132,17 @@ async function getSocietyOfficesByUserId(userId) {
 }
 
 
-async function getCandidatesForOffice(userId, officeName) {
+async function getCandidatesForOffice(socId, officeName) {
     try {
         const query = `
             SELECT CONCAT(c."cfname", ' ', c."clname") AS cname, c.photo
             FROM public."candidate" c
             JOIN public."office" o ON c."officeid" = o."officeid"
             JOIN public."ballot" b ON o."ballotid" = b."ballotid"
-            JOIN public."professional_society" ps ON b."societyid" = ps."societyid"
-            JOIN public."user_society" us ON ps."societyid" = us."societyid"
-            WHERE us."userid" = $1
+            WHERE us."societyid" = $1
             AND o."officename" = $2
         `;
-        const result = await client.query(query, [userId, officeName]);
+        const result = await client.query(query, [socId, officeName]);
         return result.rows.map(row => ({ name: row.cname, photo: row.photo })); // Include both name and photo
     } catch (error) {
         console.error("Error retrieving candidates for office:", error);
@@ -185,5 +179,5 @@ async function getUserDetailsByUserId(userId) {
     }
 }
 
-module.exports = { connectToDatabase, getUserByEmail, getBallotNameByUserId, getUsersForAdmin, getBallotInitBySocietyId, getSocietyNameByUserId, getSocietiesForAdmin, getSocietyOfficesByUserId, getCandidatesForOffice, updateUser, getUserDetailsByUserId };
+module.exports = { connectToDatabase, getUserByEmail, getBallotNameBySocId, getUsersForAdmin, getBallotInitBySocietyId, getSocietyDetailsByUserId, getSocietiesForAdmin, getSocietyOfficesBySocId, getCandidatesForOffice, updateUser, getUserDetailsByUserId };
 
