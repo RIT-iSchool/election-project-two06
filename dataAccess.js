@@ -308,7 +308,6 @@ async function saveBallotVote(ballotInitId, userId, choice, response) {
     }
 }
 
-
 module.exports = { connectToDatabase, 
     saveBallotVote,
     createVote,

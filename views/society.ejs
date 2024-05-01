@@ -68,10 +68,10 @@
         <button class="option" onclick="goToBallotInit()">Create/Edit Ballot Initiatives</button>
     </div>
     <% function formatDate(dateString) { %>
-        <% // Parse the dateString into a Date object %>
+        <!-- Parse the dateString into a Date object -->
         <% const date = new Date(dateString); %>
         
-        <% // Format the date components manually %>
+        <!-- Format the date components manually -->
         <% const monthNames = ["January", "February", "March", "April", "May", "June",
             "July", "August", "September", "October", "November", "December"]; %>
         <% const month = monthNames[date.getMonth()]; %>
@@ -83,7 +83,7 @@
         <% const ampm = hours >= 12 ? 'PM' : 'AM'; %>
         <% const formattedHours = hours % 12 || 12; %>
         
-        <% // Construct the formatted date string %>
+        <!-- Construct the formatted date string -->
         <% const formattedDateString = month + ' ' + day + ' ' + year + ', ' + formattedHours + ':' + (minutes < 10 ? '0' : '') + minutes + ':' + (seconds < 10 ? '0' : '') + seconds + ' ' + ampm; %>
         
         <% return formattedDateString; %>
