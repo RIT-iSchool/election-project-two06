@@ -266,7 +266,6 @@ async function createUser(userDetails) {
 
 async function createVote(userId, ballotId, officeId, candidateId) {
     try {
-        console.log(userId, ballotId, officeId, candidateId);
         const insertQuery = `
             INSERT INTO public."vote" (userid, ballotid, officeid, candidateid, timestamp)
             VALUES ($1, $2, $3, $4, NOW());
@@ -282,16 +281,16 @@ async function createVote(userId, ballotId, officeId, candidateId) {
 async function createWriteInVote(userId, firstName, lastName, officeId) {
     try {
         const insertQuery = `
-            INSERT INTO public.write_ins (UserID, cfname, clname, officeid)
+            INSERT INTO public.write_ins (userid, cfname, clname, officeid)
             VALUES ($1, $2, $3, $4);
         `;
-        await client.query(insertQuery, [userId, officeId, firstName, lastName]);
-        console.log('Write-in vote recorded successfully');
+        await client.query(insertQuery, [userId, firstName, lastName, officeId]);
     } catch (error) {
         console.error('Error recording write-in vote:', error);
         throw error;
     }
 }
+
 
 
 module.exports = { connectToDatabase, 

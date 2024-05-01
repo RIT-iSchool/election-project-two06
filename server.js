@@ -175,29 +175,23 @@ function startServer() {
 
     app.post('/submit-vote', isAuthenticated, async function(request, response) {
         const userId = request.session.userId;
-        const { ballotId, formData } = request.body; // Extract BallotID and form data from the request body
+        const { ballotId, formData } = request.body;
     
         try {
-            // Extract and handle ballotId separately if needed
-            console.log('Ballot ID:', ballotId);
-    
-            // Iterate through each office in the form data
             for (const key in formData) {
-                const value = formData[key];
-                if (key !== 'ballotId') { // Ensure the key is not 'ballotId'
-                    if (key.includes('_writein')) {
-                        // Handle write-in votes
-                        const officeId = key.split('_')[0];
-                        const names = value.split(' '); // Assumes value is "FirstName LastName"
-                        if (names.length >= 2) {
-                            await createWriteInVote(userId, ballotId, officeId, names[0], names[1]);
-                            console.log('Write-in names:', names);
-                        }
-                    } else {
-                        // Handle regular candidate votes
-                        const officeId = key;
-                        await createVote(userId, ballotId, officeId, value);
+                if (key.includes('_writein')) {
+                    const officeId = key.split('_')[0];
+                    // Access the nested 'first' and 'last' inside the write-in object
+                    const firstName = formData[key].first.trim();
+                    const lastName = formData[key].last.trim();
+                    console.log(firstName); // Should now log the correct names or empty strings
+                    console.log(lastName);
+    
+                    if (firstName && lastName) { // Check that both names are not empty
+                        await createWriteInVote(userId, firstName, lastName, officeId);
                     }
+                } else if (key !== 'ballotId') {
+                    await createVote(userId, ballotId, key, formData[key]);
                 }
             }
             response.send('Vote submitted successfully!');
@@ -207,7 +201,6 @@ function startServer() {
         }
     });
     
-
 
     app.get('/', function(request, response) {
         response.render('login'); // Render 'login.ejs' from the views folder

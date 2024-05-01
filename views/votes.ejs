@@ -30,8 +30,8 @@
             <% }); %>
             <div>
                 <h3>Write-In:</h3>
-                <label>First Name: <input type="text" name="<%= office.officeId %>_writein"></label>
-                <label>Last Name: <input type="text" name="<%= office.officeId %>_writein"></label>
+                <label>First Name: <input type="text" name="<%= office.officeId %>_writein_first"></label>
+                <label>Last Name: <input type="text" name="<%= office.officeId %>_writein_last"></label>
             </div>
         </div>
     <% }); %>
@@ -40,13 +40,21 @@
 
 <script>
     document.getElementById("voteForm").addEventListener("submit", async function(event) {
-        event.preventDefault(); // Prevent the default form submission
-
-        const formData = new FormData(this); // Create a FormData object from the form
+        event.preventDefault();
+        const formData = new FormData(this);
         const serializedFormData = {};
-        for (const [key, value] of formData.entries()) {
-            serializedFormData[key] = value;
-        }
+        formData.forEach((value, key) => {
+            if (key.includes('_writein_')) { // Check for 'first' or 'last'
+                let namePart = key.split('_').pop(); // 'first' or 'last'
+                let officeId = key.split('_')[0];
+                if (!serializedFormData[officeId + '_writein']) {
+                    serializedFormData[officeId + '_writein'] = {};
+                }
+                serializedFormData[officeId + '_writein'][namePart] = value;
+            } else {
+                serializedFormData[key] = value;
+            }
+        });
 
         try {
             const response = await fetch('/submit-vote', {
@@ -60,17 +68,15 @@
             if (response.ok) {
                 console.log('Vote submitted successfully');
                 window.location.href = '/welcome';
-                // Optionally, redirect to a success page or display a success message
             } else {
                 console.error('Error submitting vote:', response.statusText);
-                // Optionally, display an error message to the user
             }
         } catch (error) {
             console.error('Error submitting vote:', error);
-            // Optionally, display an error message to the user
         }
     });
 </script>
+
 
 </body>
 </html>
