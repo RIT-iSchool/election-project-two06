@@ -123,38 +123,38 @@ async function getBallotDetailsBySocId(socId) {
 async function getSocietyOfficesBySocId(socId) {
     try {
         const query = `
-            SELECT o."officename"
+            SELECT o."officename", o."officeid", o."choices"
             FROM public."office" o
             JOIN public."ballot" b ON o."ballotid" = b."ballotid"
             WHERE b."societyid" = $1
             AND CURRENT_DATE BETWEEN b."startdate" AND b."enddate";
         `;
         const result = await client.query(query, [socId]);
-        return result.rows.map(row => row.officename);
+        return result.rows.map(row => ({officeName: row.officename, officeId: row.officeid, officeChoice: row.choices}));
     } catch (error) {
         console.error("Error retrieving society offices:", error);
         throw error;
     }
 }
 
-
-async function getCandidatesForOffice(socId, officeName) {
+async function getCandidatesForOffice(socId, officeId) {
     try {
         const query = `
-            SELECT CONCAT(c."cfname", ' ', c."clname") AS cname, c.photo
+            SELECT CONCAT(c."cfname", ' ', c."clname") AS cname, c.photo, c."candidateid"
             FROM public."candidate" c
             JOIN public."office" o ON c."officeid" = o."officeid"
             JOIN public."ballot" b ON o."ballotid" = b."ballotid"
             WHERE b."societyid" = $1
-            AND o."officename" = $2
+            AND o."officeid" = $2
         `;
-        const result = await client.query(query, [socId, officeName]);
-        return result.rows.map(row => ({ name: row.cname, photo: row.photo })); // Include both name and photo
+        const result = await client.query(query, [socId, officeId]);
+        return result.rows.map(row => ({ name: row.cname, photo: row.photo, candidateId: row.candidateid })); // Include both name and photo
     } catch (error) {
         console.error("Error retrieving candidates for office:", error);
         throw error;
     }
 }
+
 
 async function updateUser(userId, updatedDetails) {
     try {
@@ -264,7 +264,39 @@ async function createUser(userDetails) {
     }
 }
 
+async function createVote(userId, ballotId, officeId, candidateId) {
+    try {
+        console.log(userId, ballotId, officeId, candidateId);
+        const insertQuery = `
+            INSERT INTO public."vote" (userid, ballotid, officeid, candidateid, timestamp)
+            VALUES ($1, $2, $3, $4, NOW());
+        `;
+        await client.query(insertQuery, [userId, ballotId, officeId, candidateId]);
+        console.log('Vote recorded successfully');
+    } catch (error) {
+        console.error('Error recording vote:', error);
+        throw error;
+    }
+}
+
+async function createWriteInVote(userId, firstName, lastName, officeId) {
+    try {
+        const insertQuery = `
+            INSERT INTO public.write_ins (UserID, cfname, clname, officeid)
+            VALUES ($1, $2, $3, $4);
+        `;
+        await client.query(insertQuery, [userId, officeId, firstName, lastName]);
+        console.log('Write-in vote recorded successfully');
+    } catch (error) {
+        console.error('Error recording write-in vote:', error);
+        throw error;
+    }
+}
+
+
 module.exports = { connectToDatabase, 
+    createVote,
+    createWriteInVote,
     getSocietyDetailsBySocietyName,
     getElectionsBySocietyId,
     createUser, 
@@ -278,4 +310,5 @@ module.exports = { connectToDatabase,
     getCandidatesForOffice, 
     updateUser, 
     getUserDetailsByUserId };
+
 

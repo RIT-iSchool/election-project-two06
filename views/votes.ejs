@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Vote for Office</title>
+<style>
+    body { font-family: Arial, sans-serif; }
+    .office { margin-bottom: 30px; }
+    .office h2 { text-align: center; }
+    .candidate { text-align: center; margin-bottom: 20px; }
+    img { width: 100px; height: 100px; }
+    label { display: block; margin-top: 10px; }
+</style>
+</head>
+<body>
+<h1>Vote for Office</h1>
+<form id="voteForm" action="/submit-vote" method="post">
+    <% officesData.forEach(function(office) { %>
+        <div class="office">
+            <h2><%= office.officeName %></h2>
+            <input type="hidden" name="ballotId" value="<%= ballotId %>">
+            <% office.candidates.forEach(function(candidate) { %>
+                <div class="candidate">
+                    <img src="data:image/jpeg;base64,<%= candidate.photo.toString('base64') %>" alt="Photo of <%= candidate.name %>">
+                    <label>
+                        <input type="radio" name="<%= office.officeId %>" value="<%= candidate.candidateId %>"> 
+                        <%= candidate.name %>
+                    </label>
+                </div>
+            <% }); %>
+            <div>
+                <h3>Write-In:</h3>
+                <label>First Name: <input type="text" name="<%= office.officeId %>_writein"></label>
+                <label>Last Name: <input type="text" name="<%= office.officeId %>_writein"></label>
+            </div>
+        </div>
+    <% }); %>
+    <button type="submit">Submit Vote</button>
+</form>
+
+<script>
+    document.getElementById("voteForm").addEventListener("submit", async function(event) {
+        event.preventDefault(); // Prevent the default form submission
+
+        const formData = new FormData(this); // Create a FormData object from the form
+        const serializedFormData = {};
+        for (const [key, value] of formData.entries()) {
+            serializedFormData[key] = value;
+        }
+
+        try {
+            const response = await fetch('/submit-vote', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ ballotId: serializedFormData.ballotId, formData: serializedFormData })
+            });
+
+            if (response.ok) {
+                console.log('Vote submitted successfully');
+                window.location.href = '/welcome';
+                // Optionally, redirect to a success page or display a success message
+            } else {
+                console.error('Error submitting vote:', response.statusText);
+                // Optionally, display an error message to the user
+            }
+        } catch (error) {
+            console.error('Error submitting vote:', error);
+            // Optionally, display an error message to the user
+        }
+    });
+</script>
+
+</body>
+</html>

@@ -5,9 +5,9 @@ const path = require('path');
 const fs = require('fs');
 const moment = require('moment');
 
-const { connectToDatabase, 
-    getSocietyDetailsBySocietyName,
-    getElectionsBySocietyId,
+const { getSocietyDetailsBySocietyName, 
+    getElectionsBySocietyId, 
+    connectToDatabase, 
     createUser, 
     getUserByEmail, 
     getBallotDetailsBySocId, 
@@ -18,7 +18,11 @@ const { connectToDatabase,
     getSocietyOfficesBySocId, 
     getCandidatesForOffice, 
     updateUser, 
-    getUserDetailsByUserId } = require('./dataAccess');
+    getUserDetailsByUserId,
+    createVote,
+    createWriteInVote,
+} = require('./dataAccess');
+
 const { loginUser } = require('./businessLogic');
 
 const { encryptPasswords } = require('./encrypt');
@@ -143,30 +147,67 @@ function startServer() {
     });
 
     app.get('/voting', isAuthenticated, async function(request, response) {
+        const userId = request.session.userId;
+        const socId = request.session.socId;
+    
         try {
-            const userId = request.session.userId;
-            const socId = request.session.socId;
+            const ballotDetails = await getBallotDetailsBySocId(socId);
             const societyDetails = await getSocietyDetailsByUserId(userId);
-            const offices = await getSocietyOfficesBySocId(socId);
-
-            if (offices.length === 0) {
-                // No valid ballots are found, so render a different page or pass a message
-                response.render('noRunningBallots', { name: societyDetails[0].societyname }); // You need to create this EJS template
-            } else {
-                // Retrieve the candidates for each office
-                const officeData = {};
-                for (const office of offices) {
-                    const candidates = await getCandidatesForOffice(socId, office);
-                    officeData[office] = candidates;
-                }
-                // Render the 'voting.ejs' template with the society name and offices data
-                response.render('voting', { name: societyDetails[0].societyname, officesData: officeData });
-            }
+            const officeDetails = await getSocietyOfficesBySocId(socId);
+            const officesData = await Promise.all(officeDetails.map(async office => {
+                const candidates = await getCandidatesForOffice(socId, office.officeId);
+                return { ...office, candidates };
+            }));
+    
+            // Pass BallotID to the template
+            response.render('votes', {
+                name: societyDetails[0].societyname,
+                officesData: officesData,
+                ballotId: ballotDetails[0].ballotId, 
+                ballotName: ballotDetails[0].ballotName
+            });
         } catch (error) {
             console.error("Error on voting route:", error);
             response.status(500).send('Internal Server Error');
         }
     });
+    
+
+    app.post('/submit-vote', isAuthenticated, async function(request, response) {
+        const userId = request.session.userId;
+        const { ballotId, formData } = request.body; // Extract BallotID and form data from the request body
+    
+        try {
+            // Extract and handle ballotId separately if needed
+            console.log('Ballot ID:', ballotId);
+    
+            // Iterate through each office in the form data
+            for (const key in formData) {
+                const value = formData[key];
+                if (key !== 'ballotId') { // Ensure the key is not 'ballotId'
+                    if (key.includes('_writein')) {
+                        // Handle write-in votes
+                        const officeId = key.split('_')[0];
+                        const names = value.split(' '); // Assumes value is "FirstName LastName"
+                        if (names.length >= 2) {
+                            await createWriteInVote(userId, ballotId, officeId, names[0], names[1]);
+                            console.log('Write-in names:', names);
+                        }
+                    } else {
+                        // Handle regular candidate votes
+                        const officeId = key;
+                        await createVote(userId, ballotId, officeId, value);
+                    }
+                }
+            }
+            response.send('Vote submitted successfully!');
+        } catch (error) {
+            console.error("Error submitting vote:", error);
+            response.status(500).send('Internal Server Error');
+        }
+    });
+    
+
 
     app.get('/', function(request, response) {
         response.render('login'); // Render 'login.ejs' from the views folder
