@@ -68,6 +68,70 @@ async function getBallotInitBySocietyId(societyId, userId) {
     }
 }
 
+async function getBallotsPerSociety() {
+    try {
+        await client.query('BEGIN'); // Begin the transaction
+        const query = `
+            SELECT ps.societyname, COUNT(b.ballotid) AS total_ballots
+            FROM professional_society ps
+            LEFT JOIN ballot b ON ps.societyid = b.societyid
+            GROUP BY ps.societyname;
+        `;
+        const result = await client.query(query);
+        await client.query('COMMIT'); // Commit the transaction if all operations succeed
+        return result.rows;
+    } catch (error) {
+        await client.query('ROLLBACK'); // Rollback the transaction if any operation fails
+        console.error("Error retrieving ballots per society:", error);
+        throw error;
+    }
+}
+
+async function getMembersPerSociety() {
+    try {
+        await client.query('BEGIN'); // Begin the transaction
+        const query = `
+            SELECT ps.societyname, COUNT(us.userid) AS total_members
+            FROM professional_society ps
+            INNER JOIN user_society us ON ps.societyid = us.societyid
+            WHERE us.userid IN (SELECT userid FROM users WHERE usertype = 'member')
+            GROUP BY ps.societyname;
+        `;
+        const result = await client.query(query);
+        await client.query('COMMIT'); // Commit the transaction if all operations succeed
+        return result.rows;
+    } catch (error) {
+        await client.query('ROLLBACK'); // Rollback the transaction if any operation fails
+        console.error("Error retrieving members per society:", error);
+        throw error;
+    }
+}
+
+async function getAverageMembersVotingPerElection() {
+    try {
+        await client.query('BEGIN'); // Begin the transaction
+        const query = `
+        WITH voted_members_counts AS (
+            SELECT COUNT(DISTINCT v.userid) AS voted_members_count, v.ballotid
+            FROM vote v
+            INNER JOIN users u ON v.userid = u.userid AND u.usertype = 'member'
+            GROUP BY v.ballotid
+        )
+        SELECT AVG(vmc.voted_members_count) AS average_members_voting
+        FROM voted_members_counts vmc;
+        
+        
+        `;
+        const result = await client.query(query);
+        await client.query('COMMIT'); // Commit the transaction if all operations succeed
+        return result.rows[0].average_members_voting;
+    } catch (error) {
+        await client.query('ROLLBACK'); // Rollback the transaction if any operation fails
+        console.error("Error retrieving average members voting per election:", error);
+        throw error;
+    }
+}
+
 async function getSocietiesForAdmin(userId) {
     try {
         await client.query('BEGIN'); // Begin the transaction
@@ -425,6 +489,7 @@ module.exports = { connectToDatabase,
     getUserByEmail, 
     getBallotDetailsBySocId, 
     getUsersForAdmin, 
+    getBallotsPerSociety,
     getBallotInitBySocietyId, 
     getSocietyDetailsByUserId, 
     getSocietiesForAdmin, 
@@ -432,6 +497,8 @@ module.exports = { connectToDatabase,
     getCandidatesForOffice, 
     updateUser, 
     getUserDetailsByUserId,
+    getAverageMembersVotingPerElection,
+    getMembersPerSociety,
     getVotedUsersByElection,
     getUsersByElection };
 

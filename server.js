@@ -9,7 +9,10 @@ const { getSocietyDetailsBySocietyName,
     saveBallotVote,
     getElectionsBySocietyId, 
     connectToDatabase, 
+    getMembersPerSociety,
+    getAverageMembersVotingPerElection,
     createUser, 
+    getBallotsPerSociety,
     getUsersByElection,
     getUserByEmail, 
     getBallotDetailsBySocId, 
@@ -172,6 +175,7 @@ app.get('/soc_assigned/:society/:election/users', isAuthenticated, async (req, r
 //            res.status(500).json({ error: 'Internal Server Error' });
 //        }
 //    });
+    
     app.get('/ballot_initiatives', isAuthenticated, async (req, res) => {
         try {
             const societyId = req.session.socId;
@@ -204,6 +208,32 @@ app.get('/soc_assigned/:society/:election/users', isAuthenticated, async (req, r
             res.status(500).send('Internal Server Error');
         }
     });    
+    app.get('/ballots-per-society', async (req, res) => {
+        try {
+            const ballotCounts = await getBallotsPerSociety();
+            res.json(ballotCounts);
+        } catch (error) {
+            res.status(500).json({ error: 'Internal Server Error' });
+        }
+    });
+    
+    app.get('/members-per-society', async (req, res) => {
+        try {
+            const memberCounts = await getMembersPerSociety();
+            res.json(memberCounts);
+        } catch (error) {
+            res.status(500).json({ error: 'Internal Server Error' });
+        }
+    });
+    
+    app.get('/average-members-voting-per-election', async (req, res) => {
+        try {
+            const averageVotingCounts = await getAverageMembersVotingPerElection();
+            res.json(averageVotingCounts);
+        } catch (error) {
+            res.status(500).json({ error: 'Internal Server Error' });
+        }
+    });
 
     app.get('/voting', isAuthenticated, async function(request, response) {
         const userId = request.session.userId;
