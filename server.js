@@ -221,20 +221,26 @@ app.get('/soc_assigned/:society/:election/users', isAuthenticated, async (req, r
     app.post('/submit-vote', isAuthenticated, async function(request, response) {
         const userId = request.session.userId;
         const { ballotId, formData } = request.body;
+        
+        console.log("User ID:", userId);
+        console.log("Ballot ID:", ballotId);
+        console.log("Form Data:", formData);
     
         try {
             for (const key in formData) {
+                const value = formData[key];
+    
                 if (key.includes('_writein')) {
                     const officeId = key.split('_')[0];
-                    // Access the nested 'first' and 'last' inside the write-in object
                     const firstName = formData[key].first.trim();
                     const lastName = formData[key].last.trim();
     
                     if (firstName && lastName) { // Check that both names are not empty
                         await createWriteInVote(userId, firstName, lastName, officeId);
                     }
-                } else if (key !== 'ballotId') {
-                    await createVote(userId, ballotId, key, formData[key]);
+                } else if (value && value !== 'NO_VOTE' && key !== 'ballotId') {
+                    // Check if there is a value and it's not a no-vote placeholder
+                    await createVote(userId, ballotId, key, value);
                 }
             }
             response.send('Vote submitted successfully!');
@@ -244,24 +250,11 @@ app.get('/soc_assigned/:society/:election/users', isAuthenticated, async (req, r
         }
     });
     
+    
 
     app.get('/', function(request, response) {
         response.render('login'); // Render 'login.ejs' from the views folder
     });
-
-    app.get('/soc_assigned', isAuthenticated, async function(request, response) {
-        try {
-            const userId = request.session.userId;
-            // Get the society names based on the user's ID
-            const societyDetails = await getSocietyDetailsByUserId(userId);
-            // Render the 'soc_assigned.ejs' template with the society names
-            response.render('soc_assigned', { societies: societyDetails });
-        } catch (error) {
-            console.error("Error on society route:", error);
-            response.status(500).send('Internal Server Error');
-        }
-    });
-
  
     app.get('/soc_assigned/:society/:election', isAuthenticated, async (req, res) => {
         const societyName = req.params.society;
@@ -337,6 +330,74 @@ app.get('/soc_assigned/:society/:election/users', isAuthenticated, async (req, r
             res.status(500).json({ error: 'Internal Server Error' });
         }
     });
+
+    app.get('/soc_assigned', isAuthenticated, async function(request, response) {
+        try {
+            const userId = request.session.userId;
+            // Get the society names based on the user's ID
+            const societyDetails = await getSocietyDetailsByUserId(userId);
+            // Render the 'soc_assigned.ejs' template with the society names
+            response.render('soc_assigned', { societies: societyDetails });
+        } catch (error) {
+            console.error("Error on society route:", error);
+            response.status(500).send('Internal Server Error');
+        }
+    });
+
+    app.get('/ballotinit/:socid', isAuthenticated, async function(request, response) {
+        try {
+            const userId = request.session.userId;
+            const ballotinitDetails = await getBallotInitBySocietyId(societyId, userId);
+
+            response.render('create_ballotinit', { users: userDetails, societynames: societyNames });
+        } catch (error) {
+            console.error("Error on users route:", error);
+            response.status(500).send('Internal Server Error');
+        }
+    });
+
+    // // Route for fetching ballot initiative details via AJAX
+    // app.get('/ballotinit/:id', isAuthenticated, async (req, res) => {
+    //     try {
+    //         const id = req.params.id;
+    //         // Fetch user details from the database based on email
+    //         const userDetails = await getUserDetailsByUserId(id);
+    //         // Send JSON response with user details
+    //         res.json(userDetails);
+    //     } catch (error) {
+    //         console.error("Error fetching user details:", error);
+    //         res.status(500).json({ error: 'Internal Server Error' });
+    //     }
+    // });
+
+    // // Route for updating user details via AJAX
+    // app.post('/admin_page/update_user', async (req, res) => {
+    //     try {
+    //         const { userid, fname, lname, email, usertype } = req.body; // Assuming these are the fields being updated
+    //         // Implement logic to update user details in the database
+    //         await updateUser(userid, { fname, lname, email, usertype });
+    //         res.status(200).json({ message: 'User details updated successfully' });
+    //     } catch (error) {
+    //         console.error("Error updating user details:", error);
+    //         res.status(500).json({ error: 'Internal Server Error' });
+    //     }
+    // });
+
+    // // Route for creating user details via AJAX
+    // app.post('/admin_page/create_user', async (req, res) => {
+    //     try {
+    //         const { fname, lname, email, usertype, password, society } = req.body; // Assuming these are the fields being updated
+    //         // Implement logic to create user details in the database
+    //         await createUser( {fname, lname, email, usertype, password, society} );
+    //         // Encrypt the added user password
+    //         await encryptPasswords();
+    //         res.status(200).json({ message: 'User created successfully' });
+    //     } catch (error) {
+    //         console.error("Error updating user details:", error);
+    //         res.status(500).json({ error: 'Internal Server Error' });
+    //     }
+    // });
+
     app.post('/', async function(request, response) {
         const { email, password } = request.body;
 

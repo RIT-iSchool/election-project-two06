@@ -136,8 +136,9 @@
                     <input type="hidden" name="ballotId" value="<%= ballotId %>">
                     <div class="candidates-container">
                         <% office.candidates.forEach(function(candidate) { %>
-                            <div class="candidate" onclick="toggleCandidateSelection(this)">
+                            <div class="candidate" onclick="toggleCandidateSelection(this, '<%= office.officeId %>', '<%= candidate.candidateId %>')">
                                 <label>
+                                    <input type="hidden" name="<%= office.officeId %>" value="" id="input-<%= office.officeId %>-<%= candidate.candidateId %>">
                                     <img src="data:image/jpeg;base64,<%= candidate.photo.toString('base64') %>" alt="Photo of <%= candidate.name %>">
                                     <div class="candidate-name"><%= candidate.name %></div>
                                 </label>
@@ -159,22 +160,26 @@
 
     <script>
 
-        function toggleCandidateSelection(candidate) {
-            var allOptions = candidate.parentElement.querySelectorAll('.candidate');
-            allOptions.forEach(function(opt) {
-                if (opt !== candidate) {
-                    opt.classList.remove('selected');
-                }
-            });
+        function toggleCandidateSelection(candidateElement, officeId, candidateId) {
+            var input = document.getElementById(`input-${officeId}-${candidateId}`);
+            var allCandidates = candidateElement.parentElement.querySelectorAll('.candidate');
 
-            if (candidate.classList.contains('candidate') && candidate.innerText === "No Votes") {
-                allOptions.forEach(function(opt) {
+            // Deselect if already selected
+            if (candidateElement.classList.contains('selected')) {
+                candidateElement.classList.remove('selected');
+                input.value = "";  // Clear the value indicating no selection
+            } else {
+                // Remove selection from others and update hidden input
+                allCandidates.forEach(function(opt) {
                     opt.classList.remove('selected');
+                    var otherInput = document.getElementById(opt.querySelector('input[type="hidden"]').id);
+                    otherInput.value = ""; // Clear other inputs
                 });
-            } 
-
-            candidate.classList.toggle('selected');
+                candidateElement.classList.add('selected');
+                input.value = candidateId; // Set the candidate ID as the value to be submitted
+            }
         }
+
 
         function toggleWriteInFields(button) {
             // Find the sibling write-in fields element

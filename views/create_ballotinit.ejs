@@ -3,35 +3,77 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Create Ballot Initiative Page</title>
+    <title>Users</title>
+    <!-- DataTables CSS -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.css">
+
+    <!-- jQuery -->
+    <script type="text/javascript" charset="utf8" src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <!-- DataTables JavaScript -->
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.js"></script>
+
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
+            background-color: #f0f0f0;
             margin: 0;
             padding: 0;
         }
 
         .container {
-            max-width: 800px;
+            max-width: 600px;
             margin: 20px auto;
-            padding: 20px;
-            box-sizing: border-box;
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
             text-align: center;
+            margin-bottom: 20px;
+        }
+        /* Modal container */
+        .modal {
+            display: none; /* Hidden by default */
+            position: fixed; /* Stay in place */
+            z-index: 1; /* Sit on top */
+            left: 0;
+            top: 0;
+            width: 100%; /* Full width */
+            height: 100%; /* Full height */
+            overflow: auto; /* Enable scroll if needed */
+            background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
         }
 
-        h1 {
-            padding-top: 100px;
+        /* Modal content */
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto; /* 15% from the top and centered */
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%; /* Could be more or less, depending on screen size */
+            box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);
         }
 
-        .buttons {
-            display: flex;
-            justify-content: center;
+        /* Close button */
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
         }
 
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
         .option {
             padding: 10px 20px;
-            margin: 0 10px;
+            margin: 10px;
             border: none;
             border-radius: 5px;
             background-color: #4caf50;
@@ -39,7 +81,6 @@
             cursor: pointer;
             transition: background-color 0.3s ease;
         }
-
         .option:focus {
             outline: none;
         }
@@ -51,15 +92,271 @@
 </head>
 <body>
     <div class="container">
-        <h1>Create/Edit Ballot Initiatives</h1>
-            <div class="buttons">
-                <button class="option soc1" onclick="goToCreateInitBallot()">Create New Ballot Initiative</button>
-                <button class="option soc2" onclick="goToEditBallotInit()">Edit Ballot Initiative</button>
+        <h1>Ballot Initiatives <button class="option" onclick="openCreateModal()">Create Ballot Initiatives</button></h1>
+        <table id="userTable" class="display">
+            <thead>
+                <tr>
+                    <th>Ballot Initiatives</th>
+                    <th>Society</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% if (users && users.length) { %>
+                    <% users.forEach(function(user) { %>
+                        <tr>
+                            <td><%= user.fname %></td>
+                            <td><%= user.lname %></td>
+                            <td><%= user.email %></td>
+                            <td><%= user.usertype %></td>
+                            <td>
+                                <!-- Edit button for each user -->
+                                <button onclick="editUser('<%= user.userid %>')">Edit</button>
+                            </td>
+                        </tr>
+                    <% }); %>
+                <% } else { %>
+                    <tr>
+                        <td colspan="4">No Ballot Initiatives found.</td>
+                    </tr>
+                <% } %>                
+            </tbody>
+        </table>
+    </div>
+    <!-- Modal for creating a user -->
+    <div id="createUserModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal(document.getElementById('createUserModal'))">&times;</span>
+            <h2>Create User</h2>
+            <div class="container">
+                <h2>User Information</h2>
+                <form id="userForm">
+                    <div class="form-group">
+                        <label for="userFName">Enter First Name:</label>
+                        <input type="text" id="userFName" name="userFName" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="userLName">Enter Last Name:</label>
+                        <input type="text" id="userLName" name="userLName" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="userEmail">Enter Email:</label>
+                        <input type="email" id="userEmail" name="userEmail" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="userType">Select User Role:</label>
+                        <select id="userType" name="userType" onchange="toggleSocietiesInput()" required>
+                            <option disabled selected>Select user role</option>
+                            <option value="member">Member</option>
+                            <option value="officer">Officer</option>
+                            <option value="employee">Employee</option>
+                            <option value="admin">Admin</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="userPass">Enter Password:</label>
+                        <input type="text" id="userPassword" name="userPassword" required>
+                    </div>
+                    <div id="societiesInput" class="form-group" style="display: none;">
+                        <label for="userSociety">Select Society:</label>
+                        <select id="userSociety" name="userSociety" required>
+                            <option disabled selected>Assign Society</option>
+                            <% for (const name of societynames) { %>
+                                <option value="<%= name %>"><%= name %></option>
+                            <% } %>
+                        </select>
+                    </div>
+                    <div class="buttons">
+                        <button type="button" onclick="submitUser()">Submit</button>
+                    </div>
+                </form>
             </div>
         </div>
-    <div>
+    </div>
+    <!-- Pop-up modal for editing user details -->
+    <div id="editModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal(document.getElementById('editModal'))">&times;</span>
+            <h2>Edit User</h2>
+            <form id="editForm">
+                <!-- User details inputs -->
+                <label for="fname">First Name:</label>
+                <input type="text" id="fname" name="fname">
+                <label for="lname">Last Name:</label>
+                <input type="text" id="lname" name="lname">
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email">
+                <label for="usertype">User Role:</label>
+                <input type="usertype" id="usertype" name="usertype">
+                <button type="button" onclick="submitEdit()">Save</button>
+            </form>
+        </div>
+    </div>
+    <script>
+        function toggleSocietiesInput() {
+            const userType = document.getElementById('userType').value;
+            const societiesInput = document.getElementById('societiesInput');
+            
+            if (userType === 'employee' || userType === 'officer' || userType === 'member') {
+                // Show the select input for societies
+                societiesInput.style.display = 'block';
+            } else {
+                // Hide the select input for societies
+                societiesInput.style.display = 'none';
+            }
+        }
+        let userId;
+        function editUser(id) {
+            // Open the modal
+            const modal = document.getElementById("editModal");
+            modal.style.display = "block";
+            // Fetch user details via AJAX
+            fetch(`/admin_page/user_details/${id}`)
+                .then(response => response.json())
+                .then(data => {
+                    userId = id;
+                    // Populate modal fields with user details
+                    document.getElementById("fname").value = data.fname;
+                    document.getElementById("lname").value = data.lname;
+                    document.getElementById("email").value = data.email;
+                    document.getElementById("usertype").value = data.usertype;
+                })
+                .catch(error => console.error("Error fetching user details:", error));
+        }
 
-    <script src="main.js"></script>
+        async function submitEdit() {
+            // Implement submitting edited user details via AJAX
+            // Get edited user details from the form
+            const fname = document.getElementById("fname").value;
+            const lname = document.getElementById("lname").value;
+            const email = document.getElementById("email").value;
+            const usertype = document.getElementById("usertype").value;
 
+            // Construct the data object
+            const data = {
+                userid: userId, // Assuming userId is defined somewhere
+                fname: fname,
+                lname: lname,
+                email: email,
+                usertype: usertype
+            };
+
+            try {
+                // Send a POST request to update the user details
+                const response = await fetch('/admin_page/update_user', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                });
+
+                // Check if the request was successful
+                if (response.ok) {
+                    // User details updated successfully
+                    console.log('User details updated successfully');
+                    const modal = document.getElementById("editModal");
+                    closeModal(modal); // Close the modal after successful update
+                    // Reload the page to fetch updated user details from the server
+                    window.location.reload();
+                } else {
+                    // Error updating user details
+                    console.error('Error updating user details:', response.statusText);
+                }
+            } catch (error) {
+                console.error('Error updating user details:', error);
+            }
+        }
+
+        function openCreateModal() {
+            const modal = document.getElementById("createUserModal");
+            modal.style.display = "block";
+        }
+        // Function to submit the form data for creating a user
+        async function submitUser() {
+            const fname = document.getElementById("userFName").value;
+            const lname = document.getElementById("userLName").value;
+            const email = document.getElementById("userEmail").value;
+            const usertype = document.getElementById("userType").value;
+            const password = document.getElementById("userPassword").value;
+            const society = document.getElementById("userSociety").value;
+
+            const data = {
+                fname: fname,
+                lname: lname,
+                email: email,
+                usertype: usertype,
+                password: password,
+                society: society
+            };
+
+            try {
+                const response = await fetch('/admin_page/create_user', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                });
+
+                if (response.ok) {
+                    console.log('User created successfully');
+                    const modal = document.getElementById("createUserModal");
+                    closeModal(modal);
+                    clearForm(); // Clear the form fields after successful user creation
+                    window.location.reload(); // Reload the page to fetch updated user details
+                } else {
+                    console.error('Error creating user:', response.statusText);
+                }
+            } catch (error) {
+                console.error('Error creating user:', error);
+            }
+        }
+
+        // Function to clear the form fields
+        function clearForm() {
+            document.getElementById("userFName").value = "";
+            document.getElementById("userLName").value = "";
+            document.getElementById("userEmail").value = "";
+            document.getElementById("userType").value = "";
+            document.getElementById("userPassword").value = "";
+        }
+
+        function closeModal(modal) {
+            // Close the modal
+            modal.style.display = "none";
+        }
+        // Call closeModal when the close button is clicked
+        const closeButtons = document.getElementsByClassName('close');
+        for (const button of closeButtons) {
+            button.addEventListener('click', closeModal);
+        }
+        $(document).ready(function() {
+            $('#userTable').DataTable();
+            checkTokenLocalStorage();
+        });
+
+        function checkTokenLocalStorage() {
+            if (!localStorage.getItem('token')) {
+                // Redirect to login page if token doesn't exist in localStorage
+                window.location.href = '/';
+            }
+        }
+        function logout() {
+            localStorage.removeItem('token');
+            // Redirect to login page after logout
+            window.location.href = '/';
+        }
+        // Function to handle the pageshow event
+        function handlePageShow(event) {
+            if (event.persisted) {
+                // If the page is shown from the cache (e.g., when navigating back),
+                // check if the token is still in local storage
+                checkTokenLocalStorage();
+            }
+        }
+        // Add event listener for the pageshow event
+        window.addEventListener('pageshow', handlePageShow);
+    </script>
 </body>
 </html>
