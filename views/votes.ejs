@@ -39,27 +39,38 @@
         .candidates-container {
             display: flex;
             flex-wrap: wrap;
-            justify-content: center;
+            justify-content: space-between;
         }
 
         /* Style for each candidate */
         .candidate {
-            margin: 10px;
+            width: calc(20% - 20px);
+            margin-bottom: 20px;
+            background-color: #4caf50;
+            padding: 10px;
+            box-sizing: border-box;
+            border-radius: 5px;
             text-align: center;
+            color: white;
+            transition: background-color 0.3s ease;
+            cursor: pointer; /* Add cursor pointer to indicate clickable */
+        }
+
+        .candidate:hover {
+            background-color: #45a049;
+        } 
+
+        .candidate.selected {
+            background-color: #075225; 
         }
 
         /* Style for the candidate image */
         .candidate img {
             width: 100px;
-            height: 100px;
-            object-fit: cover; /* Ensures the image covers the entire square */
+            height: auto;
+            object-fit: cover; 
             border-radius: 5px;
             background-color: #4caf50;
-        }
-
-        /* Style for the candidate name */
-        .candidate-name {
-            margin-top: 5px;
         }
 
         /* Style for the radio button label */
@@ -68,25 +79,34 @@
             display: block; /* Display as block to ensure proper alignment */
         }
 
+        .write-in {
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+
         /* Style for the write-in button */
         .write-in-button {
-            cursor: pointer;
-            background-color: #4caf50;
-            color: #f4f4f4;
+            padding: 10px 20px;
             border: none;
-            padding: 5px 10px;
             border-radius: 5px;
+            background-color: #4caf50;
+            color: #fff;
+            cursor: pointer;
         }
 
         /* Style for the write-in fields */
         .write-in-fields {
             display: none; /* Initially hidden */
-            margin-top: 10px;
+            margin-top: 20px;
         }
 
         /* Style for the write-in input fields */
         .write-in-fields input {
-            margin-right: 10px;
+            width: 30%;
+            padding: 10px; /* Reduce padding for input fields */
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            box-sizing: border-box;
         }
 
         /* Style for the submit button */
@@ -116,10 +136,8 @@
                     <input type="hidden" name="ballotId" value="<%= ballotId %>">
                     <div class="candidates-container">
                         <% office.candidates.forEach(function(candidate) { %>
-                            <div class="candidate">
+                            <div class="candidate" onclick="toggleCandidateSelection(this)">
                                 <label>
-                                    <input type="checkbox" name="<%= office.officeId %>_candidate" value="<%= candidate.candidateId %>">
-                                    <span class="circle-button" onclick="toggleCandidateSelection(this)"></span>
                                     <img src="data:image/jpeg;base64,<%= candidate.photo.toString('base64') %>" alt="Photo of <%= candidate.name %>">
                                     <div class="candidate-name"><%= candidate.name %></div>
                                 </label>
@@ -138,7 +156,26 @@
             <button type="submit">Submit Vote</button>
         </form>  
     </div> <!-- End of container -->
+
     <script>
+
+        function toggleCandidateSelection(candidate) {
+            var allOptions = candidate.parentElement.querySelectorAll('.candidate');
+            allOptions.forEach(function(opt) {
+                if (opt !== candidate) {
+                    opt.classList.remove('selected');
+                }
+            });
+
+            if (candidate.classList.contains('candidate') && candidate.innerText === "No Votes") {
+                allOptions.forEach(function(opt) {
+                    opt.classList.remove('selected');
+                });
+            } 
+
+            candidate.classList.toggle('selected');
+        }
+
         function toggleWriteInFields(button) {
             // Find the sibling write-in fields element
             var writeInFields = button.nextElementSibling;
@@ -182,10 +219,6 @@
                 console.error('Error submitting vote:', error);
             }
         });
-
-        function toggleCandidateSelection(candidate) {
-            candidate.previousElementSibling.checked = !candidate.previousElementSibling.checked;
-        }
     </script>
     
 </body>
