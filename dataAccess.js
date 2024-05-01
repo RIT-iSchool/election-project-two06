@@ -302,65 +302,91 @@ async function getVotedUsersByElection(societyName, electionName) {
 
 async function createUser(userDetails) {
     try {
+        await client.query('BEGIN'); // Begin the transaction
+
         const userQuery = `
             INSERT INTO public.users (fname, lname, email, usertype, password)
-            VALUES ($1, $2, $3, $4, $5);
+            VALUES ($1, $2, $3, $4, $5)
+            RETURNING userid;
         `;
         const userValues = [userDetails.fname, userDetails.lname, userDetails.email, userDetails.usertype, userDetails.password];
-        await client.query(userQuery, userValues);
-        const userId = await getUserByEmail(userDetails.email);
+        const userResult = await client.query(userQuery, userValues);
+
+        const userId = userResult.rows[0].userid;
+
         const socId = await getSocietyDetailsBySocietyName(userDetails.society);
+
         const userSocQuery = `
             INSERT INTO public.user_society (userid, societyid)
             VALUES ($1, $2);
         `;
-        const socValues = [userId.userid, socId.societyid];
+        const socValues = [userId, socId.societyid];
         await client.query(userSocQuery, socValues);
+
+        await client.query('COMMIT'); // Commit the transaction if all operations succeed
         console.log('User created successfully');
     } catch (error) {
-        console.error('Error updating user details:', error);
-        throw error;
+        await client.query('ROLLBACK'); // Rollback the transaction if any operation fails
+        console.error('Error creating user:', error);
+        throw error; // Rethrow the error for the calling function to handle
     }
 }
 
 async function createVote(userId, ballotId, officeId, candidateId) {
     try {
+        await client.query('BEGIN'); // Begin the transaction
+
         const insertQuery = `
             INSERT INTO public."vote" (userid, ballotid, officeid, candidateid, timestamp)
             VALUES ($1, $2, $3, $4, NOW());
         `;
         await client.query(insertQuery, [userId, ballotId, officeId, candidateId]);
+
+        await client.query('COMMIT'); // Commit the transaction if all operations succeed
         console.log('Vote recorded successfully');
     } catch (error) {
+        await client.query('ROLLBACK'); // Rollback the transaction if any operation fails
         console.error('Error recording vote:', error);
-        throw error;
+        throw error; // Rethrow the error for the calling function to handle
     }
 }
 
+
 async function createWriteInVote(userId, firstName, lastName, officeId) {
     try {
+        await client.query('BEGIN'); // Begin the transaction
+
         const insertQuery = `
             INSERT INTO public.write_ins (userid, cfname, clname, officeid)
             VALUES ($1, $2, $3, $4);
         `;
         await client.query(insertQuery, [userId, firstName, lastName, officeId]);
+
+        await client.query('COMMIT'); // Commit the transaction if all operations succeed
+        console.log('Write-in vote recorded successfully');
     } catch (error) {
+        await client.query('ROLLBACK'); // Rollback the transaction if any operation fails
         console.error('Error recording write-in vote:', error);
-        throw error;
+        throw error; // Rethrow the error for the calling function to handle
     }
 }
 
 async function saveBallotVote(ballotInitId, userId, choice, response) {
-    try{
-        console.log(ballotInitId, userId, choice, response);
+    try {
+        await client.query('BEGIN'); // Begin the transaction
+
         const query = `
             INSERT INTO Ballot_Initiative_Vote (BallotInitID, UserID, Timestamp, Choice, Response)
             VALUES ($1, $2, NOW(), $3, $4);
         `;
         await client.query(query, [ballotInitId, userId, choice, response]);
+
+        await client.query('COMMIT'); // Commit the transaction if all operations succeed
+        console.log('Ballot initiative vote recorded successfully');
     } catch (error) {
-        console.error('Error recording ballot initiative votes', error);
-        throw error;
+        await client.query('ROLLBACK'); // Rollback the transaction if any operation fails
+        console.error('Error recording ballot initiative votes:', error);
+        throw error; // Rethrow the error for the calling function to handle
     }
 }
 

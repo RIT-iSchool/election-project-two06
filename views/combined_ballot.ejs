@@ -98,7 +98,7 @@
 </head>
 <body>
     <div class="container">
-        <h2>Combined Ballot Creation</h2>
+        <h2>Ballot Creation</h2>
 
         <!-- Ballot Information Section -->
         <div class="form-section">
@@ -192,8 +192,35 @@
     
         // Function to submit the ballot form
         function submitBallot() {
-            // Submit all form data
-            // You might want to handle form submission logic here
+            const form = document.getElementById('ballotForm');
+            const formData = new FormData(form);
+            console.log(formData);
+            const serializedFormData = {};
+            for (const [key, value] of formData.entries()) {
+                serializedFormData[key] = value;
+            }
+
+            fetch('/submit-ballot', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(serializedFormData)
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log(data); // Log the response from the server
+                // Handle success
+            })
+            .catch(error => {
+                console.error('There was a problem with the fetch operation:', error);
+                // Handle error
+            });
         }
     </script>
     

@@ -158,6 +158,20 @@ app.get('/soc_assigned/:society/:election/users', isAuthenticated, async (req, r
         res.render('combined_ballot', {socid: soc});
     });
 
+//    app.post('/submit-ballot', isAuthenticated, async (req, res) => {
+//        try {
+            // Extract data from the request body
+//            const { ballotName, startDate, endDate, offices } = req.body;
+//            console.log(offices);
+            // Process and save the data to the database
+            // Example: Save ballot details, office details, candidate details, etc.
+    
+//            res.status(200).json({ message: 'Ballot submitted successfully' });
+//        } catch (error) {
+//            console.error("Error submitting ballot:", error);
+//            res.status(500).json({ error: 'Internal Server Error' });
+//        }
+//    });
     app.get('/ballot_initiatives', isAuthenticated, async (req, res) => {
         try {
             const societyId = req.session.socId;
