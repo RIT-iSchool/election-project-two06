@@ -19,15 +19,20 @@ async function connectToDatabase() {
 
 async function getUserByEmail(email) {
     try {
-        const result = await client.query('SELECT "userid", "password", "usertype" FROM public."users" WHERE "email" = $1', [email]);
+        await client.query('BEGIN'); // Begin the transaction
+        const query = 'SELECT "userid", "password", "usertype" FROM public."users" WHERE "email" = $1';
+        const result = await client.query(query, [email]);
+        await client.query('COMMIT'); // Commit the transaction if all operations succeed
         return result.rows.length > 0 ? result.rows[0] : null;
     } catch (error) {
+        await client.query('ROLLBACK'); // Rollback the transaction if any operation fails
         console.error("Error retrieving user:", error);
         throw error;
     }
 }
 async function getSocietyDetailsByUserId(userId) {
     try {
+        await client.query('BEGIN'); // Begin the transaction
         const query = `
             SELECT ps."societyid", ps."societyname"
             FROM public."professional_society" ps
@@ -35,14 +40,17 @@ async function getSocietyDetailsByUserId(userId) {
             WHERE us."userid" = $1;
         `;
         const result = await client.query(query, [userId]);
+        await client.query('COMMIT'); // Commit the transaction if all operations succeed
         return result.rows;
     } catch (error) {
+        await client.query('ROLLBACK'); // Rollback the transaction if any operation fails
         console.error("Error retrieving society name:", error);
         throw error;
     }
 }
 async function getBallotInitBySocietyId(societyId, userId) {
     try {
+        await client.query('BEGIN'); // Begin the transaction
         const query = `
             SELECT bi.description, bi.creationdate, bi.ballotinitid,
                    (SELECT TRUE FROM Ballot_Initiative_Vote biv
@@ -51,8 +59,10 @@ async function getBallotInitBySocietyId(societyId, userId) {
             WHERE bi.societyid = $1;
         `;
         const result = await client.query(query, [societyId, userId]);
+        await client.query('COMMIT'); // Commit the transaction if all operations succeed
         return result.rows;
     } catch (error) {
+        await client.query('ROLLBACK'); // Rollback the transaction if any operation fails
         console.error("Error retrieving society initiatives with vote status:", error);
         throw error;
     }
@@ -60,6 +70,7 @@ async function getBallotInitBySocietyId(societyId, userId) {
 
 async function getSocietiesForAdmin(userId) {
     try {
+        await client.query('BEGIN'); // Begin the transaction
         const query = `SELECT "usertype" FROM public."users" WHERE "userid" = $1;`;
         const userResult = await client.query(query, [userId]);
         const userType = userResult.rows[0].usertype;
@@ -69,6 +80,7 @@ async function getSocietiesForAdmin(userId) {
             const societiesResult = await client.query(societiesQuery);
             // Extract the society names from the result
             const societyNames = societiesResult.rows.map(row => row.societyname);
+            await client.query('COMMIT'); // Commit the transaction if all operations succeed
             // Return the array of society names
             return societyNames;
         } else {
@@ -77,12 +89,14 @@ async function getSocietiesForAdmin(userId) {
         }
         
     } catch (error) {
+        await client.query('ROLLBACK'); // Rollback the transaction if any operation fails
         console.error("Error retrieving societies:", error);
         throw error;
     }
 }
 async function getUsersForAdmin(userID) {
     try {
+        await client.query('BEGIN'); // Begin the transaction
         const query = `SELECT "usertype" FROM public."users" WHERE "userid" = $1;`;
         const userResult = await client.query(query, [userID]);
         // Check if userResult.rows[0] is defined before accessing its properties
@@ -95,12 +109,14 @@ async function getUsersForAdmin(userID) {
                 // Extract the society names from the result
                 const userDetails = usersResult.rows;
                 // Return the array of users
+                await client.query('COMMIT'); // Commit the transaction if all operations succeed
                 return userDetails;
             }
         }
         // If the user is not an admin, return an empty array
         return [];
     } catch (error) {
+        await client.query('ROLLBACK'); // Rollback the transaction if any operation fails
         console.error("Error retrieving user details:", error);
         throw error;
     }
@@ -108,6 +124,7 @@ async function getUsersForAdmin(userID) {
 
 async function getBallotDetailsBySocId(socId) {
     try {
+        await client.query('BEGIN'); // Begin the transaction
         const query = `
             SELECT b."ballotid", b."ballottitle"
             FROM public."ballot" b
@@ -115,16 +132,18 @@ async function getBallotDetailsBySocId(socId) {
             AND CURRENT_DATE BETWEEN b."startdate" AND b."enddate";
         `;
         const result = await client.query(query, [socId]);
+        await client.query('COMMIT'); // Commit the transaction if all operations succeed
         return result.rows.map(row =>  ({ballotId: row.ballotid, ballotName: row.ballottitle}) )
     } catch (error) {
+        await client.query('ROLLBACK'); // Rollback the transaction if any operation fails
         console.error("Error retrieving ballot details:", error);
         throw error;
     }
-
 }
 
 async function getSocietyOfficesBySocId(socId) {
     try {
+        await client.query('BEGIN'); // Begin the transaction
         const query = `
             SELECT o."officename", o."officeid", o."choices"
             FROM public."office" o
@@ -133,8 +152,10 @@ async function getSocietyOfficesBySocId(socId) {
             AND CURRENT_DATE BETWEEN b."startdate" AND b."enddate";
         `;
         const result = await client.query(query, [socId]);
+        await client.query('COMMIT'); // Commit the transaction if all operations succeed
         return result.rows.map(row => ({officeName: row.officename, officeId: row.officeid, officeChoice: row.choices}));
     } catch (error) {
+        await client.query('ROLLBACK'); // Rollback the transaction if any operation fails
         console.error("Error retrieving society offices:", error);
         throw error;
     }
@@ -142,6 +163,7 @@ async function getSocietyOfficesBySocId(socId) {
 
 async function getCandidatesForOffice(socId, officeId) {
     try {
+        await client.query('BEGIN'); // Begin the transaction
         const query = `
             SELECT CONCAT(c."cfname", ' ', c."clname") AS cname, c.photo, c."candidateid"
             FROM public."candidate" c
@@ -151,16 +173,18 @@ async function getCandidatesForOffice(socId, officeId) {
             AND o."officeid" = $2
         `;
         const result = await client.query(query, [socId, officeId]);
+        await client.query('COMMIT'); // Commit the transaction if all operations succeed
         return result.rows.map(row => ({ name: row.cname, photo: row.photo, candidateId: row.candidateid })); // Include both name and photo
     } catch (error) {
+        await client.query('ROLLBACK'); // Rollback the transaction if any operation fails
         console.error("Error retrieving candidates for office:", error);
         throw error;
     }
 }
 
-
 async function updateUser(userId, updatedDetails) {
     try {
+        await client.query('BEGIN'); // Begin the transaction
         const updateQuery = `
             UPDATE public.users 
             SET fname = $1, lname = $2, email = $3, usertype = $4
@@ -168,20 +192,25 @@ async function updateUser(userId, updatedDetails) {
         `;
         const values = [updatedDetails.fname, updatedDetails.lname, updatedDetails.email, updatedDetails.usertype, userId];
         await client.query(updateQuery, values);
+        await client.query('COMMIT'); // Commit the transaction if all operations succeed
         console.log('User details updated successfully');
     } catch (error) {
+        await client.query('ROLLBACK'); // Rollback the transaction if any operation fails
         console.error('Error updating user details:', error);
         throw error;
     }
 }
 async function getUserDetailsByUserId(userId) {
     try {
+        await client.query('BEGIN'); // Begin the transaction
         const selectUser = `
             SELECT "fname", "lname", "email", "usertype" FROM public."users" WHERE "userid" = $1;
         `;
         const result = await client.query(selectUser, [userId]);
+        await client.query('COMMIT'); // Commit the transaction if all operations succeed
         return result.rows.length > 0 ? result.rows[0] : null;
     } catch (error) {
+        await client.query('ROLLBACK'); // Rollback the transaction if any operation fails
         console.error('Error updating user details:', error);
         throw error;
     }
@@ -189,14 +218,17 @@ async function getUserDetailsByUserId(userId) {
 
 async function getSocietyDetailsBySocietyName(societyName) {
     try {
+        await client.query('BEGIN'); // Begin the transaction
         const query = `
             SELECT "societyid", "societyname"
             FROM public."professional_society"
             WHERE "societyname" = $1;
         `;
         const result = await client.query(query, [societyName]);
+        await client.query('COMMIT'); // Commit the transaction if all operations succeed
         return result.rows.length > 0 ? result.rows[0] : null;
     } catch (error) {
+        await client.query('ROLLBACK'); // Rollback the transaction if any operation fails
         console.error("Error retrieving society details by name:", error);
         throw error;
     }
@@ -205,8 +237,7 @@ async function getSocietyDetailsBySocietyName(societyName) {
 
 async function getElectionsBySocietyId(societyId) {
     try {
-        console.log(societyId);
-
+        await client.query('BEGIN'); // Begin the transaction
         // Query for past elections
         const queryPast = `
             SELECT b."ballotid", b."ballottitle", b."startdate", b."enddate"
@@ -231,6 +262,7 @@ async function getElectionsBySocietyId(societyId) {
         const resultPast = await client.query(queryPast, [societyId]);
         const resultPresent = await client.query(queryPresent, [societyId]);
         const resultFuture = await client.query(queryFuture, [societyId]);
+        await client.query('COMMIT'); // Commit the transaction if all operations succeed
 
         return {
             pastElections: resultPast.rows,
@@ -238,20 +270,16 @@ async function getElectionsBySocietyId(societyId) {
             futureElections: resultFuture.rows
         };
     } catch (error) {
+        await client.query('ROLLBACK'); // Rollback the transaction if any operation fails
         console.error("Error retrieving elections by society ID:", error);
         throw error;
     }
 }
 
-// dataaccess.js
-
 // Function to retrieve users who are members or officers from the Users table based on the selected election
-
-
 async function getUsersByElection(societyName) {
     try {
-        console.log("Fetching users:", societyName);
-
+        await client.query('BEGIN'); // Begin the transaction
         // Construct the SQL query to fetch users associated with the election
         const query = `
         SELECT u.userid, u.fname, u.lname, u.usertype
@@ -259,16 +287,15 @@ async function getUsersByElection(societyName) {
         INNER JOIN user_society us ON u.userid = us.userid
         INNER JOIN professional_society ps ON us.societyid = ps.societyid
         WHERE ps.societyname = $1 AND (u.usertype = 'officer' OR u.usertype = 'member');
-
-
     `;
-
         // Execute the query and return the retrieved users
         const users = await client.query(query, [societyName]);
+        await client.query('COMMIT'); // Commit the transaction if all operations succeed
         console.log("Retrieved Users:", users.rows);
 
         return users.rows;
     } catch (error) {
+        await client.query('ROLLBACK'); // Rollback the transaction if any operation fails
         console.error("Error fetching users for election:", error);
         throw error;
     }
@@ -276,10 +303,8 @@ async function getUsersByElection(societyName) {
 
 async function getVotedUsersByElection(societyName, electionName) {
     try {
-        console.log("Fetching voted users for election:", electionName);
+        await client.query('BEGIN'); // Begin the transaction
         const socDetails = await getSocietyDetailsBySocietyName(societyName);
-        console.log(socDetails);
-        console.log(electionName);
         // Construct the SQL query to fetch users who have voted in the election
         const query = `
         SELECT DISTINCT u.userid, u.fname, u.lname, u.usertype
@@ -291,10 +316,12 @@ async function getVotedUsersByElection(societyName, electionName) {
 
         // Execute the query and return the retrieved voted users
         const votedUsers = await client.query(query, [socDetails.societyid, electionName]);
+        await client.query('COMMIT'); // Commit the transaction if all operations succeed
         console.log("Retrieved Voted Users:", votedUsers.rows);
 
         return votedUsers.rows;
     } catch (error) {
+        await client.query('ROLLBACK'); // Rollback the transaction if any operation fails
         console.error("Error fetching voted users for election:", error);
         throw error;
     }
@@ -303,7 +330,6 @@ async function getVotedUsersByElection(societyName, electionName) {
 async function createUser(userDetails) {
     try {
         await client.query('BEGIN'); // Begin the transaction
-
         const userQuery = `
             INSERT INTO public.users (fname, lname, email, usertype, password)
             VALUES ($1, $2, $3, $4, $5)
@@ -335,7 +361,6 @@ async function createUser(userDetails) {
 async function createVote(userId, ballotId, officeId, candidateId) {
     try {
         await client.query('BEGIN'); // Begin the transaction
-
         const insertQuery = `
             INSERT INTO public."vote" (userid, ballotid, officeid, candidateid, timestamp)
             VALUES ($1, $2, $3, $4, NOW());
