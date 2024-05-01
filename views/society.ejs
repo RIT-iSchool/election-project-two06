@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Elections Associated with <%= societyName %></title>
+    <title>Elections Associated with <%= societyDetails.societyName %></title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -63,8 +63,9 @@
 
 <body>
 <div class="container">
-    <h1>Elections Associated with <%= societyName %></h1>
+    <h1>Elections Associated with <%= societyDetails.societyname %></h1>
     <div class="buttons">
+        <button class="option" onclick="goToCreateBallot('<%= societyDetails.societyid %>')">Create Ballot</button>
         <button class="option" onclick="goToBallotInit()">Create/Edit Ballot Initiatives</button>
     </div>
     <% function formatDate(dateString) { %>
@@ -92,7 +93,7 @@
     <% if (pastElections.length > 0) { %>
         <h2>Past Elections</h2>
         <% pastElections.forEach(function(election) { %>
-            <button class="election-btn" onclick="goToElection('<%= societyName %>','<%= election.ballottitle %>')">
+            <button class="election-btn" onclick="goToElection('<%= societyDetails.societyname %>','<%= election.ballottitle %>')">
                 <%= election.ballottitle %> - <%= formatDate(election.startdate) %> to <%= formatDate(election.enddate) %>
             </button>
         <% }); %>
@@ -101,7 +102,7 @@
     <% if (presentElections.length > 0) { %>
         <h2>Present Elections</h2>
         <% presentElections.forEach(function(election) { %>
-            <button class="election-btn" onclick="goToElection('<%= societyName %>','<%= election.ballottitle %>')">
+            <button class="election-btn" onclick="goToElection('<%= societyDetails.societyname %>','<%= election.ballottitle %>')">
                 <%= election.ballottitle %> - <%= formatDate(election.startdate) %> to <%= formatDate(election.enddate) %>
             </button>
         <% }); %>
@@ -110,7 +111,7 @@
     <% if (futureElections.length > 0) { %>
         <h2>Future Elections</h2>
         <% futureElections.forEach(function(election) { %>
-            <button class="election-btn" onclick="goToElection('<%= societyName %>','<%= election.ballottitle %>')">
+            <button class="election-btn" onclick="goToElection('<%= societyDetails.societyname %>','<%= election.ballottitle %>')">
                 <%= election.ballottitle %> - <%= formatDate(election.startdate) %> to <%= formatDate(election.enddate) %>
             </button>
         <% }); %>
@@ -125,8 +126,8 @@
             window.location.href = '/soc_assigned/' + encodeURIComponent(society) + '/' + encodeURIComponent(election);
         }
 
-        function goToCreateBallot(society) {
-            window.location.href = '/soc_assigned/' + encodeURIComponent(society) + '/ballot_info' ;
+        function goToCreateBallot(id) {
+            window.location.href = '/soc_assigned/socId=' + encodeURIComponent(id) + '/ballot_info' ;
         }
         
     </script>

@@ -88,6 +88,11 @@
         .add-button:hover {
             background-color: #005f79;
         }
+        .candidateFields {
+            display: flex;
+            flex-wrap: wrap;
+            margin-bottom: 10px; /* Adjust as needed */
+        }
 
     </style>
 </head>
@@ -125,6 +130,7 @@
                     <label for="numVotes">Number of Votes:</label>
                     <input type="number" name="numVotes" min="1" required>
                     <br>
+                    <h3 style="display: inline-block;">Candidate Information</h3>
                     <!-- Candidate fields -->
                     <div class="candidateFields">
                         <label for="candidateFName">Enter Candidate First Name:</label>

@@ -190,7 +190,7 @@ async function getUserDetailsByUserId(userId) {
 async function getSocietyDetailsBySocietyName(societyName) {
     try {
         const query = `
-            SELECT "societyid" as "societyid", "societyname" as "societyname"
+            SELECT "societyid", "societyname"
             FROM public."professional_society"
             WHERE "societyname" = $1;
         `;

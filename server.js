@@ -99,20 +99,14 @@ function startServer() {
         try {
             const societyName = req.params.name;
             const societyDetails = await getSocietyDetailsBySocietyName(societyName);
-            const selectedSociety = societyDetails.societyname;
-            if (!selectedSociety) {
-                console.log("Society not found!"); // Debugging
-                return res.status(404).send('Society not found');
-            }
     
             const associatedElections = await getElectionsBySocietyId(societyDetails.societyid);
             const today = moment();
             const pastElections = associatedElections.pastElections.filter(election => moment(election.startdate).isBefore(today));
             const presentElections = associatedElections.presentElections.filter(election => moment(election.startdate).isSameOrBefore(today));
             const futureElections = associatedElections.futureElections.filter(election => moment(election.startdate).isAfter(today));
-    
             res.render('society', {
-                societyName: selectedSociety,
+                societyDetails: societyDetails,
                 pastElections: pastElections,
                 presentElections: presentElections,
                 futureElections: futureElections
@@ -159,8 +153,9 @@ app.get('/soc_assigned/:society/:election/users', isAuthenticated, async (req, r
         response.render('welcome', { name: societyDetails[0].societyname, ballotName: ballotDetails[0].ballotName });
     });
 
-    app.get('/soc_assigned/:name/ballot_info', isAuthenticated, async function(req, res) {
-        res.render('ballot_info');
+    app.get('/soc_assigned/socId=:id/ballot_info', isAuthenticated, async function(req, res) {
+        const soc = req.params.id;
+        res.render('combined_ballot', {socid: soc});
     });
 
     app.get('/ballot_initiatives', isAuthenticated, async (req, res) => {
@@ -168,7 +163,6 @@ app.get('/soc_assigned/:society/:election/users', isAuthenticated, async (req, r
             const societyId = req.session.socId;
             const userId = req.session.userId; // Get user ID from session
             const initDetails = await getBallotInitBySocietyId(societyId, userId);
-            console.log(initDetails)
             res.render('ballot_initiatives', { initiatives: initDetails });
         } catch (error) {
             console.error("Error fetching ballot initiatives:", error);
@@ -183,7 +177,6 @@ app.get('/soc_assigned/:society/:election/users', isAuthenticated, async (req, r
             Object.keys(req.body).forEach(async key => {
                 if (key.startsWith('choice_')) {
                     const ballotInitId = key.split('_')[1];
-                    console.log(ballotInitId);
                     const choice = req.body[key] === 'true';
                     const suggestion = req.body['suggestion'].trim();
     
@@ -236,8 +229,6 @@ app.get('/soc_assigned/:society/:election/users', isAuthenticated, async (req, r
                     // Access the nested 'first' and 'last' inside the write-in object
                     const firstName = formData[key].first.trim();
                     const lastName = formData[key].last.trim();
-                    console.log(firstName); // Should now log the correct names or empty strings
-                    console.log(lastName);
     
                     if (firstName && lastName) { // Check that both names are not empty
                         await createWriteInVote(userId, firstName, lastName, officeId);
