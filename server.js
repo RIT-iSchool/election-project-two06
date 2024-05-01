@@ -121,7 +121,33 @@ function startServer() {
         }
     });
     
-    
+    // server.js
+
+// Add a new route to handle the request for displaying users associated with the selected election
+app.get('/soc_assigned/:society/:election/users', isAuthenticated, async (req, res) => {
+    try {
+        const societyName = req.params.society;
+        const electionName = req.params.election;
+
+        console.log("Fetching users for election:", electionName);
+
+        // Fetch users associated with the selected election
+        const users = await getUsersByElection(societyName, electionName);
+        console.log("Users:", users);
+
+        // Fetch users who have voted in the selected election
+        const votedUsers = await getVotedUsersByElection(societyName, electionName);
+        console.log("Voted Users:", votedUsers);
+
+        // Render the 'election_users.ejs' template with the retrieved user data
+        res.render('election', { users: users, votedUsers: votedUsers });
+    } catch (error) {
+        console.error("Error fetching users for election:", error);
+        res.status(500).send('Internal Server Error');
+    }
+});
+
+
     app.get('/welcome', isAuthenticated, async function(request, response) {
         const userId = request.session.userId;
         const socId = request.session.socId;
@@ -244,10 +270,12 @@ function startServer() {
     });
 
  
-    app.get('/soc_assigned/:society/:election', isAuthenticated, (req, res) => {
+    app.get('/soc_assigned/:society/:election', isAuthenticated, async (req, res) => {
         const societyName = req.params.society;
         const electionName = req.params.election;
-        res.render('election', { society: societyName, election: electionName });
+        const usersElec = await getUsersByElection(societyName);
+        const votedUsers = await getVotedUsersByElection(societyName, electionName);
+        res.render('election_users', { users: usersElec, votedUsers: votedUsers });
     });
 
     app.get('/admin_page', isAuthenticated, async function(request, response) {

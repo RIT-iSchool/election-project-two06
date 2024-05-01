@@ -243,6 +243,62 @@ async function getElectionsBySocietyId(societyId) {
     }
 }
 
+// dataaccess.js
+
+// Function to retrieve users who are members or officers from the Users table based on the selected election
+
+
+async function getUsersByElection(societyName) {
+    try {
+        console.log("Fetching users:", societyName);
+
+        // Construct the SQL query to fetch users associated with the election
+        const query = `
+        SELECT u.userid, u.fname, u.lname, u.usertype
+        FROM users u
+        INNER JOIN user_society us ON u.userid = us.userid
+        INNER JOIN professional_society ps ON us.societyid = ps.societyid
+        WHERE ps.societyname = $1 AND (u.usertype = 'officer' OR u.usertype = 'member');
+
+
+    `;
+
+        // Execute the query and return the retrieved users
+        const users = await client.query(query, [societyName]);
+        console.log("Retrieved Users:", users.rows);
+
+        return users.rows;
+    } catch (error) {
+        console.error("Error fetching users for election:", error);
+        throw error;
+    }
+}
+
+async function getVotedUsersByElection(societyName, electionName) {
+    try {
+        console.log("Fetching voted users for election:", electionName);
+        const socDetails = await getSocietyDetailsBySocietyName(societyName);
+        console.log(socDetails);
+        console.log(electionName);
+        // Construct the SQL query to fetch users who have voted in the election
+        const query = `
+        SELECT DISTINCT u.userid, u.fname, u.lname, u.usertype
+        FROM users u
+        INNER JOIN vote v ON u.userid = v.userid
+        INNER JOIN ballot b ON v.ballotid = b.ballotid
+        WHERE b.societyid = $1 AND b.ballottitle = $2;
+    `;
+
+        // Execute the query and return the retrieved voted users
+        const votedUsers = await client.query(query, [socDetails.societyid, electionName]);
+        console.log("Retrieved Voted Users:", votedUsers.rows);
+
+        return votedUsers.rows;
+    } catch (error) {
+        console.error("Error fetching voted users for election:", error);
+        throw error;
+    }
+}
 
 async function createUser(userDetails) {
     try {
@@ -324,6 +380,8 @@ module.exports = { connectToDatabase,
     getSocietyOfficesBySocId, 
     getCandidatesForOffice, 
     updateUser, 
-    getUserDetailsByUserId };
+    getUserDetailsByUserId,
+    getVotedUsersByElection,
+    getUsersByElection };
 
 

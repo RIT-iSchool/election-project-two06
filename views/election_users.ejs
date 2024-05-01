@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Users Associated with Election</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .user-list {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .user-item {
+            border-bottom: 1px solid #ccc;
+            padding: 10px 0;
+        }
+
+        .user-item:last-child {
+            border-bottom: none;
+        }
+
+        .user-details {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Users Associated with Election</h1>
+
+        <h2>Members or Officers</h2>
+        <ul class="user-list">
+            <% users.forEach(function(user) { %>
+                <li class="user-item">
+                    <div class="user-details">
+                        <div>
+                            <strong>Name:</strong> <%= user.fname %> <%= user.lname %><br>
+                            <strong>User Type:</strong> <%= user.usertype %>
+                        </div>
+                        <div>
+                            <% if (votedUsers.find(votedUser => votedUser.userid === user.userid)) { %>
+                                <span style="color: green;">Voted</span>
+                            <% } else { %>
+                                <span style="color: red;">Not Voted</span>
+                            <% } %>
+                        </div>
+                    </div>
+                </li>
+            <% }); %>
+        </ul>
+    </div>
+</body>
+</html>
