@@ -64,7 +64,9 @@
 <body>
 <div class="container">
     <h1>Elections Associated with <%= societyName %></h1>
-    
+    <div class="buttons">
+        <button class="option" onclick="goToBallotInit()">Create/Edit Ballot Initiatives</button>
+    </div>
     <% function formatDate(dateString) { %>
         <% // Parse the dateString into a Date object %>
         <% const date = new Date(dateString); %>
@@ -116,6 +118,9 @@
 </div>
 
     <script>
+        function goToBallotInit() {
+            window.location.href = '/admin_page/users/';
+        }
         function goToElection(society, election) {
             window.location.href = '/soc_assigned/' + encodeURIComponent(society) + '/' + encodeURIComponent(election);
         }
