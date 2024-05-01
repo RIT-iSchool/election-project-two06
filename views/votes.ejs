@@ -1,82 +1,192 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>Vote for Office</title>
-<style>
-    body { font-family: Arial, sans-serif; }
-    .office { margin-bottom: 30px; }
-    .office h2 { text-align: center; }
-    .candidate { text-align: center; margin-bottom: 20px; }
-    img { width: 100px; height: 100px; }
-    label { display: block; margin-top: 10px; }
-</style>
+    <meta charset="UTF-8">
+    <title>Vote for Office</title>
+    <style>
+        /* Style for the body */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Style for the container */
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 0 20px;
+            text-align: center; /* Center align content */
+        }
+
+        /* Style for the form */
+        #voteForm {
+            margin: 20px;
+        }
+
+        /* Style for each office */
+        .office {
+            margin-bottom: 20px;
+        }
+
+        /* Style for the office heading */
+        .office h2 {
+            margin-bottom: 10px;
+        }
+
+        /* Style for the candidate container */
+        .candidates-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        /* Style for each candidate */
+        .candidate {
+            margin: 10px;
+            text-align: center;
+        }
+
+        /* Style for the candidate image */
+        .candidate img {
+            width: 100px;
+            height: 100px;
+            object-fit: cover; /* Ensures the image covers the entire square */
+            border-radius: 5px;
+            background-color: #4caf50;
+        }
+
+        /* Style for the candidate name */
+        .candidate-name {
+            margin-top: 5px;
+        }
+
+        /* Style for the radio button label */
+        .candidate label {
+            cursor: pointer;
+            display: block; /* Display as block to ensure proper alignment */
+        }
+
+        /* Style for the write-in button */
+        .write-in-button {
+            cursor: pointer;
+            background-color: #4caf50;
+            color: #f4f4f4;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 5px;
+        }
+
+        /* Style for the write-in fields */
+        .write-in-fields {
+            display: none; /* Initially hidden */
+            margin-top: 10px;
+        }
+
+        /* Style for the write-in input fields */
+        .write-in-fields input {
+            margin-right: 10px;
+        }
+
+        /* Style for the submit button */
+        button[type="submit"] {
+            cursor: pointer;
+            background-color: #28a745;
+            color: #f4f4f4;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+        }
+
+        /* Style for button hover effect */
+        button:hover {
+            opacity: 0.8;
+        }
+
+    </style>
 </head>
 <body>
-<h1>Vote for Office</h1>
-<form id="voteForm" action="/submit-vote" method="post">
-    <% officesData.forEach(function(office) { %>
-        <div class="office">
-            <h2><%= office.officeName %></h2>
-            <input type="hidden" name="ballotId" value="<%= ballotId %>">
-            <% office.candidates.forEach(function(candidate) { %>
-                <div class="candidate">
-                    <img src="data:image/jpeg;base64,<%= candidate.photo.toString('base64') %>" alt="Photo of <%= candidate.name %>">
-                    <label>
-                        <input type="radio" name="<%= office.officeId %>" value="<%= candidate.candidateId %>"> 
-                        <%= candidate.name %>
-                    </label>
+    <div class="container"> <!-- Wrap content in a container -->
+        <h1>Vote for Office</h1>
+        <form id="voteForm" action="/submit-vote" method="post">
+            <% officesData.forEach(function(office) { %>
+                <div class="office">
+                    <h2><%= office.officeName %></h2>
+                    <input type="hidden" name="ballotId" value="<%= ballotId %>">
+                    <div class="candidates-container">
+                        <% office.candidates.forEach(function(candidate) { %>
+                            <div class="candidate">
+                                <label>
+                                    <input type="checkbox" name="<%= office.officeId %>_candidate" value="<%= candidate.candidateId %>">
+                                    <span class="circle-button" onclick="toggleCandidateSelection(this)"></span>
+                                    <img src="data:image/jpeg;base64,<%= candidate.photo.toString('base64') %>" alt="Photo of <%= candidate.name %>">
+                                    <div class="candidate-name"><%= candidate.name %></div>
+                                </label>
+                            </div>
+                        <% }); %>
+                    </div>
+                    <div class="write-in">
+                        <button type="button" class="write-in-button" onclick="toggleWriteInFields(this)">Write-In</button>
+                        <div class="write-in-fields">
+                            <label>First Name: <input type="text" name="<%= office.officeId %>_writein_first"></label>
+                            <label>Last Name: <input type="text" name="<%= office.officeId %>_writein_last"></label>
+                        </div>
+                    </div>
                 </div>
             <% }); %>
-            <div>
-                <h3>Write-In:</h3>
-                <label>First Name: <input type="text" name="<%= office.officeId %>_writein_first"></label>
-                <label>Last Name: <input type="text" name="<%= office.officeId %>_writein_last"></label>
-            </div>
-        </div>
-    <% }); %>
-    <button type="submit">Submit Vote</button>
-</form>
-
-<script>
-    document.getElementById("voteForm").addEventListener("submit", async function(event) {
-        event.preventDefault();
-        const formData = new FormData(this);
-        const serializedFormData = {};
-        formData.forEach((value, key) => {
-            if (key.includes('_writein_')) { // Check for 'first' or 'last'
-                let namePart = key.split('_').pop(); // 'first' or 'last'
-                let officeId = key.split('_')[0];
-                if (!serializedFormData[officeId + '_writein']) {
-                    serializedFormData[officeId + '_writein'] = {};
+            <button type="submit">Submit Vote</button>
+        </form>  
+    </div> <!-- End of container -->
+    <script>
+        function toggleWriteInFields(button) {
+            // Find the sibling write-in fields element
+            var writeInFields = button.nextElementSibling;
+            // Toggle its display property
+            writeInFields.style.display = writeInFields.style.display === "none" ? "block" : "none";
+        }
+    
+        document.getElementById("voteForm").addEventListener("submit", async function(event) {
+            event.preventDefault();
+            const formData = new FormData(this);
+            const serializedFormData = {};
+            formData.forEach((value, key) => {
+                if (key.includes('_writein_')) { // Check for 'first' or 'last'
+                    let namePart = key.split('_').pop(); // 'first' or 'last'
+                    let officeId = key.split('_')[0];
+                    if (!serializedFormData[officeId + '_writein']) {
+                        serializedFormData[officeId + '_writein'] = {};
+                    }
+                    serializedFormData[officeId + '_writein'][namePart] = value;
+                } else {
+                    serializedFormData[key] = value;
                 }
-                serializedFormData[officeId + '_writein'][namePart] = value;
-            } else {
-                serializedFormData[key] = value;
+            });
+    
+            try {
+                const response = await fetch('/submit-vote', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ ballotId: serializedFormData.ballotId, formData: serializedFormData })
+                });
+    
+                if (response.ok) {
+                    console.log('Vote submitted successfully');
+                    window.location.href = '/welcome';
+                } else {
+                    console.error('Error submitting vote:', response.statusText);
+                }
+            } catch (error) {
+                console.error('Error submitting vote:', error);
             }
         });
 
-        try {
-            const response = await fetch('/submit-vote', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ ballotId: serializedFormData.ballotId, formData: serializedFormData })
-            });
-
-            if (response.ok) {
-                console.log('Vote submitted successfully');
-                window.location.href = '/welcome';
-            } else {
-                console.error('Error submitting vote:', response.statusText);
-            }
-        } catch (error) {
-            console.error('Error submitting vote:', error);
+        function toggleCandidateSelection(candidate) {
+            candidate.previousElementSibling.checked = !candidate.previousElementSibling.checked;
         }
-    });
-</script>
-
-
+    </script>
+    
 </body>
 </html>
