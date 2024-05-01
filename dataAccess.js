@@ -403,7 +403,7 @@ async function getElectionsBySocietyId(societyId) {
 }
 
 // Function to retrieve users who are members or officers from the Users table based on the selected election
-async function getUsersByElection(societyName) {
+async function getUsersByElection(societyId) {
     try {
         await client.query('BEGIN'); // Begin the transaction
         // Construct the SQL query to fetch users associated with the election
@@ -411,11 +411,10 @@ async function getUsersByElection(societyName) {
         SELECT u.userid, u.fname, u.lname, u.usertype
         FROM users u
         INNER JOIN user_society us ON u.userid = us.userid
-        INNER JOIN professional_society ps ON us.societyid = ps.societyid
-        WHERE ps.societyname = $1 AND (u.usertype = 'officer' OR u.usertype = 'member');
+        WHERE us.societyid = $1 AND (u.usertype = 'officer' OR u.usertype = 'member');
     `;
         // Execute the query and return the retrieved users
-        const users = await client.query(query, [societyName]);
+        const users = await client.query(query, [societyId]);
         await client.query('COMMIT'); // Commit the transaction if all operations succeed
         console.log("Retrieved Users:", users.rows);
 
@@ -427,10 +426,9 @@ async function getUsersByElection(societyName) {
     }
 }
 
-async function getVotedUsersByElection(societyName, electionName) {
+async function getVotedUsersByElection(societyId, electionId) {
     try {
         await client.query('BEGIN'); // Begin the transaction
-        const socDetails = await getSocietyDetailsBySocietyName(societyName);
         // Construct the SQL query to fetch users who have voted in the election
         const query = `
         SELECT DISTINCT u.userid, u.fname, u.lname, u.usertype
@@ -441,7 +439,7 @@ async function getVotedUsersByElection(societyName, electionName) {
     `;
 
         // Execute the query and return the retrieved voted users
-        const votedUsers = await client.query(query, [socDetails.societyid, electionName]);
+        const votedUsers = await client.query(query, [societyId, electionId]);
         await client.query('COMMIT'); // Commit the transaction if all operations succeed
         console.log("Retrieved Voted Users:", votedUsers.rows);
 

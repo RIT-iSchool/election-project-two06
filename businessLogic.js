@@ -37,13 +37,13 @@ async function loginUser(email, password) {
     }
 }
 // Business logic function to count votes
-async function countVotes(societyName, electionName) {
+async function countVotes(societyId, electionId) {
     try {
         // Fetch all users associated with the election
-        const allUsers = await getUsersByElection(societyName);
+        const allUsers = await getUsersByElection(societyId);
         
         // Fetch users who have voted in the election
-        const votedUsers = await getVotedUsersByElection(societyName, electionName);
+        const votedUsers = await getVotedUsersByElection(societyId, electionId);
         
         // Count the total number of votes and not voted members and officers
         const totalVotes = votedUsers.length;

@@ -309,12 +309,12 @@ function startServer() {
         response.render('login'); // Render 'login.ejs' from the views folder
     });
  
-    app.get('/soc_assigned/:society/:election', isAuthenticated, async (req, res) => {
-        const societyName = req.params.society;
-        const electionName = req.params.election;
-        const usersElec = await getUsersByElection(societyName);
-        const votedUsers = await getVotedUsersByElection(societyName, electionName);
-        const perc = await countVotes(societyName, electionName);
+    app.get('/soc_assigned/socId=:society/ballotId=:election', isAuthenticated, async (req, res) => {
+        const societyId = req.params.society;
+        const electionId = req.params.election;
+        const usersElec = await getUsersByElection(societyId);
+        const votedUsers = await getVotedUsersByElection(societyId, electionId);
+        const perc = await countVotes(societyId, electionId);
         res.render('election_users', { users: usersElec, votedUsers: votedUsers, percentage: perc });
     });
 
