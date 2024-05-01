@@ -273,11 +273,8 @@ function startServer() {
 
     app.post('/submit-vote', isAuthenticated, async function(request, response) {
         const userId = request.session.userId;
+        const userDetails = await getUserDetailsByUserId(userId);
         const { ballotId, formData } = request.body;
-        
-        console.log("User ID:", userId);
-        console.log("Ballot ID:", ballotId);
-        console.log("Form Data:", formData);
     
         try {
             for (const key in formData) {
