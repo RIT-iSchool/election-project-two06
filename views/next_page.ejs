@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Society Statistics</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid black;
+            padding: 8px;
+            text-align: left;
+        }
+    </style>
+    </style>
+</head>
+<body>
+    <h1>Society Statistics</h1>
+    <div id="societyStatistics">
+        <h3>Total ballots in Societies</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Society Name</th>
+                    <th>Total Ballots</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% for (const ballot of ballots) { %>
+                <tr>
+                    <td><%= ballot.societyname %></td>
+                    <td><%= ballot.total_ballots %></td>
+                </tr>
+                <% } %>
+            </tbody>
+        </table>
+        <h3>Total members in Societies</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Society Name</th>
+                    <th>Total Members</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% for (const member of members) { %>
+                    <tr>
+                        <td><%= member.societyname %></td>
+                        <td><%= member.total_members %></td>
+                    </tr>
+                <% } %>
+                
+            </tbody>
+        </table>
+    </div>
+    
+    <script>
+
+        // No changes needed in client-side JavaScript
+        // This remains the same as before
+        function parseQueryParams() {
+            const params = {};
+            const queryString = window.location.search.substring(1);
+            queryString.split('&').forEach(param => {
+                const [key, value] = param.split('=');
+                params[decodeURIComponent(key)] = decodeURIComponent(value);
+            });
+            return params;
+        }
+
+        function displaySocietyStatistics() {
+            const queryParams = parseQueryParams();
+            const societyStatistics = JSON.parse(queryParams.data);
+            const societyStatisticsDiv = document.getElementById('societyStatistics');
+            for (const society in societyStatistics) {
+                if (societyStatistics.hasOwnProperty(society)) {
+                    const stats = societyStatistics[society];
+                    const societyStatsHTML = `<h2>${society}</h2>
+                        <p>Total Members: ${stats.totalMembers}</p>
+                        <p>Total Ballots: ${stats.totalBallots}</p>`;
+                    societyStatisticsDiv.innerHTML += societyStatsHTML;
+                }
+            }
+        }
+
+        window.onload = displaySocietyStatistics;
+    </script>
+</body>
+</html>

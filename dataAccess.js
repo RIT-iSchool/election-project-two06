@@ -78,6 +78,7 @@ async function getBallotsPerSociety() {
             GROUP BY ps.societyname;
         `;
         const result = await client.query(query);
+        console.log(result.rows);
         await client.query('COMMIT'); // Commit the transaction if all operations succeed
         return result.rows;
     } catch (error) {
@@ -118,9 +119,7 @@ async function getAverageMembersVotingPerElection() {
             GROUP BY v.ballotid
         )
         SELECT AVG(vmc.voted_members_count) AS average_members_voting
-        FROM voted_members_counts vmc;
-        
-        
+        FROM voted_members_counts vmc;        
         `;
         const result = await client.query(query);
         await client.query('COMMIT'); // Commit the transaction if all operations succeed

@@ -119,6 +119,27 @@ function startServer() {
             res.status(500).send('Internal Server Error');
         }
     });
+
+    const { getBallotsPerSociety, getMembersPerSociety, getAverageMembersVotingPerElection } = require('./dataAccess');
+
+    app.get('/societyStatistics', async (req, res) => {
+        try {
+            // Call database functions to retrieve data
+            const ballotsPerSociety = await getBallotsPerSociety();
+            const membersPerSociety = await getMembersPerSociety();
+            const averageMembersVotingPerElection = await getAverageMembersVotingPerElection();
+            // Render the next_page.ejs template and pass retrieved data to it
+            res.render('next_page', {
+                ballots: ballotsPerSociety,
+                members: membersPerSociety,
+                avg: averageMembersVotingPerElection
+            });
+        } catch (error) {
+            console.error("Error retrieving society statistics:", error);
+            res.status(500).send("Internal Server Error");
+        }
+    });
+
     
     // server.js
 
