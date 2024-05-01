@@ -88,47 +88,38 @@
             background-color: #45a049;
         }
 
+        .option.voted .option-description {
+            color: #aaa; /* Gray out the text */
+            background-color: #f0f0f0; /* Light gray background */
+        }
+
+        .option.voted input[type="checkbox"] {
+            cursor: not-allowed; /* Change cursor to indicate no action is allowed */
+        }
+
     </style>
 </head>
 <body>
-    <div class="container">
-        <h2>Ballot Initiative Options</h2>
-        <div class="ballot-options">
-            <% initiatives.forEach(initiative => { %>
-                <div class="option">
-                    <div class="option-description"><%= initiative.description %></div>
-                    <input type="checkbox">
-                </div>
-            <% }); %>
-        </div>
-        <div class="suggestions">
-            <label for="suggestion">Suggestions</label>
-            <input type="text" id="suggestion" name="suggestion">
-        </div>
-        <div class="buttons">
-            <button type="button" onclick="showVotesPopup()">Submit</button>
-        </div>
-    </div>
-
-    <script>
-        function showVotesPopup() {
-            alert("Votes added.");
-            // Redirect to another page after showing the alert
-            window.location.href = "login.html";
-        }
-
-
-
-        function showNoVotesPopup() {
-            alert("No votes added.");
-            window.location.href = "login.html";
-        }
-
-    
-
-    </script>
-
-    <script src="main.js"></script>
+    <form action="/submit-ballot-votes" method="post">
+        <div class="container">
+            <h2>Ballot Initiative Options</h2>
+            <div class="ballot-options">
+                <% initiatives.forEach(initiative => { %>
+                    <div class="option <%= initiative.voted ? 'voted' : '' %>">
+                        <div class="option-description"><%= initiative.description %></div>
+                        <input type="checkbox" name="choice_<%= initiative.BallotInitID %>" value="true" <%= initiative.voted ? 'disabled checked' : '' %>>
+                    </div>
+                <% }); %>
+            </div>
+            <div class="suggestions">
+                <label for="suggestion">Suggestions</label>
+                <input type="text" id="suggestion" name="suggestion">
+            </div>
+            <div class="buttons">
+                <button type="submit">Submit</button>
+            </div>
+        </div>        
+    </form>
 
 </body>
 </html>

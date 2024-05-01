@@ -41,20 +41,23 @@ async function getSocietyDetailsByUserId(userId) {
         throw error;
     }
 }
-async function getBallotInitBySocietyId(societyId) {
+async function getBallotInitBySocietyId(societyId, userId) {
     try {
         const query = `
-            SELECT bi."description", bi."creationdate"
-            FROM public."ballot_initiative" bi
-            WHERE bi."societyid" = $1;
+            SELECT bi.description, bi.creationdate, bi.ballotinitid,
+                   (SELECT TRUE FROM Ballot_Initiative_Vote biv
+                    WHERE biv.BallotInitID = bi.ballotinitid AND biv.UserID = $2 AND biv.Choice = TRUE) AS voted
+            FROM public.ballot_initiative bi
+            WHERE bi.societyid = $1;
         `;
-        const result = await client.query(query, [societyId]);
+        const result = await client.query(query, [societyId, userId]);
         return result.rows;
     } catch (error) {
-        console.error("Error retrieving society name:", error);
+        console.error("Error retrieving society initiatives with vote status:", error);
         throw error;
     }
 }
+
 async function getSocietiesForAdmin(userId) {
     try {
         const query = `SELECT "usertype" FROM public."users" WHERE "userid" = $1;`;
@@ -291,9 +294,23 @@ async function createWriteInVote(userId, firstName, lastName, officeId) {
     }
 }
 
+async function saveBallotVote(ballotInitId, userId, choice, response) {
+    try{
+        console.log(ballotInitId, userId, choice, response);
+        const query = `
+            INSERT INTO Ballot_Initiative_Vote (BallotInitID, UserID, Timestamp, Choice, Response)
+            VALUES ($1, $2, NOW(), $3, $4);
+        `;
+        await client.query(query, [ballotInitId, userId, choice, response]);
+    } catch (error) {
+        console.error('Error recording ballot initiative votes', error);
+        throw error;
+    }
+}
 
 
 module.exports = { connectToDatabase, 
+    saveBallotVote,
     createVote,
     createWriteInVote,
     getSocietyDetailsBySocietyName,

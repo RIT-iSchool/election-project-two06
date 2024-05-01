@@ -6,6 +6,7 @@ const fs = require('fs');
 const moment = require('moment');
 
 const { getSocietyDetailsBySocietyName, 
+    saveBallotVote,
     getElectionsBySocietyId, 
     connectToDatabase, 
     createUser, 
@@ -137,14 +138,37 @@ function startServer() {
     app.get('/ballot_initiatives', isAuthenticated, async (req, res) => {
         try {
             const societyId = req.session.socId;
-            const initDetails = await getBallotInitBySocietyId(societyId);
-            // Render the 'ballot_initiatives.ejs' template with the fetched initiatives
+            const userId = req.session.userId; // Get user ID from session
+            const initDetails = await getBallotInitBySocietyId(societyId, userId);
+            console.log(initDetails)
             res.render('ballot_initiatives', { initiatives: initDetails });
         } catch (error) {
             console.error("Error fetching ballot initiatives:", error);
             res.status(500).send('Internal Server Error');
         }
     });
+
+    app.post('/submit-ballot-votes', isAuthenticated, async (req, res) => {
+        const userId = req.session.userId;
+        try {
+            // Iterate through the initiatives
+            Object.keys(req.body).forEach(async key => {
+                if (key.startsWith('choice_')) {
+                    const ballotInitId = key.split('_')[1];
+                    console.log(ballotInitId);
+                    const choice = req.body[key] === 'true';
+                    const suggestion = req.body['suggestion'].trim();
+    
+                    // Call function to save vote
+                    await saveBallotVote(ballotInitId, userId, choice, suggestion);
+                }
+            });
+            res.redirect('/welcome'); // Redirect to a success page or back to the list
+        } catch (error) {
+            console.error("Error submitting ballot votes:", error);
+            res.status(500).send('Internal Server Error');
+        }
+    });    
 
     app.get('/voting', isAuthenticated, async function(request, response) {
         const userId = request.session.userId;
