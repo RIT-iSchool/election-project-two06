@@ -105,7 +105,7 @@
                 <% initiatives.forEach(initiative => { %>
                     <div class="option <%= initiative.voted ? 'voted' : '' %>">
                         <div class="option-description"><%= initiative.description %></div>
-                        <input type="checkbox" name="choice_<%= initiative.BallotInitID %>" value="true" <%= initiative.voted ? 'disabled checked' : '' %>>
+                        <input type="checkbox" name="choice_<%= initiative.ballotinitid %>" value="true" <%= initiative.voted ? 'disabled checked' : '' %>>
                     </div>
                 <% }); %>
             </div>

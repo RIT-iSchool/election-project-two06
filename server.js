@@ -173,9 +173,12 @@ function startServer() {
         const socId = request.session.socId;
         const ballotDetails = await getBallotDetailsBySocId(socId);
         const societyDetails = await getSocietyDetailsByUserId(userId);
-
-        response.render('welcome', { name: societyDetails[0].societyname, ballotName: ballotDetails[0].ballotName });
-    });
+        if (ballotDetails[0]) {
+            response.render('welcome', { name: societyDetails[0].societyname, ballotName: ballotDetails[0].ballotName });
+        } else {
+            response.render('noRunningBallots');
+        }
+        });
 
     app.get('/soc_assigned/socId=:id/ballot_info', isAuthenticated, async function(req, res) {
         const soc = req.params.id;

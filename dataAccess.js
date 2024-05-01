@@ -78,7 +78,6 @@ async function getBallotsPerSociety() {
             GROUP BY ps.societyname;
         `;
         const result = await client.query(query);
-        console.log(result.rows);
         await client.query('COMMIT'); // Commit the transaction if all operations succeed
         return result.rows;
     } catch (error) {
@@ -241,7 +240,6 @@ async function getBallotDetailsByBallotId(ballotId) {
 
         // Add ballot object to the ballotDetails array
         ballotDetails.push(ballotObj);
-        console.log(ballotDetails);
         await client.query('COMMIT'); // Commit the transaction if all operations succeed
         return ballotDetails;
     } catch (error) {
@@ -392,7 +390,6 @@ async function getElectionsBySocietyId(societyId) {
         const resultPresent = await client.query(queryPresent, [societyId]);
         const resultFuture = await client.query(queryFuture, [societyId]);
         await client.query('COMMIT'); // Commit the transaction if all operations succeed
-        console.log(resultFuture.rows);
         return {
             pastElections: resultPast.rows,
             presentElections: resultPresent.rows,
@@ -528,7 +525,6 @@ async function createWriteInVote(userId, firstName, lastName, officeId) {
 async function saveBallotVote(ballotInitId, userId, choice, response) {
     try {
         await client.query('BEGIN'); // Begin the transaction
-
         const query = `
             INSERT INTO Ballot_Initiative_Vote (BallotInitID, UserID, Timestamp, Choice, Response)
             VALUES ($1, $2, NOW(), $3, $4);
