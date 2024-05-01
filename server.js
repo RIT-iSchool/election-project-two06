@@ -143,29 +143,29 @@ function startServer() {
     
     // server.js
 
-// Add a new route to handle the request for displaying users associated with the selected election
-app.get('/soc_assigned/:society/:election/users', isAuthenticated, async (req, res) => {
-    try {
-        const societyName = req.params.society;
-        const electionName = req.params.election;
+    // Add a new route to handle the request for displaying users associated with the selected election
+    app.get('/soc_assigned/:society/:election/users', isAuthenticated, async (req, res) => {
+        try {
+            const societyName = req.params.society;
+            const electionName = req.params.election;
 
-        console.log("Fetching users for election:", electionName);
+            console.log("Fetching users for election:", electionName);
 
-        // Fetch users associated with the selected election
-        const users = await getUsersByElection(societyName, electionName);
-        console.log("Users:", users);
+            // Fetch users associated with the selected election
+            const users = await getUsersByElection(societyName, electionName);
+            console.log("Users:", users);
 
-        // Fetch users who have voted in the selected election
-        const votedUsers = await getVotedUsersByElection(societyName, electionName);
-        console.log("Voted Users:", votedUsers);
+            // Fetch users who have voted in the selected election
+            const votedUsers = await getVotedUsersByElection(societyName, electionName);
+            console.log("Voted Users:", votedUsers);
 
-        // Render the 'election_users.ejs' template with the retrieved user data
-        res.render('election', { users: users, votedUsers: votedUsers });
-    } catch (error) {
-        console.error("Error fetching users for election:", error);
-        res.status(500).send('Internal Server Error');
-    }
-});
+            // Render the 'election_users.ejs' template with the retrieved user data
+            res.render('election', { users: users, votedUsers: votedUsers });
+        } catch (error) {
+            console.error("Error fetching users for election:", error);
+            res.status(500).send('Internal Server Error');
+        }
+    });
 
 
     app.get('/welcome', isAuthenticated, async function(request, response) {
@@ -182,21 +182,6 @@ app.get('/soc_assigned/:society/:election/users', isAuthenticated, async (req, r
         res.render('combined_ballot', {socid: soc});
     });
 
-//    app.post('/submit-ballot', isAuthenticated, async (req, res) => {
-//        try {
-            // Extract data from the request body
-//            const { ballotName, startDate, endDate, offices } = req.body;
-//            console.log(offices);
-            // Process and save the data to the database
-            // Example: Save ballot details, office details, candidate details, etc.
-    
-//            res.status(200).json({ message: 'Ballot submitted successfully' });
-//        } catch (error) {
-//            console.error("Error submitting ballot:", error);
-//            res.status(500).json({ error: 'Internal Server Error' });
-//        }
-//    });
-    
     app.get('/ballot_initiatives', isAuthenticated, async (req, res) => {
         try {
             const societyId = req.session.socId;
@@ -420,48 +405,6 @@ app.get('/soc_assigned/:society/:election/users', isAuthenticated, async (req, r
             response.status(500).send('Internal Server Error');
         }
     });
-
-    // // Route for fetching ballot initiative details via AJAX
-    // app.get('/ballotinit/:id', isAuthenticated, async (req, res) => {
-    //     try {
-    //         const id = req.params.id;
-    //         // Fetch user details from the database based on email
-    //         const userDetails = await getUserDetailsByUserId(id);
-    //         // Send JSON response with user details
-    //         res.json(userDetails);
-    //     } catch (error) {
-    //         console.error("Error fetching user details:", error);
-    //         res.status(500).json({ error: 'Internal Server Error' });
-    //     }
-    // });
-
-    // // Route for updating user details via AJAX
-    // app.post('/admin_page/update_user', async (req, res) => {
-    //     try {
-    //         const { userid, fname, lname, email, usertype } = req.body; // Assuming these are the fields being updated
-    //         // Implement logic to update user details in the database
-    //         await updateUser(userid, { fname, lname, email, usertype });
-    //         res.status(200).json({ message: 'User details updated successfully' });
-    //     } catch (error) {
-    //         console.error("Error updating user details:", error);
-    //         res.status(500).json({ error: 'Internal Server Error' });
-    //     }
-    // });
-
-    // // Route for creating user details via AJAX
-    // app.post('/admin_page/create_user', async (req, res) => {
-    //     try {
-    //         const { fname, lname, email, usertype, password, society } = req.body; // Assuming these are the fields being updated
-    //         // Implement logic to create user details in the database
-    //         await createUser( {fname, lname, email, usertype, password, society} );
-    //         // Encrypt the added user password
-    //         await encryptPasswords();
-    //         res.status(200).json({ message: 'User created successfully' });
-    //     } catch (error) {
-    //         console.error("Error updating user details:", error);
-    //         res.status(500).json({ error: 'Internal Server Error' });
-    //     }
-    // });
 
     app.post('/', async function(request, response) {
         const { email, password } = request.body;
