@@ -1,5 +1,5 @@
 const bcrypt = require('bcrypt');
-const { getUserByEmail } = require('./dataAccess');
+const { getUserByEmail, getUsersByElection, getVotedUsersByElection } = require('./dataAccess');
 
 async function loginUser(email, password) {
     try {
@@ -36,5 +36,29 @@ async function loginUser(email, password) {
         throw error;
     }
 }
+// Business logic function to count votes
+async function countVotes(societyName, electionName) {
+    try {
+        // Fetch all users associated with the election
+        const allUsers = await getUsersByElection(societyName);
+        
+        // Fetch users who have voted in the election
+        const votedUsers = await getVotedUsersByElection(societyName, electionName);
+        
+        // Count the total number of votes and not voted members and officers
+        const totalVotes = votedUsers.length;
+        const notVotedUsers = allUsers.filter(user => !votedUsers.some(votedUser => votedUser.userid === user.userid));
 
-module.exports = { loginUser };
+        const notVotedMembers = notVotedUsers.filter(user => user.usertype === 'member').length;
+        const notVotedOfficers = notVotedUsers.filter(user => user.usertype === 'officer').length;
+        const perc = (totalVotes/allUsers.length)*100;
+
+        // Return the counts
+        return perc;
+    } catch (error) {
+        console.error("Error counting votes:", error);
+        throw error;
+    }
+}
+
+module.exports = { loginUser, countVotes };

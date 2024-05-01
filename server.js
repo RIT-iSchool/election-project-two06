@@ -26,7 +26,7 @@ const { getSocietyDetailsBySocietyName,
     createWriteInVote,
 } = require('./dataAccess');
 
-const { loginUser } = require('./businessLogic');
+const { loginUser, countVotes } = require('./businessLogic');
 
 const { encryptPasswords } = require('./encrypt');
 const { uploadImage } = require('./image');
@@ -268,7 +268,8 @@ app.get('/soc_assigned/:society/:election/users', isAuthenticated, async (req, r
         const electionName = req.params.election;
         const usersElec = await getUsersByElection(societyName);
         const votedUsers = await getVotedUsersByElection(societyName, electionName);
-        res.render('election_users', { users: usersElec, votedUsers: votedUsers });
+        const perc = await countVotes(societyName, electionName);
+        res.render('election_users', { users: usersElec, votedUsers: votedUsers, percentage: perc });
     });
 
     app.get('/admin_page', isAuthenticated, async function(request, response) {
