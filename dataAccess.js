@@ -185,63 +185,65 @@ async function getUsersForAdmin(userID) {
 }
 
 async function getBallotDetailsByBallotId(ballotId) {
-    try {
-        await client.query('BEGIN'); // Begin the transaction
-        const ballotDetails = [];
-        const ballotQuery = `
-            SELECT b."ballottitle", b."startdate", b."enddate"
-            FROM public."ballot" b
-            WHERE b."ballotid" = $1;
-        `;
-        const ballotResult = await client.query(ballotQuery, [ballotId]);
-        const ballotRow = ballotResult.rows[0];
-        // Structure ballot details
-        const ballotObj = {
-            ballottitle: ballotRow.ballottitle,
-            startdate: ballotRow.startdate,
-            enddate: ballotRow.enddate,
-            offices: []
+    try {await client.query('BEGIN'); // Begin the transaction
+    const ballotDetails = [];
+    const ballotQuery = `
+        SELECT b."ballottitle", b."startdate", b."enddate"
+        FROM public."ballot" b
+        WHERE b."ballotid" = $1;
+    `;
+    const ballotResult = await client.query(ballotQuery, [ballotId]);
+    const ballotRow = ballotResult.rows[0];
+    // Structure ballot details
+    const ballotObj = {
+        ballottitle: ballotRow.ballottitle,
+        startdate: ballotRow.startdate,
+        enddate: ballotRow.enddate,
+        offices: []
+    };
+    const officeQuery = `
+        SELECT o."officeid", o."officename", o."choices"
+        FROM public."office" o
+        WHERE o."ballotid" = $1;
+    `;
+    const officeResult = await client.query(officeQuery, [ballotId]);
+    // Loop through each office
+    for (const officeRow of officeResult.rows) {
+        const officeObj = {
+            officeid: officeRow.officeid,
+            officename: officeRow.officename,
+            choices: officeRow.choices,
+            candidates: []
         };
-        const officeQuery = `
-            SELECT o."officeid", o."officename", o."choices"
-            FROM public."office" o
-            WHERE o."ballotid" = $1;
+
+        const candidateQuery = `
+            SELECT c."cfname", c."clname", c."photo"
+            FROM public."candidate" c
+            WHERE c."officeid" = $1;
         `;
-        const officeResult = await client.query(officeQuery, [ballotId]);
-        // Loop through each office
-        for (const officeRow of officeResult.rows) {
-            const officeObj = {
-                officeid: officeRow.officeid,
-                officename: officeRow.officename,
-                choices: officeRow.choices,
-                candidates: []
+        const candidateResult = await client.query(candidateQuery, [officeRow.officeid]);
+        // Loop through each candidate for the current office
+        for (const candidateRow of candidateResult.rows) {
+            const candidateObj = {
+                cfname: candidateRow.cfname,
+                clname: candidateRow.clname,
+                photo: candidateRow.photo
             };
-
-            const candidateQuery = `
-                SELECT c."cfname", c."clname", c."photo"
-                FROM public."candidate" c
-                WHERE c."officeid" = $1;
-            `;
-            const candidateResult = await client.query(candidateQuery, [officeRow.officeid]);
-            // Loop through each candidate for the current office
-            for (const candidateRow of candidateResult.rows) {
-                const candidateObj = {
-                    cfname: candidateRow.cfname,
-                    clname: candidateRow.clname,
-                    photo: candidateRow.photo
-                };
-                // Add candidate object to the candidates array of the current office
-                officeObj.candidates.push(candidateObj);
-            }
-
-            // Add office object to the offices array of the ballot
-            ballotObj.offices.push(officeObj);
+            // Add candidate object to the candidates array of the current office
+            officeObj.candidates.push(candidateObj);
         }
+        // Add office object to the offices array of the ballot
+        ballotObj.offices.push(officeObj);
+    }
 
-        // Add ballot object to the ballotDetails array
-        ballotDetails.push(ballotObj);
-        await client.query('COMMIT'); // Commit the transaction if all operations succeed
-        return ballotDetails;
+    // Add the constructed ballot object to the ballotDetails array
+    ballotDetails.push(ballotObj);
+
+    // Commit the transaction
+    await client.query('COMMIT');
+    console.log(ballotDetails)
+    // Return the constructed ballot details
+    return ballotDetails;
     } catch (error) {
         await client.query('ROLLBACK'); // Rollback the transaction if any operation fails
         console.error("Error retrieving ballot details:", error);

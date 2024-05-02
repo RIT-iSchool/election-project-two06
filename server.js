@@ -27,6 +27,7 @@ const { getSocietyDetailsBySocietyName,
     getUserDetailsByUserId,
     createVote,
     createWriteInVote,
+    getBallotDetailsByBallotId,
 } = require('./dataAccess');
 
 const { loginUser, countVotes } = require('./businessLogic');
@@ -285,6 +286,12 @@ function startServer() {
         const votedUsers = await getVotedUsersByElection(societyId, electionId);
         const perc = await countVotes(societyId, electionId);
         res.render('election_users', { users: usersElec, votedUsers: votedUsers, percentage: perc });
+    });
+
+    app.get('/soc_assigned/:society/:election', isAuthenticated, async (req, res) => {
+        const electionId = req.params.election;
+        const ballotDetails = await getBallotDetailsByBallotId(electionId);
+        res.render('edit_ballot', { ballotDetails: ballotDetails });
     });
 
     app.get('/admin_page', isAuthenticated, async function(request, response) {

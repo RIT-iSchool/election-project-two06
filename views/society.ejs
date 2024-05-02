@@ -125,7 +125,7 @@
             window.location.href = '/soc_assigned/socId=' + encodeURIComponent(society) + '/ballotId=' + encodeURIComponent(election);
         }
         function goToEditElection(societyid, electionid) {
-            window.location.href = '/soc_assigned/socId=' + encodeURIComponent(societyid) + '/ballotId=' + encodeURIComponent(electionid)
+            window.location.href = '/soc_assigned/' + encodeURIComponent(societyid) + '/' + encodeURIComponent(electionid)
         }
         function goToCreateBallot(id) {
             window.location.href = '/soc_assigned/socId=' + encodeURIComponent(id) + '/ballot_info' ;

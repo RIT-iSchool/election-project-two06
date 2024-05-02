@@ -105,46 +105,50 @@
             <h3>Ballot Information</h3>
             <form id="ballotForm" action="create_ballot.html" method="post">
                 <label for="ballotName">Enter Ballot Name:</label>
-                <input type="text" id="ballotName" name="ballotName" required>
+                <input type="text" id="ballotName" name="ballotName" value="<%=ballotDetails[0].ballottitle%>" required>
                 <br>
                 <label for="startDate">Enter Election Start Date:</label>
-                <input type="date" id="startDate" name="startDate" required>
+                <input type="date" id="startDate" name="startDate" value="<%=ballotDetails[0].startdate%>" required>
                 <br>
                 <label for="endDate">Enter Election End Date:</label>
-                <input type="date" id="endDate" name="endDate" required>
+                <input type="date" id="endDate" name="endDate" value="<%=ballotDetails[0].enddate%>" required>
                 <br>
             </form>
         </div>
 
         <!-- Office Information Section -->
-        <div class="form-section">
-            <h3 style="display: inline-block;">Office Information</h3>
-            <div id="officeForms">
-                <!-- Initial office form -->
-                <form class="officeForm" method="post">
-                    <!-- Office form fields -->
-                    <label for="officeName">Enter Office Name:</label>
-                    <input type="text" name="officeName" required>
-                    <br>
-                    <label for="numVotes">Number of Votes:</label>
-                    <input type="number" name="numVotes" min="1" required>
-                    <br>
-                    <h3 style="display: inline-block;">Candidate Information</h3>
-                    <!-- Candidate fields -->
-                    <div class="candidateFields">
-                        <label for="candidateFName">Enter Candidate First Name:</label>
-                        <input type="text" name="candidateFName" required>
+        <% for (office of ballotDetails[0].offices) { %>
+            <div class="form-section">
+                <h3 style="display: inline-block;">Office Information</h3>
+                <div id="officeForms">
+                    <!-- Initial office form -->
+                    <form class="officeForm" method="post">
+                        <!-- Office form fields -->
+                        <label for="officeName">Enter Office Name:</label>
+                        <input type="text" name="officeName" value="<%=office.officename%>" required>
                         <br>
-                        <label for="candidateLName">Enter Candidate Last Name:</label>
-                        <input type="text" name="candidateLName" required>
+                        <label for="numVotes">Number of Votes:</label>
+                        <input type="number" name="numVotes" min="1" value="<%=office.choices%>" required>
                         <br>
-                        <label for="candidatePhoto">Upload Candidate Photo:</label>
-                        <input type="file" name="candidatePhoto" accept="image/*">
-                        <br>
-                    </div>
-                </form>
+                        <% for (candidate of office.candidates) { %>
+                        <h3 style="display: inline-block;">Candidate Information</h3>
+                        <!-- Candidate fields -->
+                        <div class="candidateFields">
+                            <label for="candidateFName">Enter Candidate First Name:</label>
+                            <input type="text" name="candidateFName" value="<%=candidate.cfname%>" required>
+                            <br>
+                            <label for="candidateLName">Enter Candidate Last Name:</label>
+                            <input type="text" name="candidateLName" value="<%=candidate.clname%>" required>
+                            <br>
+                            <label for="candidatePhoto">Upload Candidate Photo:</label>
+                            <input type="file" name="candidatePhoto" value="1<%=candidate.photo%>" accept="image/*">
+                            <br>
+                        </div>
+                        <% } %>
+                    </form>
+                </div>
             </div>
-        </div>
+        <% } %>
 
         <div class="buttons">
             <button type="button" onclick="submitBallot()">Update Ballot</button>
